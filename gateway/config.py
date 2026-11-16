@@ -75,9 +75,24 @@ def _load_sandbox() -> dict:
 _SANDBOX = _load_sandbox()
 
 
+def _sandbox_app() -> dict:
+    apps = _SANDBOX.get("appIds") or []
+    if isinstance(apps, list) and apps and isinstance(apps[0], dict):
+        return apps[0]
+    return {}
+
+
+_SANDBOX_APP = _sandbox_app()
+
+
 def _sandbox_seller_id() -> str:
-    merchant = ((_SANDBOX.get("sandboxAccounts") or {}).get("merchant") or {})
+    accounts = _SANDBOX.get("sandboxAccounts") or {}
+    merchant = accounts.get("partner") or accounts.get("merchant") or {}
     return str(merchant.get("userId") or "").strip()
+
+
+def _sandbox_value(name: str) -> str:
+    return str(_SANDBOX_APP.get(name) or "").strip()
 
 
 class Config:
@@ -98,24 +113,34 @@ class Config:
     PORT = int(_env("PORT", "3006") or 3006)
 
     # ---- 卖家身份 ----
-    # 沙箱模式下从 .alipay-sandbox.json 的商家账号补齐，环境变量始终优先。
-    SELLER_ID = _env("SELLER_ID") or _sandbox_seller_id() or "2088000000000000"
+    # 沙箱模式下从 .alipay-sandbox.json 的 appIds[0] 和商家账号补齐，
+    # 环境变量始终优先。缺失时保持空值，由调用方明确失败，不使用占位身份。
+    SELLER_ID = _env("SELLER_ID") or _sandbox_seller_id()
     SELLER_NAME = _env("SELLER_NAME", "社交数据服务")
-    SELLER_APP_ID = (_env("SELLER_APP_ID")
-                     or str(_SANDBOX.get("appId") or "").strip()
-                     or "2021000000000000")
+    SELLER_APP_ID = _env("SELLER_APP_ID") or _sandbox_value("appId")
 
     # ---- 支付宝 ----
     ALIPAY_GATEWAY = _GATEWAY
     ALIPAY_PRIVATE_KEY = (_read_key(_env("ALIPAY_PRIVATE_KEY"))
-                          or str(_SANDBOX.get("appPrivatePkcsKey") or "").strip())
+                          or _sandbox_value("appPrivatePkcsKey"))
     ALIPAY_PUBLIC_KEY = (_read_key(_env("ALIPAY_PUBLIC_KEY"))
-                         or str(_SANDBOX.get("alipayPublicKey") or "").strip())
+                         or _sandbox_value("alipayPublicKey"))
 
     def is_exact_sandbox(self, service_id: str = "api_mock_service_id") -> bool:
         """严格沙箱模式：网关与 serviceId 同时是沙箱值，才允许验付字段兜底。"""
         return self.ALIPAY_GATEWAY == SANDBOX_GATEWAY and \
             service_id == "api_mock_service_id"
+
+    def missing_alipay_fields(self) -> list:
+        """真实 SDK 调用前的配置完整性检查，缺任何一项都必须明确失败。"""
+        missing = []
+        if not self.SELLER_APP_ID:
+            missing.append("SELLER_APP_ID")
+        if not self.ALIPAY_PRIVATE_KEY:
+            missing.append("ALIPAY_PRIVATE_KEY")
+        if not self.ALIPAY_PUBLIC_KEY:
+            missing.append("ALIPAY_PUBLIC_KEY")
+        return missing
 
     # ---- 上游 ----
     TIKHUB_BASE = _env("TIKHUB_BASE", "https://api.tikhub.io").rstrip("/")

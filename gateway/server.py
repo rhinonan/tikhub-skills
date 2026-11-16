@@ -11,6 +11,7 @@
 
 启动： python server.py
 """
+import hashlib
 import json
 import sys
 import traceback
@@ -315,38 +316,67 @@ def do_task(task_name: str, params: dict, proof_header: str) -> Reply:
     )
 
 
-def do_call(token: str, body: dict) -> Reply:
+def do_call(token: str, body: dict, proof_header: str = "") -> Reply:
     path = str(body.get("path", "")).strip()
     if not path.startswith("/api/"):
         return Reply(400, {"code": "BAD_PATH", "message": "path 必须以 /api/ 开头"})
 
     tier = pricing.tier_of(path)
 
-    # 无账户或余额不足 → 统一 402 去充值
-    if not token or store.get_credits(token) < tier["credits"]:
-        return do_recharge("starter", "")
+    # 已有余额：保持扣额度路径
+    if token and store.get_credits(token) >= tier["credits"]:
+        ref = f"call:{uuid.uuid4().hex}"
+        if not store.take_credits(token, tier["credits"], ref):
+            return do_recharge("starter", "")
+        try:
+            data = upstream.call(path, body.get("method", "GET"),
+                                 body.get("query") or {}, body.get("body"))
+        except upstream.UpstreamError as exc:
+            # 上游失败不该让用户承担成本
+            store.add_credits(token, tier["credits"], ref, reason=METER_REFUND_REASON)
+            store.log_call(token, body.get("platform", ""), path, tier["credits"], "upstream_error")
+            return Reply(502, {"code": "UPSTREAM_FAILED", "message": str(exc),
+                               "retryable": exc.retryable, "credits_refunded": True})
 
-    ref = f"call:{uuid.uuid4().hex}"
-    if not store.take_credits(token, tier["credits"], ref):
-        return do_recharge("starter", "")
+        store.log_call(token, body.get("platform", ""), path, tier["credits"], "ok")
+        return Reply(200, {
+            "code": 0,
+            "data": data,
+            "meta": {"tier": tier["name"], "unit_cost": tier["credits"],
+                     "credits_left": store.get_credits(token)},
+        })
 
-    try:
-        data = upstream.call(path, body.get("method", "GET"),
-                             body.get("query") or {}, body.get("body"))
-    except upstream.UpstreamError as exc:
-        # 上游失败不该让用户承担成本
-        store.add_credits(token, tier["credits"], ref, reason=METER_REFUND_REASON)
-        store.log_call(token, body.get("platform", ""), path, tier["credits"], "upstream_error")
-        return Reply(502, {"code": "UPSTREAM_FAILED", "message": str(exc),
-                           "retryable": exc.retryable, "credits_refunded": True})
+    # 无余额：按次直接 402 收款，金额取当前档位登记价。
+    # 生产环境只有已登记 serviceId 的档位可售；未登记的档位明确拒绝，
+    # 不回落 api_mock_service_id，也不拿别的价档顶替。
+    if not cfg.SANDBOX_MODE and not cfg.MOCK_UPSTREAM \
+            and not alipay.configured_service_id_for(tier["amount"]):
+        return Reply(503, {"code": "TIER_NOT_AVAILABLE",
+                           "message": f"{tier['name']} 档位暂未开通，请使用标准档接口"})
 
-    store.log_call(token, body.get("platform", ""), path, tier["credits"], "ok")
-    return Reply(200, {
-        "code": 0,
-        "data": data,
-        "meta": {"tier": tier["name"], "unit_cost": tier["credits"],
-                 "credits_left": store.get_credits(token)},
-    })
+    method = str(body.get("method") or "GET").upper()
+    query = body.get("query") or {}
+    raw_body = body.get("body")
+    # 资源标识绑定本次调用的实际参数，防止拿 A 的付款换 B 的查询结果
+    fingerprint = hashlib.sha256(json.dumps(
+        {"path": path, "method": method, "query": query, "body": raw_body},
+        ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()[:16]
+
+    def producer_factory(payload):
+        def produce():
+            return upstream.call(payload["path"], payload["method"],
+                                 payload.get("query") or {}, payload.get("body"))
+        return produce
+
+    return run_paid_resource(
+        kind="call",
+        resource_id=f"call:{path}#{fingerprint}",
+        amount=tier["amount"],
+        goods_name=tier["goods_name"],
+        payload={"path": path, "method": method, "query": query, "body": raw_body},
+        producer_factory=producer_factory,
+        proof_header=proof_header,
+    )
 
 
 # ---------------------------------------------------------------- HTTP
@@ -393,7 +423,7 @@ class Handler(BaseHTTPRequestHandler):
             if self.path.startswith("/v1/call"):
                 auth = self.headers.get("Authorization", "")
                 token = auth[7:].strip() if auth.lower().startswith("bearer ") else ""
-                self._send(do_call(token, body))
+                self._send(do_call(token, body, proof))
                 return
             self._send(Reply(404, {"code": "NOT_FOUND"}))
         except Exception as exc:

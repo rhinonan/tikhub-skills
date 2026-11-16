@@ -11,8 +11,14 @@
 """
 import base64
 import json
+import os
 import sys
 from pathlib import Path
+
+# 仅测试进程使用的假身份与档位，真实服务端不提供任何占位配置。
+os.environ.setdefault("MOCK_UPSTREAM", "1")
+os.environ.setdefault("SELLER_ID", "2088000000000000")
+os.environ.setdefault("SELLER_APP_ID", "2021000000000000")
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:

@@ -75,6 +75,10 @@ def pay_before_iso() -> str:
 
 def build_bill(out_trade_no: str, amount: str, resource_id: str,
                goods_name: str, service_id: str, pay_before: str) -> str:
+    if not cfg.SELLER_ID:
+        raise AlipayError("缺少 SELLER_ID，无法生成账单")
+    if not cfg.SELLER_APP_ID:
+        raise AlipayError("缺少 SELLER_APP_ID，无法生成账单")
     fields = {
         "amount": amount,
         "currency": "CNY",
@@ -110,7 +114,7 @@ def build_bill(out_trade_no: str, amount: str, resource_id: str,
 
 def service_id_of(env_name: str) -> str:
     import os
-    return os.environ.get(env_name, "").strip() or "api_mock_service_id"
+    return os.environ.get(env_name, "").strip()
 
 
 # 支付宝按「服务」登记单价，一个 serviceId 只能对应一个价。
@@ -124,13 +128,28 @@ SERVICE_ENV_BY_AMOUNT = {
 }
 
 
-def service_id_for(amount: str) -> str:
-    """按账单金额取对应的 serviceId，保证账单金额与登记单价一致。"""
+def configured_service_id_for(amount: str) -> str:
+    """只回填已登记的真实 serviceId；未登记时返回空串，不回落到沙箱标识。"""
     env = SERVICE_ENV_BY_AMOUNT.get(f"{float(amount):.2f}")
-    if not env:
+    return service_id_of(env) if env else ""
+
+
+def service_id_for(amount: str) -> str:
+    """按账单金额取对应的 serviceId，保证账单金额与登记单价一致。
+
+    api_mock_service_id 只允许出现在沙箱或本地 mock 联调；
+    正式环境缺少登记时明确失败，避免把沙箱服务标识带进生产账单。
+    """
+    env = SERVICE_ENV_BY_AMOUNT.get(f"{float(amount):.2f}")
+    service_id = service_id_of(env) if env else ""
+    if service_id:
+        return service_id
+    if cfg.SANDBOX_MODE or cfg.MOCK_UPSTREAM:
         print(f"[warn] 金额 {amount} 没有对应的 serviceId 登记，回落到沙箱标识")
         return "api_mock_service_id"
-    return service_id_of(env)
+    raise AlipayError(
+        f"金额 {amount} 没有对应的 serviceId 登记（{env or '未配置'}），"
+        "正式环境必须配置真实 serviceId")
 
 
 # ---------------------------------------------------------------- 凭证
@@ -159,7 +178,15 @@ def parse_proof(header_value: str) -> dict:
 
 # ---------------------------------------------------------------- 验付
 
+def require_client_config() -> None:
+    """配置缺失时明确失败，阻止带空 appId/密钥的真实 SDK 调用。"""
+    missing = cfg.missing_alipay_fields()
+    if missing:
+        raise AlipayError(f"支付宝配置缺失: {', '.join(missing)}")
+
+
 def verify_payment(payment_proof: str, trade_no: str, client_session: str = "") -> dict:
+    require_client_config()
     try:
         from alipay.aop.api.AlipayClientConfig import AlipayClientConfig
         from alipay.aop.api.DefaultAlipayClient import DefaultAlipayClient
@@ -192,6 +219,7 @@ def verify_payment(payment_proof: str, trade_no: str, client_session: str = "") 
 
 
 def confirm_fulfillment(trade_no: str) -> bool:
+    require_client_config()
     try:
         from alipay.aop.api.AlipayClientConfig import AlipayClientConfig
         from alipay.aop.api.DefaultAlipayClient import DefaultAlipayClient

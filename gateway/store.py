@@ -18,6 +18,19 @@ import uuid
 _lock = threading.RLock()
 _conn = None
 _conn_path = None
+# 同一订单的履约必须串行：数据库事务只覆盖认领和落结果，
+# 不覆盖中间的上游调用，并发重试会各跑一遍 producer。
+_order_locks = {}
+_order_locks_guard = threading.Lock()
+
+
+def _order_lock(out_trade_no: str) -> threading.Lock:
+    with _order_locks_guard:
+        lock = _order_locks.get(out_trade_no)
+        if lock is None:
+            lock = threading.Lock()
+            _order_locks[out_trade_no] = lock
+        return lock
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS orders (
@@ -130,6 +143,12 @@ def mark_paid(out_trade_no: str, trade_no: str) -> None:
 
 
 def prepare_fulfillment(out_trade_no: str, trade_no: str, producer) -> dict:
+    """同一订单串行履约，避免并发重试重复执行 producer。"""
+    with _order_lock(out_trade_no):
+        return _prepare_fulfillment(out_trade_no, trade_no, producer)
+
+
+def _prepare_fulfillment(out_trade_no: str, trade_no: str, producer) -> dict:
     """原子地把订单推进到 PENDING_CONFIRM 并只生成一次资源。
 
     已经处于 PENDING_CONFIRM / FULFILLED 且有结果的订单直接返回已存结果，
