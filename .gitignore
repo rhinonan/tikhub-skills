@@ -1,6 +1,7 @@
 # 运行时数据与密钥
 gateway/.local/
 gateway/.secrets/
+gateway/.alipay-sandbox.json
 gateway/.env
 *.db
 *.db-wal
@@ -9,6 +10,7 @@ gateway/.env
 # Python
 __pycache__/
 *.pyc
+gateway/.venv/
 
 # 构建产物（由 build.py 从 src/ 生成，不入库）
 # skills/

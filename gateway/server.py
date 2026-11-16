@@ -18,7 +18,7 @@ import uuid
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-import alipay
+import alipay_a2m as alipay
 import pricing
 import store
 import upstream
@@ -76,7 +76,9 @@ def payment_required(order: dict) -> Reply:
 
 def new_order(kind: str, resource_id: str, amount: str, goods_name: str,
               payload: dict, credits: int = 0) -> dict:
-    oid = store.create_order(kind, resource_id, goods_name, amount,
+    # 沙箱的 api_mock_service_id 只登记了 0.01 元，账单金额必须与登记价一致
+    billing_amount = cfg.SANDBOX_AMOUNT if cfg.SANDBOX_MODE else amount
+    oid = store.create_order(kind, resource_id, goods_name, billing_amount,
                              alipay.pay_before_iso(), payload, credits)
     return store.find_order(oid)
 
@@ -110,20 +112,17 @@ def run_paid_resource(kind: str, resource_id: str, amount: str, goods_name: str,
         return payment_required(
             new_order(kind, resource_id, amount, goods_name, payload, credits))
 
-    # ③ 查订单（以订单里存档的参数为准，不信客户端重传的内容）
+    # ③ 先按凭证自带的订单号定位；沙箱收银返回的 Payment-Proof 可能不带该字段，
+    #    因此最终以验付响应的 out_trade_no 为准再查一次本地订单。
     order = store.find_order(proof["out_trade_no"]) if proof["out_trade_no"] else None
-    if order is None:
-        return payment_required(
-            new_order(kind, resource_id, amount, goods_name, payload, credits))
-
-    # 凭证必须属于当前请求的资源，否则就是拿 A 的付款去换 B 的货
-    if order["resource_id"] != resource_id:
-        print(f"[warn] 凭证资源不符: 订单={order['resource_id']} 请求={resource_id}")
-        return payment_required(
-            new_order(kind, resource_id, amount, goods_name, payload, credits))
-
-    if order["status"] == "REFUNDED":
-        return Reply(409, {"code": "ORDER_REFUNDED", "message": "该订单已退款，请重新下单"})
+    if order is not None:
+        # 凭证必须属于当前请求的资源，否则就是拿 A 的付款去换 B 的货
+        if order["resource_id"] != resource_id:
+            print(f"[warn] 凭证资源不符: 订单={order['resource_id']} 请求={resource_id}")
+            return payment_required(
+                new_order(kind, resource_id, amount, goods_name, payload, credits))
+        if order["status"] == "REFUNDED":
+            return Reply(409, {"code": "ORDER_REFUNDED", "message": "该订单已退款，请重新下单"})
 
     # ④ 验付
     try:
@@ -135,22 +134,51 @@ def run_paid_resource(kind: str, resource_id: str, amount: str, goods_name: str,
 
     if resp.get("code") != "10000" or resp.get("active") is not True:
         print(f"[warn] 验付未通过: {resp.get('sub_msg') or resp.get('code')}")
+        return payment_required(
+            order or new_order(kind, resource_id, amount, goods_name, payload, credits))
+
+    # 验付响应的 out_trade_no 是权威订单号；缺失即拒绝
+    verify_out_trade_no = (resp.get("out_trade_no") or "").strip()
+    if not verify_out_trade_no:
+        print("[warn] 验付响应缺少 out_trade_no，拒绝交付")
+        return payment_required(
+            order or new_order(kind, resource_id, amount, goods_name, payload, credits))
+
+    if order is None:
+        order = store.find_order(verify_out_trade_no)
+        if order is None:
+            print(f"[warn] 本地订单不存在: {verify_out_trade_no}")
+            return payment_required(
+                new_order(kind, resource_id, amount, goods_name, payload, credits))
+        if order["resource_id"] != resource_id:
+            print(f"[warn] 凭证资源不符: 订单={order['resource_id']} 请求={resource_id}")
+            return payment_required(
+                new_order(kind, resource_id, amount, goods_name, payload, credits))
+        if order["status"] == "REFUNDED":
+            return Reply(409, {"code": "ORDER_REFUNDED", "message": "该订单已退款，请重新下单"})
+    elif verify_out_trade_no != order["out_trade_no"]:
+        print("[warn] 验付 out_trade_no 与本地订单不一致，拒绝交付")
         return payment_required(order)
 
-    returned_trade_no = (resp.get("trade_no") or proof["trade_no"] or "").strip()
-    if returned_trade_no != proof["trade_no"]:
+    service_id = alipay.service_id_for(order["amount"])
+    exact_sandbox = cfg.is_exact_sandbox(service_id)
+
+    returned_trade_no = (resp.get("trade_no") or "").strip()
+    if exact_sandbox:
+        returned_trade_no = returned_trade_no or proof["trade_no"]
+    if not returned_trade_no or returned_trade_no != proof["trade_no"]:
         print("[warn] trade_no 不一致，拒绝交付")
         return payment_required(order)
 
-    # 金额：生产环境必须校验，缺失即拒绝；联调模式才允许用本地订单金额兜底
+    # 金额：生产环境必须校验，缺失即拒绝；仅严格沙箱允许用订单金额兜底
     verified_amount = resp.get("amount")
     if verified_amount in (None, ""):
-        if not cfg.MOCK_ALIPAY:
+        if not exact_sandbox:
             print("[error] 验付响应缺少金额，拒绝交付")
             return Reply(402, {"code": "Payment-Needed", "message": "验付响应异常，请重新支付"},
                          {"Payment-Needed": alipay.build_bill(
                              order["out_trade_no"], order["amount"], order["resource_id"],
-                             order["goods_name"], alipay.service_id_for(order["amount"]),
+                             order["goods_name"], service_id,
                              order["pay_before"])})
         verified_amount = order["amount"]
 
@@ -158,11 +186,23 @@ def run_paid_resource(kind: str, resource_id: str, amount: str, goods_name: str,
         print(f"[warn] 金额不一致: 验付={verified_amount} 订单={order['amount']}")
         return payment_required(order)
 
-    verified_resource = resp.get("resource_id") or order["resource_id"]
-    if verified_resource != order["resource_id"] or order["resource_id"] != resource_id:
+    # 资源归属：生产环境缺字段即拒绝，只有严格沙箱允许回退本地订单
+    verified_resource = resp.get("resource_id") or (
+        order["resource_id"] if exact_sandbox else "")
+    if not verified_resource or verified_resource != order["resource_id"] \
+            or order["resource_id"] != resource_id:
         print(f"[warn] resource_id 不一致: 验付={verified_resource} "
               f"订单={order['resource_id']} 请求={resource_id}")
         return payment_required(order)
+
+    # 订单状态必须处于可履约区间，防止退款/异常状态被重放
+    if order["currency"] != "CNY":
+        return payment_required(order)
+    if order["status"] not in ("PENDING_PAYMENT", "PAID", "FULFILLED"):
+        print(f"[warn] 订单状态不可用: {order['status']}")
+        return payment_required(order)
+    if order["fulfill_status"] not in ("UNFULFILLED", "PENDING_CONFIRM", "FULFILLED"):
+        return Reply(500, {"code": "FULFILL_STATE_ERROR", "message": "订单履约状态异常"})
 
     # 只有还没履约过的订单才检查支付有效期
     if order["fulfill_status"] == "UNFULFILLED":
@@ -208,6 +248,8 @@ def run_paid_resource(kind: str, resource_id: str, amount: str, goods_name: str,
 
     return Reply(200, {
         "code": 0,
+        "resource_id": order["resource_id"],
+        "content": service_result,
         "data": service_result,
         "out_trade_no": order["out_trade_no"],
         "trade_no": returned_trade_no,
@@ -333,7 +375,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path.startswith("/healthz"):
-            self._send(Reply(200, {"ok": True, "mock_alipay": cfg.MOCK_ALIPAY,
+            self._send(Reply(200, {"ok": True, "sandbox_mode": cfg.SANDBOX_MODE,
                                    "mock_upstream": cfg.MOCK_UPSTREAM}))
             return
         self._send(Reply(404, {"code": "NOT_FOUND", "message": "请用 POST"}))

@@ -12,11 +12,14 @@
   TIKHUB_API_KEY       TikHub 主 Key（也可从 ~/.workbuddy/tikhub_token 读）
 
 开发/联调：
-  MOCK_ALIPAY=1        跳过真实验付，用本地凭证直接放行
   MOCK_UPSTREAM=1      跳过真实 TikHub 调用，返回样例数据
+  本地假验付见 tests/mock_server.py（仅测试目录，不进生产镜像）
 """
+import json
 import os
 import pathlib
+
+SANDBOX_GATEWAY = "https://openapi-sandbox.dl.alipaydev.com/gateway.do"
 
 
 def _env(name: str, default: str = "") -> str:
@@ -50,27 +53,69 @@ def _tikhub_key() -> str:
     return ""
 
 
+_GATEWAY = _env("ALIPAY_GATEWAY", "https://openapi.alipay.com/gateway.do")
+# 只有网关地址严格等于沙箱地址时才加载本地沙箱配置，避免误把测试密钥用于生产。
+_SANDBOX_MODE = _GATEWAY == SANDBOX_GATEWAY
+
+
+def _load_sandbox() -> dict:
+    if not _SANDBOX_MODE:
+        return {}
+    path = pathlib.Path(_env(
+        "SANDBOX_CONFIG_PATH",
+        str(pathlib.Path(__file__).parent / ".alipay-sandbox.json"))).expanduser()
+    if not path.is_file():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+_SANDBOX = _load_sandbox()
+
+
+def _sandbox_seller_id() -> str:
+    merchant = ((_SANDBOX.get("sandboxAccounts") or {}).get("merchant") or {})
+    return str(merchant.get("userId") or "").strip()
+
+
 class Config:
     # ---- 运行模式 ----
-    MOCK_ALIPAY = _env_bool("MOCK_ALIPAY", True)
-    MOCK_UPSTREAM = _env_bool("MOCK_UPSTREAM", True)
+    # 验付没有 mock 开关：生产与服务端始终走真实 SDK 校验。
+    # 本地测试请用 tests/mock_server.py（仅测试目录，不进生产镜像）。
+    MOCK_UPSTREAM = _env_bool("MOCK_UPSTREAM", False)
+    SANDBOX_MODE = _SANDBOX_MODE
+    # 沙箱 serviceId 固定为 api_mock_service_id，其登记价是 0.01 元。
+    # 生产金额仍由 pricing.py 决定。
+    SANDBOX_AMOUNT = "0.01"
 
     # ---- 基础 ----
-    BASE_URL = _env("GATEWAY_BASE_URL", "http://127.0.0.1:8088").rstrip("/")
+    BASE_URL = _env("GATEWAY_BASE_URL", "http://127.0.0.1:3006").rstrip("/")
     DB_PATH = _env("DB_PATH",
                    str(pathlib.Path(__file__).parent / ".local" / "gateway.db"))
     HOST = _env("HOST", "127.0.0.1")
-    PORT = int(_env("PORT", "8088") or 8088)
+    PORT = int(_env("PORT", "3006") or 3006)
 
     # ---- 卖家身份 ----
-    SELLER_ID = _env("SELLER_ID", "2088000000000000")
+    # 沙箱模式下从 .alipay-sandbox.json 的商家账号补齐，环境变量始终优先。
+    SELLER_ID = _env("SELLER_ID") or _sandbox_seller_id() or "2088000000000000"
     SELLER_NAME = _env("SELLER_NAME", "社交数据服务")
-    SELLER_APP_ID = _env("SELLER_APP_ID", "2021000000000000")
+    SELLER_APP_ID = (_env("SELLER_APP_ID")
+                     or str(_SANDBOX.get("appId") or "").strip()
+                     or "2021000000000000")
 
     # ---- 支付宝 ----
-    ALIPAY_GATEWAY = _env("ALIPAY_GATEWAY", "https://openapi.alipay.com/gateway.do")
-    ALIPAY_PRIVATE_KEY = _read_key(_env("ALIPAY_PRIVATE_KEY"))
-    ALIPAY_PUBLIC_KEY = _read_key(_env("ALIPAY_PUBLIC_KEY"))
+    ALIPAY_GATEWAY = _GATEWAY
+    ALIPAY_PRIVATE_KEY = (_read_key(_env("ALIPAY_PRIVATE_KEY"))
+                          or str(_SANDBOX.get("appPrivatePkcsKey") or "").strip())
+    ALIPAY_PUBLIC_KEY = (_read_key(_env("ALIPAY_PUBLIC_KEY"))
+                         or str(_SANDBOX.get("alipayPublicKey") or "").strip())
+
+    def is_exact_sandbox(self, service_id: str = "api_mock_service_id") -> bool:
+        """严格沙箱模式：网关与 serviceId 同时是沙箱值，才允许验付字段兜底。"""
+        return self.ALIPAY_GATEWAY == SANDBOX_GATEWAY and \
+            service_id == "api_mock_service_id"
 
     # ---- 上游 ----
     TIKHUB_BASE = _env("TIKHUB_BASE", "https://api.tikhub.io").rstrip("/")
@@ -82,14 +127,16 @@ class Config:
 
     def warn(self) -> list:
         out = []
-        if self.MOCK_ALIPAY:
-            out.append("MOCK_ALIPAY=1：验付被跳过，只用于本地联调，不能上线")
+        if self.SANDBOX_MODE:
+            out.append("SANDBOX_MODE：使用本地 .alipay-sandbox.json，禁止上线")
         if self.MOCK_UPSTREAM:
             out.append("MOCK_UPSTREAM=1：不调用 TikHub，返回样例数据")
         if not self.TIKHUB_API_KEY and not self.MOCK_UPSTREAM:
             out.append("缺少 TIKHUB_API_KEY，真实转发会全部失败")
-        if not self.ALIPAY_PRIVATE_KEY and not self.MOCK_ALIPAY:
+        if not self.ALIPAY_PRIVATE_KEY:
             out.append("缺少 ALIPAY_PRIVATE_KEY，账单无法签名")
+        if not self.ALIPAY_PUBLIC_KEY:
+            out.append("缺少 ALIPAY_PUBLIC_KEY，无法验证支付宝响应")
         return out
 
 

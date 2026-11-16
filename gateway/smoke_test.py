@@ -13,7 +13,7 @@ import urllib.request
 
 import mock_pay
 
-BASE = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:8088"
+BASE = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:3006"
 passed, failed = [], []
 
 

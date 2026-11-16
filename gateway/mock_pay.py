@@ -7,13 +7,13 @@
 
 从 402 账单里读出订单号和金额，生成一个 Payment-Proof 头的内容打印出来，
 把它塞回原请求的 Payment-Proof 头里重试即可。
-仅用于 MOCK_ALIPAY=1 的本地联调。
+仅配合 tests/mock_server.py 的本地测试服务使用。
 """
 import json
 import sys
 import uuid
 
-import alipay
+import alipay_a2m as alipay
 
 
 def make_proof(payment_needed: str, trade_no: str = None) -> str:
@@ -25,7 +25,11 @@ def make_proof(payment_needed: str, trade_no: str = None) -> str:
     if not out_trade_no:
         raise SystemExit("账单里没有 out_trade_no")
 
-    protocol["payment_proof"] = "MOCKPROOF" + uuid.uuid4().hex
+    protocol["payment_proof"] = alipay.b64url_encode(json.dumps({
+        "out_trade_no": out_trade_no,
+        "amount": protocol.get("amount"),
+        "resource_id": protocol.get("resource_id"),
+    }, ensure_ascii=False))
     protocol["trade_no"] = trade_no or ("2026MOCK" + uuid.uuid4().hex[:16].upper())
     method["client_session"] = "mock-session"
 

@@ -88,7 +88,7 @@ tikhub-skills/
 │       └── pro.json                # gateway_url，凭证=账户 token
 ├── gateway/                        # 付费后端，独立部署，不进 skill 包
 │   ├── server.py                   # 路由 + 402 闸门 + 验付 + 履约
-│   ├── alipay.py                   # 账单签发 / 凭证解析 / verify / fulfillment
+│   ├── alipay_a2m.py               # 账单签发 / 凭证解析 / verify / fulfillment（避免遮蔽 alipay SDK）
 │   ├── store.py                    # 订单、账户、流水（SQLite，幂等）
 │   ├── pricing.py                  # 端点 → 档位 → 定价，任务定义
 │   ├── upstream.py                 # 注入作者 Key 转发 TikHub
@@ -260,7 +260,7 @@ A2M 的模型是每次资源请求都对应一张账单。但真实使用是**�
 
 支付宝按"服务"定价，**一个 `serviceId` 只对应一个登记价**，所以网关按**金额**反查 serviceId，而不是按档位名。当前有 5 个价，就要注册 5 个服务：¥0.10 / ¥0.50 / ¥2.00（三档端点）+ ¥1.99（任务包）+ ¥9.90（额度包）。
 
-改价时 `pricing.py` 和 `alipay.SERVICE_ENV_BY_AMOUNT` 必须同步改，否则账单金额和登记价对不上，验付会失败。
+改价时 `pricing.py` 和 `alipay_a2m.SERVICE_ENV_BY_AMOUNT` 必须同步改，否则账单金额和登记价对不上，验付会失败。
 
 `inventory.json` 每个条目增加 `unit_cost` 字段维护这个映射，构建时校验：任何端点都必须能归到某一档，归不进去的构建失败。
 

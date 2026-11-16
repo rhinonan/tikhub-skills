@@ -50,11 +50,7 @@ def sign_bill(fields: dict) -> str:
     content = _sign_content(fields)
 
     if not cfg.ALIPAY_PRIVATE_KEY:
-        # 联调占位：真实支付必须用 RSA2 签名，Token 会提醒你替换
-        import hashlib
-        import hmac
-        digest = hmac.new(b"mock-secret", content.encode(), hashlib.sha256).digest()
-        return "MOCK_" + base64.b64encode(digest).decode()
+        raise AlipayError("缺少 ALIPAY_PRIVATE_KEY，无法生成账单签名")
 
     try:
         from Crypto.Hash import SHA256
@@ -164,12 +160,6 @@ def parse_proof(header_value: str) -> dict:
 # ---------------------------------------------------------------- 验付
 
 def verify_payment(payment_proof: str, trade_no: str, client_session: str = "") -> dict:
-    if cfg.MOCK_ALIPAY:
-        # 联调模式：不请求支付宝，直接认账。金额由网关用本地订单兜底。
-        return {"code": "10000", "active": True, "trade_no": trade_no,
-                "out_trade_no": "", "amount": None, "resource_id": None,
-                "mock": True}
-
     try:
         from alipay.aop.api.AlipayClientConfig import AlipayClientConfig
         from alipay.aop.api.DefaultAlipayClient import DefaultAlipayClient
@@ -202,9 +192,6 @@ def verify_payment(payment_proof: str, trade_no: str, client_session: str = "") 
 
 
 def confirm_fulfillment(trade_no: str) -> bool:
-    if cfg.MOCK_ALIPAY:
-        return True
-
     try:
         from alipay.aop.api.AlipayClientConfig import AlipayClientConfig
         from alipay.aop.api.DefaultAlipayClient import DefaultAlipayClient

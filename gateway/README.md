@@ -41,24 +41,24 @@ TikHub 端点成本差 10 倍以上，不能一个价。网关按路径归类：
 
 一个档位对应一个支付宝 `serviceId`。规则和任务定义都在 `pricing.py`，改价改那里。
 
-**注意：支付宝是一个 serviceId 一个登记价**，所以「任务包 ¥1.99」和「额度包 ¥9.90」不能复用 ¥0.10 的那个服务。网关按**金额**反查 serviceId（`alipay.SERVICE_ENV_BY_AMOUNT`），注册服务时要覆盖全部 5 个价：0.10 / 0.50 / 2.00 / 1.99 / 9.90。改价时这两处必须同步改。
+**注意：支付宝是一个 serviceId 一个登记价**，所以「任务包 ¥1.99」和「额度包 ¥9.90」不能复用 ¥0.10 的那个服务。网关按**金额**反查 serviceId（`alipay_a2m.SERVICE_ENV_BY_AMOUNT`），注册服务时要覆盖全部 5 个价：0.10 / 0.50 / 2.00 / 1.99 / 9.90。改价时这两处必须同步改。
 
 ## 本地联调
 
 ```bash
 cd gateway
-MOCK_ALIPAY=1 MOCK_UPSTREAM=1 python server.py
+MOCK_UPSTREAM=1 python tests/mock_server.py
 # 另开一个终端
-MOCK_ALIPAY=1 MOCK_UPSTREAM=1 python smoke_test.py
+python smoke_test.py
 ```
 
-全绿输出应该是 `31 通过 / 0 失败`。覆盖了：402 出单、付款后交付、同凭证幂等重试、充值建户、三档扣费、余额耗尽回到 402、凭证不能跨资源重放。
+全绿输出应该是 `35 通过 / 0 失败`。覆盖了：402 出单、付款后交付、同凭证幂等重试、充值建户、三档扣费、余额耗尽回到 402、凭证不能跨资源重放。假验付只存在于 `tests/mock_server.py`，生产 `server.py` 没有 mock 分支。
 
 想手动走一遍：
 
 ```bash
 # 1. 拿账单
-curl -i -X POST localhost:8088/v1/task \
+curl -i -X POST localhost:3006/v1/task \
   -H 'Content-Type: application/json' \
   -d '{"task":"douyin_account_analysis","params":{"unique_id":"test"}}'
 # 从响应头里取 Payment-Needed 的值
@@ -67,7 +67,7 @@ curl -i -X POST localhost:8088/v1/task \
 python mock_pay.py '<Payment-Needed 的值>'
 
 # 3. 带凭证重试
-curl -X POST localhost:8088/v1/task \
+curl -X POST localhost:3006/v1/task \
   -H 'Content-Type: application/json' \
   -H 'Payment-Proof: <上一步输出的值>' \
   -d '{"task":"douyin_account_analysis","params":{"unique_id":"test"}}'
@@ -87,7 +87,7 @@ curl -X POST localhost:8088/v1/task \
 
 ```bash
 docker run -d --name tikhub-skills-gateway \
-  -p 8088:8088 \
+  -p 3006:3006 \
   -v gateway-data:/data \
   --env-file gateway/.env \
   ghcr.io/<owner>/<repo>-gateway:latest
@@ -106,7 +106,6 @@ DB_PATH=/data/gateway.db
 
 | 检查项 | 从 | 到 |
 |---|---|---|
-| `MOCK_ALIPAY` | 1 | 0 |
 | `MOCK_UPSTREAM` | 1 | 0 |
 | `ALIPAY_GATEWAY` | 沙箱网关 | `https://openapi.alipay.com/gateway.do` |
 | `SERVICE_ID_*` | `api_mock_service_id` | 三个真实 serviceId |
@@ -133,5 +132,5 @@ DB_PATH=/data/gateway.db
 - SQLite 单机，够用到日均几千单；再往上换 Postgres（`store.py` 是唯一改动点）
 - 没有退款接口，`mark_refunded` 只改状态，实际退款要走支付宝商家后台
 - 任务定义是声明式的，步骤间靠字段路径引用；上游返回结构一变，引用会失配，需要在 `pricing.py` 里维护
-- `MOCK_ALIPAY` 在生产误开等于免费，部署脚本里应显式断言
+- 验付没有 mock 开关；本地假验付只在 `tests/mock_server.py`，生产镜像不含测试目录
 - **订单会留存返回结果**（`result_json`）。这是幂等的代价：不存结果，重试就会重复扣上游额度。当前没有清理机制，建议加一个按 TTL 置空的任务（履约 24 小时后清 `result_json`，保留订单行用于对账）
