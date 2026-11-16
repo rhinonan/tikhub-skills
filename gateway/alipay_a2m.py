@@ -214,7 +214,10 @@ def verify_payment(payment_proof: str, trade_no: str, client_session: str = "") 
     request = AlipayAipayAgentPaymentVerifyRequest()
     request.biz_model = model
 
-    raw = json.loads(client.execute(request))
+    try:
+        raw = json.loads(client.execute(request))
+    except Exception as exc:
+        raise AlipayError(f"验付调用失败: {exc}") from exc
     return raw.get("alipay_aipay_agent_payment_verify_response", raw)
 
 
@@ -244,7 +247,10 @@ def confirm_fulfillment(trade_no: str) -> bool:
     request = AlipayAipayAgentFulfillmentConfirmRequest()
     request.biz_model = model
 
-    raw = json.loads(client.execute(request))
+    try:
+        raw = json.loads(client.execute(request))
+    except Exception as exc:
+        raise AlipayError(f"履约确认调用失败: {exc}") from exc
     resp = raw.get("alipay_aipay_agent_fulfillment_confirm_response", raw)
     return resp.get("code") == "10000"
 

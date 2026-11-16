@@ -43,6 +43,29 @@ def _read_key(value: str) -> str:
     return value
 
 
+def _normalize_private_key(raw: str) -> str:
+    """统一成 alipay-sdk-python 需要的 PKCS#1 裸 Base64。
+
+    生产密钥常由密钥工具导出为 PKCS#8；SDK 的 rsa.load_pkcs1 只接受
+    PKCS#1。这里在加载边界做一次格式转换，密钥内容本身不变。
+    """
+    if not raw:
+        return ""
+    text = raw.strip()
+    if "-----BEGIN" in text:
+        import re
+        text = re.sub(r"-----[^-]+-----", "", text)
+    text = "".join(text.split())
+    try:
+        import base64
+        from Crypto.PublicKey import RSA
+        key = RSA.import_key(base64.b64decode(text))
+        return base64.b64encode(key.export_key(format="DER", pkcs=1)).decode()
+    except Exception:
+        # 无法识别时保留原值，由真实调用处给出明确错误
+        return raw.strip()
+
+
 def _tikhub_key() -> str:
     key = _read_key(_env("TIKHUB_API_KEY"))
     if key:
@@ -121,8 +144,9 @@ class Config:
 
     # ---- 支付宝 ----
     ALIPAY_GATEWAY = _GATEWAY
-    ALIPAY_PRIVATE_KEY = (_read_key(_env("ALIPAY_PRIVATE_KEY"))
-                          or _sandbox_value("appPrivatePkcsKey"))
+    ALIPAY_PRIVATE_KEY = _normalize_private_key(
+        _read_key(_env("ALIPAY_PRIVATE_KEY"))
+        or _sandbox_value("appPrivatePkcsKey"))
     ALIPAY_PUBLIC_KEY = (_read_key(_env("ALIPAY_PUBLIC_KEY"))
                          or _sandbox_value("alipayPublicKey"))
 
