@@ -1,0 +1,7 @@
+* text=auto
+
+# 这两个文件被 Docker 直接消费，CRLF 会出问题
+Dockerfile text eol=lf
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf

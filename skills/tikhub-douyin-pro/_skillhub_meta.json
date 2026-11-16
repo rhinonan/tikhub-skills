@@ -1,0 +1,13 @@
+{
+  "name": "TikHub 抖音数据接口（付费版）",
+  "version": "1.0.0",
+  "pay_mode": 1,
+  "description_zh": "抖音数据接口索引与调用工具（付费版），含 332 个接口与 CLI。",
+  "description_en": "抖音 data API index and client (付费版) with 332 endpoints and a CLI.",
+  "examples_zh": [
+    "帮我用 tikhub 拉取这个抖音号的最近 30 条作品数据",
+    "看看今天抖音热榜前 20 条，按热度排序",
+    "抖音有没有按关键词搜索视频的接口？参数怎么传？"
+  ],
+  "iconSource": "letter:auto"
+}

@@ -1,0 +1,21 @@
+# 运行时数据与密钥
+gateway/.local/
+gateway/.secrets/
+gateway/.env
+*.db
+*.db-wal
+*.db-shm
+
+# Python
+__pycache__/
+*.pyc
+
+# 构建产物（由 build.py 从 src/ 生成，不入库）
+# skills/
+
+# 本地工具状态（WorkBuddy / agent 记忆）
+.workbuddy/
+
+# 系统
+.DS_Store
+Thumbs.db
