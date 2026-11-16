@@ -12,7 +12,7 @@ agent_created: true
 
 接口来自 TikHub.io，只保留**{{platform_zh}}相关**（{{count}} 个）。清单已固化在 `references/`，不用每次翻文档。
 
-> 本版本是**付费版**：**不需要注册 TikHub，也不需要充 $5**。按次扣额度，几毛钱一次，用完再充。
+> 本版本是**付费版**：**不需要注册 TikHub，也不需要充 $5**。按次付费，当前开放标准档 **¥0.10/次**；调用时脚本会自动处理 402 付款，付款完成后自动重试并返回数据。
 
 ## 何时使用
 
@@ -21,17 +21,15 @@ agent_created: true
 
 **不适用**：其他平台（本 skill 只收{{platform_zh}}）；发内容、点赞、登录等写操作（TikHub 不提供）。
 
-## 一次性准备：额度
+## 一次性准备：支付依赖
 
 ```bash
-python scripts/tikhub.py recharge            # 支付宝扫码充值，成功后自动保存账户 token
-python scripts/tikhub.py token               # 查看是否已配置
 python scripts/tikhub.py ping                # 验证网关连通
 ```
 
-- 充值走支付宝扫码，**每次调用单独计费**，额度用完再充，没有订阅、没有最低充值门槛。
-- 账户 token 存在 `~/.workbuddy/tikhub_gateway_token`，换机器要重新充值。
-- 买家侧需要支付依赖（`alipay-bot`，由 `npx -y @alipay/agent-payment@latest install` 安装，需要 Node.js ≥ 18）。缺了 `recharge` 会明确报错，不会静默失败。
+- 不需要注册 TikHub，也不需要预充值；每次调用单独付款，当前只开放标准档 **¥0.10/次**。
+- 买家侧需要支付依赖（`alipay-bot`，由 `npx -y @alipay/agent-payment@latest install` 安装，需要 Node.js ≥ 18）。缺了支付依赖会明确报错，不会静默失败。
+- 付款由脚本自动编排：首次调用返回 402，脚本唤起支付宝付款，拿到 `Payment-Proof` 后自动重试同一请求。
 
 ## 三步工作流
 
@@ -42,32 +40,33 @@ python scripts/tikhub.py search 评论 分页
 # ② 看参数：完整 path 或唯一关键词（本地查询，不花钱）
 python scripts/tikhub.py show {{api_prefix}}/web/fetch_video_comments
 
-# ③ 调接口（GET 用 -q，POST 用 -b）—— 这一步按次扣额度
+# ③ 调接口（GET 用 -q，POST 用 -b）—— 这一步按次付费
 python scripts/tikhub.py call {{api_prefix}}/web/fetch_video_comments \
   -q aweme_id=7372484719365098803 -q cursor=0 -q count=20 --out out/comments.json
 ```
 
-每次成功调用会打印本次消耗与剩余额度：
+首次调用会提示付款，支付宝付款完成后脚本自动重试并返回数据：
 
 ```
-[quota] standard 档，本次扣 1，剩余 199
+需要按次付款：社媒数据查询（标准）  ¥0.10
+（付款完成后自动重试，无需再次执行）
 ```
 
-- `search` / `show` / `list` 都是本地索引，**不消耗额度**，可以放心多查。
+- `search` / `show` / `list` 都是本地索引，**不产生费用**，可以放心多查。
 - 大响应必须加 `--out 路径`，只把必要字段读进上下文。
 - 分类浏览：`python scripts/tikhub.py list --folder {{folder_example}}`。
 
 ## 计费规则
 
-| 端点类型 | 每次消耗 | 说明 |
+| 档位 | 每次价格 | 当前状态 |
 |---|---|---|
-| 普通查询（详情/用户/搜索） | 1 | 绝大多数接口 |
-| 高价值端点（算数指数/星图/榜单） | 5 | 计算与数据成本更高 |
-| 批量端点（如 `fetch_multi_video`） | 20 | 一次调用取多条 |
+| 标准档（详情/用户/搜索等普通查询） | ¥0.10 | 已开放 |
+| 高价值端点（算数指数/星图/榜单） | — | 暂未开放，调用返回 503 |
+| 批量端点 / 任务包 / 额度包 | — | 暂未开放，调用返回 503 |
 
-- 额度包与单价以 `recharge` 返回为准。
-- **上游失败不扣额度**：网关返回 502 时会自动退回本次消耗，可直接重试。
-- 同一个请求重复重试不会重复扣费。
+- 每次调用单独付款，无订阅、无最低充值门槛。
+- **上游失败不产生费用**：网关返回 502 时未完成履约，可直接重试。
+- 付款后带 `Payment-Proof` 重试同一请求不会重复扣费。
 
 {{platform_body}}
 
@@ -83,17 +82,17 @@ python scripts/tikhub.py call {{api_prefix}}/web/fetch_video_comments \
 
 | 状态 | 含义 | 处理 |
 |---|---|---|
-| 401 | 账户 token 无效 | 运行 `python scripts/tikhub.py recharge` |
-| 402 | 额度不足 | 运行 `python scripts/tikhub.py recharge`，不要盲目重试 |
-| 403 | 账户停用/接口未开放 | 联系提供方 |
+| 402 | 需要付款 | 脚本会自动唤起支付宝付款并重试；中断时可用 `--proof` 手动重试 |
+| 403 | 接口未开放 | 联系提供方 |
 | 404 | 路径错 | 用 `show` 校正 path |
 | 422 | 参数缺失/类型错 | CLI 会直接列出缺哪个参数，补上再调 |
 | 429 | 限流 | 并发降到 ≤2，退避重试一次 |
-| 502 | 上游失败 | 本次未扣额度，直接重试；持续失败换同类通道 |
+| 502 | 上游失败 | 本次未计费，直接重试；持续失败换同类通道 |
+| 503 | 该档位暂未开放 | 改用标准档接口（¥0.10/次） |
 
 ## 输出与合规
 
 - 先抓 1~2 条确认字段结构，再批量；批量串行或并发 ≤3，中间结果落盘。
 - 只采集公开数据用于分析/研究，不用于批量私信、骚扰、隐私挖掘。
-- 按次扣额度，批量前先算清楚要调用多少次；`search`/`show` 不花钱，可以先想明白再调。
+- 按次付费，批量前先估算调用次数；`search`/`show` 不产生费用，可以先想明白再调。
 - 结果默认写当前工作区（如 `报告/`、`data/`），文件名带日期+关键词。

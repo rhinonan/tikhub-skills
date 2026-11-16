@@ -3,7 +3,7 @@
   "suffix": "-pro",
   "label_zh": "付费版",
   "base_url": "https://api.tikhub.io",
-  "gateway_url": "",
+  "gateway_url": "https://tikhub.tdance.cc",
   "pay_mode": 1,
-  "_note": "付费版：走作者网关，按次扣额度。gateway_url 上线前必须填，或用环境变量 GATEWAY_URL 覆盖。pay_mode 取值待与 SkillHub 确认。"
+  "_note": "付费版：走作者网关，按次 402 付费。gateway_url 上线前必须填，或用环境变量 GATEWAY_URL 覆盖。pay_mode 取值待与 SkillHub 确认。"
 }

@@ -10,7 +10,7 @@
      "gateway_url": ""}
 
 免费版（edition=free）：用户自己的 TikHub Token，直连 api.tikhub.io
-付费版（edition=pro） ：网关账户 Token，经作者网关转发，按次扣额度
+付费版（edition=pro） ：经作者网关转发，按次 402 付费
 
 用法:
   python tikhub.py search "关键词"             # 搜接口
@@ -167,7 +167,7 @@ def cmd_show(args):
     print(f"# {r['name_zh'] or r['name']}")
     if IS_PRO:
         print(f"接口 {r['method']} {r['path']}")
-        print(f"经由网关 POST {GATEWAY}/v1/call（按次扣额度）")
+        print(f"经由网关 POST {GATEWAY}/v1/call（按次付费）")
     else:
         print(f"{r['method']} {BASE}{r['path']}")
     print(f"文件夹: {r['folder']}")
@@ -227,7 +227,7 @@ HINTS_FREE = {
 
 HINTS_PRO = {
     401: "账户 token 无效：运行 `python tikhub.py recharge` 充值获取",
-    402: "额度不足：运行 `python tikhub.py recharge` 充值后再调",
+    402: "需要付款：完成支付宝付款后重试；已付款可用 --proof 手动重试",
     403: "无权限：账户被停用或接口未开放",
     404: "接口路径不存在：检查 path（用 show 确认）",
     429: "限流：降低并发或稍后重试",
@@ -251,7 +251,7 @@ def _direct_request(path, query=None, body=None, timeout=TIMEOUT):
     return _raw_request(url, headers, body, timeout)
 
 
-def _gateway_request(path, query=None, body=None, timeout=TIMEOUT):
+def _gateway_request(path, query=None, body=None, timeout=TIMEOUT, proof=""):
     """付费版：经网关。"""
     if not GATEWAY:
         die("付费版未配置网关地址（skill_meta.json 的 gateway_url）")
@@ -260,14 +260,16 @@ def _gateway_request(path, query=None, body=None, timeout=TIMEOUT):
                "User-Agent": f"tikhub-{PLATFORM}-skill/1.0"}
     if token:
         headers["Authorization"] = f"Bearer {token}"
+    if proof:
+        headers["Payment-Proof"] = proof
     method = "POST" if body is not None else "GET"
     payload = {"platform": PLATFORM, "path": path, "method": method,
                "query": query or {}, "body": body}
     return _raw_request(GATEWAY + "/v1/call", headers, payload, timeout)
 
 
-def _request(path, query=None, body=None, timeout=TIMEOUT):
-    return _gateway_request(path, query, body, timeout) if IS_PRO \
+def _request(path, query=None, body=None, timeout=TIMEOUT, proof=""):
+    return _gateway_request(path, query, body, timeout, proof) if IS_PRO \
         else _direct_request(path, query, body, timeout)
 
 
@@ -299,7 +301,35 @@ def cmd_call(args):
     if args.post:
         body = body or {}
 
-    status, headers, text = _request(path, query, body, timeout=args.timeout)
+    proof = getattr(args, "proof", "") or ""
+    status, headers, text = _request(path, query, body,
+                                     timeout=args.timeout, proof=proof)
+
+    # 付费版按次 402：唤起支付宝买家侧付款，拿到 Payment-Proof 后重试同一请求
+    if IS_PRO and status == 402 and not proof:
+        needed = next((v for k, v in headers.items()
+                       if k.lower() == "payment-needed"), None)
+        if needed:
+            try:
+                bill = json.loads(_b64url_decode(needed))
+            except Exception:
+                die("网关返回的 Payment-Needed 账单解析失败")
+            amount = (bill.get("protocol") or {}).get("amount")
+            goods = (bill.get("method") or {}).get("goods_name") or "按次调用"
+            if amount:
+                print(f"需要按次付款：{goods}  ¥{amount}")
+                bill_path = os.path.join(SKILL_DIR, ".payment-needed.txt")
+                open(bill_path, "w", encoding="utf-8").write(needed)
+                result = _alipay_bot_pay(bill_path, GATEWAY + "/v1/call",
+                                         f"按次调用 {goods}")
+                out = (result.stdout or "") + (result.stderr or "")
+                print(out.strip()[:1500])
+                proof = _extract_proof(out)
+                if not proof:
+                    die("没能从支付结果里取到 Payment-Proof，"
+                        "可手动用 --proof 传入后重试")
+                status, headers, text = _request(path, query, body,
+                                                 timeout=args.timeout, proof=proof)
 
     try:
         payload = json.loads(text)
@@ -309,7 +339,7 @@ def cmd_call(args):
     if status != 200:
         print(f"HTTP {status}: {HINTS.get(status, '')}")
         if IS_PRO and status == 402:
-            print("  下一步: python tikhub.py recharge")
+            print("  可完成支付宝付款后用 --proof 手动重试")
         if status == 422:
             try:
                 det = json.loads(text).get("detail")
@@ -404,7 +434,7 @@ def _alipay_bot_pay(bill_path, resource_url, intent):
     except FileNotFoundError:
         die("没找到 alipay-bot。付费版需要安装买家侧支付依赖：\n"
             "  npx -y @alipay/agent-payment@latest install\n"
-            "装好后重新运行 recharge。")
+            "装好后重新运行本次命令。")
     except subprocess.TimeoutExpired:
         die("支付超时，未完成付款。")
 
@@ -516,6 +546,7 @@ def main():
     s.add_argument("--preview", type=int, default=1500)
     s.add_argument("--raw", action="store_true", help="输出完整响应")
     s.add_argument("--timeout", type=int, default=TIMEOUT)
+    s.add_argument("--proof", help="手动传入 Payment-Proof，跳过付款步骤（联调用）")
     s.set_defaults(func=cmd_call)
 
     s = sub.add_parser("token", help="查看/保存 token")

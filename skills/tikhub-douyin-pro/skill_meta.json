@@ -3,6 +3,6 @@
   "platform_zh": "抖音",
   "edition": "pro",
   "base_url": "https://api.tikhub.io",
-  "gateway_url": "http://127.0.0.1:8001",
+  "gateway_url": "https://tikhub.tdance.cc",
   "api_prefix": "/api/v1/douyin"
 }

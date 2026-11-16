@@ -21,3 +21,6 @@ gateway/.venv/
 # 系统
 .DS_Store
 Thumbs.db
+
+# 运行期支付账单临时文件
+.payment-needed.txt
