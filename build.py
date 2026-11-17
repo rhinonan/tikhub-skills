@@ -103,7 +103,8 @@ def biggest_folder(rows):
 def description(meta, edition, count):
     zh, en, scope = meta["platform_zh"], meta.get("platform_en", ""), meta.get("scope", "")
     if edition == "pro":
-        head = (f"{zh}（{en}）数据接口调用（付费版，按次扣额度，"
+        head = (f"{zh}（{en}）数据接口调用（付费版，按次付费："
+                f"标准 ¥0.10/次、高价值 ¥0.50/次、批量 ¥2.00/次，"
                 f"用户无需注册或充值 TikHub），收录 {count} 个{zh}相关接口：")
     else:
         head = (f"{zh}（{en}）数据接口调用与接口查询，基于 TikHub.io API，"
@@ -118,7 +119,7 @@ def description(meta, edition, count):
 def skill_meta_json(meta, edition, count):
     zh = meta["platform_zh"]
     ed = "付费版" if edition == "pro" else "免费版"
-    tail_pro = "。付费版无需 TikHub 账号，按次扣额度。" if edition == "pro" else ""
+    tail_pro = "。付费版无需 TikHub 账号，按次付费。" if edition == "pro" else ""
     return {
         "name": f"TikHub {zh}数据接口（{ed}）",
         "version": meta.get("version", "1.0.0"),
