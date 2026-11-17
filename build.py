@@ -119,13 +119,22 @@ def description(meta, edition, count):
 def skill_meta_json(meta, edition, count):
     zh = meta["platform_zh"]
     ed = "付费版" if edition == "pro" else "免费版"
-    tail_pro = "。付费版无需 TikHub 账号，按次付费。" if edition == "pro" else ""
+    if edition == "pro":
+        desc_zh = (f"{zh}数据接口索引与调用工具（付费版），含 {count} 个接口与 CLI。"
+                   "按次付费：标准 ¥0.10/次、高价值 ¥0.50/次、批量 ¥2.00/次；"
+                   "额度包 ¥9.90（约 10–200 次）。")
+        desc_en = (f"{zh} data API index and client (paid) with {count} endpoints and a CLI. "
+                   "Pay per call: standard CNY 0.10, premium 0.50, batch 2.00; "
+                   "credit pack CNY 9.90 (~10-200 calls).")
+    else:
+        desc_zh = f"{zh}数据接口索引与调用工具（免费版），含 {count} 个接口与 CLI。"
+        desc_en = f"{zh} data API index and client (free) with {count} endpoints and a CLI."
     return {
         "name": f"TikHub {zh}数据接口（{ed}）",
         "version": meta.get("version", "1.0.0"),
         "pay_mode": 0 if edition == "free" else 1,
-        "description_zh": f"{zh}数据接口索引与调用工具（{ed}），含 {count} 个接口与 CLI。",
-        "description_en": f"{zh} data API index and client ({ed}) with {count} endpoints and a CLI.",
+        "description_zh": desc_zh,
+        "description_en": desc_en,
         "examples_zh": meta.get("usage_zh", []),
         "iconSource": "letter:auto",
     }
