@@ -27,7 +27,7 @@ agent_created: true
 python scripts/tikhub.py ping                # 验证网关连通
 ```
 
-- 不需要注册 TikHub，也不需要预充值；每次调用单独付款（标准 ¥0.10 / 高价值 ¥0.50 / 批量 ¥2.00）。也可以购买额度包：`python scripts/tikhub.py recharge`（¥9.90 / 200 次）。
+- 不需要注册 TikHub，也不需要预充值；每次调用单独付款（标准 ¥0.10 / 高价值 ¥0.50 / 批量 ¥2.00）。也可以购买额度包：`python scripts/tikhub.py recharge`（¥9.90 / 200 credits，按接口档位约 10–200 次）。
 - 买家侧需要支付依赖（`alipay-bot`，由 `npx -y @alipay/agent-payment@latest install` 安装，需要 Node.js ≥ 18）。缺了支付依赖会明确报错，不会静默失败。
 - 付款由脚本自动编排：首次调用返回 402，脚本唤起支付宝付款，拿到 `Payment-Proof` 后自动重试同一请求。
 
@@ -64,7 +64,7 @@ python scripts/tikhub.py call /api/v1/douyin/web/fetch_video_comments \
 | 高价值端点（算数指数/星图/榜单） | ¥0.50 | 已开放 |
 | 批量端点 | ¥2.00 | 已开放 |
 | 任务包（账号数据分析） | ¥1.99 | 已开放 |
-| 额度包（200 次） | ¥9.90 | 已开放 |
+| 额度包（10–200 次） | ¥9.90 | 已开放 |
 
 - 每次调用单独付款，无订阅、无最低充值门槛。
 - **上游失败不产生费用**：网关返回 502 时未完成履约，可直接重试。

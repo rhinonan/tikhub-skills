@@ -31,7 +31,9 @@ TIERS = {
 }
 
 CREDIT_PACKS = {
-    "starter": {"amount": "9.90", "credits": 200, "goods_name": "数据额度包 200 次"},
+    # 200 credits 按接口档位扣 1/5/20，实际可用 10–200 次（批量档最少，标准档最多）
+    "starter": {"amount": "9.90", "credits": 200,
+                "goods_name": "数据额度包 10–200 次"},
 }
 
 # 路径命中这些词，按批量档计价（TikHub 侧多为固定价端点）
