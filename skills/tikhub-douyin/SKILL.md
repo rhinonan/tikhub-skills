@@ -12,7 +12,7 @@ agent_created: true
 
 接口来自 TikHub.io 文档站，只保留**抖音相关**（332 个，含免鉴权 Demo 与多平台解析）。清单已固化在 `references/`，不用每次翻文档。
 
-> 本版本是**免费版**：用你自己的 TikHub API Token 直连官方接口。
+> 本版本是**免费版**：用你自己的 TikHub API Token 直连官方接口。TikHub 的起充额度为 **5 美元**；不想充值可使用同平台的 Pro 版（`tikhub-douyin-pro`），按次付费、无需自备 Token。
 
 ## 何时使用
 

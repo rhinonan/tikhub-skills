@@ -127,8 +127,11 @@ def skill_meta_json(meta, edition, count):
                    "Pay per call: standard CNY 0.10, premium 0.50, batch 2.00; "
                    "credit pack CNY 9.90 (~10-200 calls).")
     else:
-        desc_zh = f"{zh}数据接口索引与调用工具（免费版），含 {count} 个接口与 CLI。"
-        desc_en = f"{zh} data API index and client (free) with {count} endpoints and a CLI."
+        desc_zh = (f"{zh}数据接口索引与调用工具（免费版），含 {count} 个接口与 CLI。"
+                   "需自备 TikHub Token（起充 5 美元）；不想充值可使用 Pro 版。")
+        desc_en = (f"{zh} data API index and client (free) with {count} endpoints and a CLI. "
+                   "Requires your own TikHub token (USD 5 minimum top-up); "
+                   "use the Pro version if you prefer pay-per-call.")
     return {
         "name": f"TikHub {zh}数据接口（{ed}）",
         "version": meta.get("version", "1.0.0"),
