@@ -14,6 +14,7 @@
 用法：
     python build.py            # 构建所有平台 × 所有版本
     python build.py --check    # 只校验，不写文件
+    python build.py --zip      # 构建并生成 dist/<skill>.zip
     GATEWAY_URL=https://x python build.py   # 覆盖付费版网关地址
 """
 import argparse
@@ -21,10 +22,12 @@ import json
 import os
 import shutil
 import sys
+import zipfile
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(ROOT, "src")
 OUT = os.path.join(ROOT, "skills")
+DIST = os.path.join(ROOT, "dist")
 PLATFORMS_DIR = os.path.join(SRC, "platforms")
 EDITIONS_DIR = os.path.join(SRC, "editions")
 CORE = os.path.join(SRC, "core")
@@ -153,7 +156,22 @@ def render(template, values):
     return out
 
 
-def build_one(meta, pdir, ed, check):
+def zip_skill(name, target):
+    """把 skills/<name>/ 打成 dist/<name>.zip，zip 根下保留 skill 目录。"""
+    os.makedirs(DIST, exist_ok=True)
+    out = os.path.join(DIST, f"{name}.zip")
+    with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
+        for root, dirs, files in os.walk(target):
+            dirs[:] = [d for d in dirs if d not in ("__pycache__", ".git")]
+            for f in files:
+                if f in (".token", ".payment-needed.txt"):
+                    continue
+                p = os.path.join(root, f)
+                z.write(p, os.path.relpath(p, OUT))
+    return out
+
+
+def build_one(meta, pdir, ed, check, do_zip=False):
     platform = meta["platform"]
     name = f"tikhub-{platform}{ed['suffix']}"
     target = os.path.join(OUT, name)
@@ -222,12 +240,16 @@ def build_one(meta, pdir, ed, check):
                      ensure_ascii=False, indent=2) + "\n")
 
     print(f"[build] 生成 {name:26s} {count:4d} 接口 ({ed['label_zh']})")
+    if do_zip:
+        out = zip_skill(name, target)
+        print(f"[build] 打包 {os.path.relpath(out, ROOT)}  ({os.path.getsize(out)} bytes)")
     return True
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true", help="只校验产物完整性，不写文件")
+    ap.add_argument("--zip", action="store_true", help="构建后额外生成 dist/<skill>.zip")
     args = ap.parse_args()
 
     platforms = load_platforms()
@@ -241,7 +263,7 @@ def main():
             if ed["edition"] == "pro" and not ed.get("gateway_url") and not args.check:
                 print("[build] 注意：付费版未配置 gateway_url，"
                       "生成的 skill 调用时会报错（用 GATEWAY_URL 环境变量覆盖）")
-            ok_all &= build_one(meta, pdir, ed, args.check)
+            ok_all &= build_one(meta, pdir, ed, args.check, args.zip)
 
     total = len(platforms) * len(editions)
     print(f"\n[build] {'校验' if args.check else '构建'}完成："

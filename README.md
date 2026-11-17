@@ -72,7 +72,7 @@ TikHub 最低充值 $5，没有按次购买。但真实需求长这样：
 tikhub-skills/
 ├── README.md                       # 本文
 ├── tikhub.md                       # TikHub 平台背景介绍
-├── build.py                        # src/ → skills/ 组装（含 --check 校验）
+├── build.py                        # src/ → skills/ 组装（含 --check 校验、--zip 打包）
 ├── src/
 │   ├── core/
 │   │   ├── tikhub.py               # 唯一的 CLI 实现，平台与版本靠 skill_meta.json 注入
@@ -107,10 +107,11 @@ tikhub-skills/
 ```bash
 python build.py                                        # 构建全部平台 × 全部版本
 python build.py --check                                # 只校验产物完整性
+python build.py --zip                                  # 构建并生成 dist/<skill>.zip（可直接上传）
 GATEWAY_URL=https://gw.example.com python build.py     # 发布构建：注入付费版网关地址
 ```
 
-`build.py` 只构建 `references/inventory.json` 存在的平台，缺数据的自动跳过（目前只有抖音）。产物里每个 skill 带一个 `skill_meta.json`，CLI 靠它区分平台与版本：
+`build.py` 只构建 `references/inventory.json` 存在的平台，缺数据的自动跳过（目前只有抖音）。`--zip` 会在 `dist/` 下生成每个 skill 的 zip，zip 根目录保留 `<skill名>/`；`dist/` 已在 `.gitignore` 中。产物里每个 skill 带一个 `skill_meta.json`，CLI 靠它区分平台与版本：
 
 ```json
 {"platform": "douyin", "platform_zh": "抖音", "edition": "pro",
