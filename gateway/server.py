@@ -18,6 +18,7 @@ import traceback
 import uuid
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import parse_qs, urlparse
 
 import alipay_a2m as alipay
 import pricing
@@ -403,10 +404,41 @@ class Handler(BaseHTTPRequestHandler):
         except Exception:
             return {}
 
+    def _bearer_token(self) -> str:
+        auth = self.headers.get("Authorization", "")
+        return auth[7:].strip() if auth.lower().startswith("bearer ") else ""
+
+    @staticmethod
+    def _mask_token(token: str) -> str:
+        return token[:6] + "…" + token[-4:] if len(token) > 12 else "***"
+
     def do_GET(self):
-        if self.path.startswith("/healthz"):
+        parsed = urlparse(self.path)
+        path = parsed.path
+        if path.startswith("/healthz"):
             self._send(Reply(200, {"ok": True, "sandbox_mode": cfg.SANDBOX_MODE,
                                    "mock_upstream": cfg.MOCK_UPSTREAM}))
+            return
+        if path in ("/v1/balance", "/v1/usage"):
+            token = self._bearer_token()
+            if not token or not store.account_exists(token):
+                self._send(Reply(401, {"code": "UNAUTHORIZED",
+                                       "message": "缺少或无效的账户 token"}))
+                return
+            payload = {"code": 0, **store.usage_summary(token),
+                       "token": self._mask_token(token)}
+            if path == "/v1/usage":
+                try:
+                    limit = int((parse_qs(parsed.query).get("limit") or ["20"])[0])
+                except ValueError:
+                    limit = 20
+                limit = max(1, min(limit, 100))
+                tier_name = {1: "standard", 5: "premium", 20: "batch"}
+                calls = store.list_calls(token, limit)
+                for c in calls:
+                    c["tier"] = tier_name.get(c["unit_cost"], "custom")
+                payload["calls"] = calls
+            self._send(Reply(200, payload))
             return
         self._send(Reply(404, {"code": "NOT_FOUND", "message": "请用 POST"}))
 

@@ -419,6 +419,56 @@ def cmd_ping(args):
     print(text[:800])
 
 
+def _gateway_get(path, timeout=TIMEOUT):
+    """付费版只读查询：带账户 token 的 GET。"""
+    if not GATEWAY:
+        die("付费版未配置网关地址（skill_meta.json 的 gateway_url）")
+    token = get_token()
+    if not token:
+        die("未配置账户 token。先运行 `python tikhub.py recharge` 购买额度包。")
+    headers = {"Accept": "application/json",
+               "User-Agent": f"tikhub-{PLATFORM}-skill/1.0",
+               "Authorization": f"Bearer {token}"}
+    return _raw_request(GATEWAY + path, headers, None, timeout)
+
+
+def cmd_balance(args):
+    status, _, text = _gateway_get("/v1/balance")
+    if status != 200:
+        print(f"HTTP {status}: {HINTS.get(status, '')}")
+        print(text[:800])
+        sys.exit(2)
+    data = json.loads(text)
+    print(f"剩余额度: {data.get('credits', 0)} credits")
+    print(f"累计购买: {data.get('purchased', 0)} credits")
+    print(f"累计消耗: {data.get('consumed', 0)} credits")
+    print(f"累计退款: {data.get('refunded', 0)} credits")
+    print(f"账户 token: {data.get('token', '')}")
+
+
+def cmd_usage(args):
+    limit = max(1, min(int(args.limit), 100))
+    status, _, text = _gateway_get(f"/v1/usage?limit={limit}")
+    if status != 200:
+        print(f"HTTP {status}: {HINTS.get(status, '')}")
+        print(text[:800])
+        sys.exit(2)
+    data = json.loads(text)
+    print(f"剩余额度: {data.get('credits', 0)} credits")
+    print(f"累计购买: {data.get('purchased', 0)}  / "
+          f"累计消耗: {data.get('consumed', 0)}  / "
+          f"累计退款: {data.get('refunded', 0)}")
+    calls = data.get("calls") or []
+    if not calls:
+        print("暂无调用记录。")
+        return
+    print("\n最近调用：")
+    for c in calls:
+        print(f"  {c.get('created_at', '')}  {c.get('tier', ''):8s} "
+              f"-{c.get('unit_cost', 0):<2d}  {c.get('status', ''):8s} "
+              f"{c.get('path', '')}")
+
+
 # ---------------------------------------------------------------- 付费版充值
 
 def _alipay_bot_pay(bill_path, resource_url, intent):
@@ -557,6 +607,13 @@ def main():
     s.set_defaults(func=cmd_ping)
 
     if IS_PRO:
+        s = sub.add_parser("balance", help="查询剩余额度")
+        s.set_defaults(func=cmd_balance)
+
+        s = sub.add_parser("usage", help="查询最近调用与消耗")
+        s.add_argument("--limit", type=int, default=20, help="返回最近 N 条，最多 100")
+        s.set_defaults(func=cmd_usage)
+
         s = sub.add_parser("recharge", help="充值额度（需要买家侧支付依赖）")
         s.add_argument("--pack", default="starter")
         s.add_argument("--proof", help="手动传入 Payment-Proof，跳过 payment 步骤（联调用）")

@@ -22,12 +22,14 @@
 |---|---|---|
 | `POST /v1/task` | 任务包，一次付费内部调 N 次上游 | 按任务定价 |
 | `POST /v1/recharge` | 额度包，付费换账户 token | 按包定价 |
-| `POST /v1/call` | 按次调用，Bearer token 扣额度 | 按端点档位 |
+| `POST /v1/call` | 按次调用；有 token 扣额度，无 token 直接 402 按次收款 | 按端点档位 |
+| `GET /v1/balance` | 查询剩余额度、累计购买/消耗/退款（Bearer token） | — |
+| `GET /v1/usage` | 查询最近调用明细（Bearer token，`?limit=` 最多 100） | — |
 | `GET /healthz` | 健康检查 | — |
 
 `/v1/task` 与 `/v1/recharge` 是标准 A2M 流程：不带 `Payment-Proof` 就返回 402 + `Payment-Needed`，付款后带凭证重试同一请求。
 
-`/v1/call` 用余额计费；没 token 或余额不足时**同样返回 402 去充值**，所以"未付款返回 402"的语义对所有资源接口都成立。
+`/v1/call` 有 token 且余额足够时扣额度；没有 token 或余额不足时直接对本次调用返回 402，按档位收款。`/v1/balance` 和 `/v1/usage` 只读，不产生费用。
 
 ## 计费档位
 

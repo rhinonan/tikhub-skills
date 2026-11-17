@@ -31,6 +31,16 @@ python scripts/tikhub.py ping                # 验证网关连通
 - 买家侧需要支付依赖（`alipay-bot`，由 `npx -y @alipay/agent-payment@latest install` 安装，需要 Node.js ≥ 18）。缺了支付依赖会明确报错，不会静默失败。
 - 付款由脚本自动编排：首次调用返回 402，脚本唤起支付宝付款，拿到 `Payment-Proof` 后自动重试同一请求。
 
+## 查询额度
+
+```bash
+python scripts/tikhub.py balance              # 剩余 credits、累计购买/消耗/退款
+python scripts/tikhub.py usage --limit 20     # 最近调用明细（档位、扣减、状态、路径）
+```
+
+- 两个命令都是只读，不产生费用。
+- 只有购买过额度包并保存了账户 token 后才能查询。
+
 ## 三步工作流
 
 ```bash

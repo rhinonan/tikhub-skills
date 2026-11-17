@@ -247,6 +247,40 @@ def get_credits(token: str) -> int:
     return int(row["credits"]) if row else 0
 
 
+def account_exists(token: str) -> bool:
+    with _lock:
+        row = _db().execute("SELECT 1 FROM accounts WHERE token=?", (token,)).fetchone()
+    return row is not None
+
+
+def usage_summary(token: str) -> dict:
+    """返回剩余额度与累计购买/消耗/退款（credits）。"""
+    with _lock:
+        db = _db()
+        row = db.execute(
+            "SELECT "
+            "COALESCE(SUM(CASE WHEN reason='purchase' THEN delta ELSE 0 END),0) AS purchased, "
+            "COALESCE(SUM(CASE WHEN reason='consume' THEN -delta ELSE 0 END),0) - "
+            "COALESCE(SUM(CASE WHEN reason='upstream-failed' THEN delta ELSE 0 END),0) AS consumed, "
+            "COALESCE(SUM(CASE WHEN reason='refund' THEN -delta ELSE 0 END),0) AS refunded "
+            "FROM ledger WHERE token=?", (token,)).fetchone()
+        credits = db.execute("SELECT credits FROM accounts WHERE token=?", (token,)).fetchone()
+    return {
+        "credits": int(credits["credits"]) if credits else 0,
+        "purchased": int(row["purchased"] or 0),
+        "consumed": int(row["consumed"] or 0),
+        "refunded": int(row["refunded"] or 0),
+    }
+
+
+def list_calls(token: str, limit: int = 20) -> list:
+    with _lock:
+        rows = _db().execute(
+            "SELECT platform, path, unit_cost, status, created_at FROM calls "
+            "WHERE token=? ORDER BY id DESC LIMIT ?", (token, int(limit))).fetchall()
+    return [dict(r) for r in rows]
+
+
 def add_credits(token: str, delta: int, ref: str, reason: str = "purchase") -> bool:
     """入账。同一 (token, ref, reason) 只生效一次，防止同一订单重复加额度。"""
     with _lock:
