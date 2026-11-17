@@ -1,9 +1,9 @@
 {
-  "name": "TikHub 抖音数据接口（免费版）",
-  "version": "1.0.0",
+  "name": "TikHub 抖音数据接口（自备 API Key 版）",
+  "version": "1.2.0",
   "pay_mode": 0,
-  "description_zh": "抖音数据接口索引与调用工具（免费版），含 332 个接口与 CLI。需自备 TikHub Token（起充 5 美元）；不想充值可使用 Pro 版。",
-  "description_en": "抖音 data API index and client (free) with 332 endpoints and a CLI. Requires your own TikHub token (USD 5 minimum top-up); use the Pro version if you prefer pay-per-call.",
+  "description_zh": "抖音数据接口索引与调用工具（自备 API Key），含 332 个接口与 CLI。需自备 TikHub Token（起充 5 美元）；不想充值可使用 Pro 版。",
+  "description_en": "抖音 data API index and client (bring your own API key) with 332 endpoints and a CLI. Requires your own TikHub token (USD 5 minimum top-up); use the Pro version if you prefer pay-per-call.",
   "examples_zh": [
     "帮我用 tikhub 拉取这个抖音号的最近 30 条作品数据",
     "看看今天抖音热榜前 20 条，按热度排序",

@@ -238,7 +238,7 @@
 | Douyin-Xingtu-V2-API | 获取创作者性价比与效果预估 | GET | `/api/v1/douyin/xingtu_v2/get_author_commerce_spread_info` |
 | Douyin-Xingtu-V2-API | 获取创作者内容热词 | GET | `/api/v1/douyin/xingtu_v2/get_author_content_hot_keywords` |
 | Douyin-Xingtu-V2-API | 获取创作者转化能力 | GET | `/api/v1/douyin/xingtu_v2/get_author_convert_ability` |
-| Douyin-Xingtu-V2-API | 获取创作者转化视频 | GET | `/api/v1/douyin/xingtu_v2/get_author_convert_videos_or_products` |
+| Douyin-Xingtu-V2-API | 获取创作者转化视频/商品明细 | GET | `/api/v1/douyin/xingtu_v2/get_author_convert_videos_or_products` |
 | Douyin-Xingtu-V2-API | 获取创作者CP合作信息 | GET | `/api/v1/douyin/xingtu_v2/get_author_cp_info` |
 | Douyin-Xingtu-V2-API | 获取创作者每日粉丝趋势 | GET | `/api/v1/douyin/xingtu_v2/get_author_daily_fans` |
 | Douyin-Xingtu-V2-API | 获取创作者连接指标日趋势 | GET | `/api/v1/douyin/xingtu_v2/get_author_daily_link` |
@@ -278,7 +278,7 @@
 | Douyin-Xingtu-V2-API | 抖音UID转星图达人ID | GET | `/api/v1/douyin/xingtu_v2/get_xingtu_kolid_by_uid` |
 | Douyin-Xingtu-V2-API | 抖音号转星图达人ID | GET | `/api/v1/douyin/xingtu_v2/get_xingtu_kolid_by_unique_id` |
 | Douyin-Xingtu-V2-API | 批量获取创作者信息 | POST | `/api/v1/douyin/xingtu_v2/multi_get_author_info` |
-| Douyin-Xingtu-V2-API | 批量获取视频数据(播放量 | POST | `/api/v1/douyin/xingtu_v2/multi_get_item_stats` |
+| Douyin-Xingtu-V2-API | 批量获取视频数据(播放量/点赞等) | POST | `/api/v1/douyin/xingtu_v2/multi_get_item_stats` |
 | Douyin-Xingtu-V2-API | 主播搜索 | GET | `/api/v1/douyin/xingtu_v2/search_anchor` |
 | Douyin-Xingtu-V2-API | 达人搜索 | GET | `/api/v1/douyin/xingtu_v2/search_creator` |
 | Douyin-Xingtu-V2-API | 头条创作者搜索 | GET | `/api/v1/douyin/xingtu_v2/search_toutiao_creator` |
@@ -294,7 +294,7 @@
 | Douyin-Creator-API | 获取创作者热门话题榜单 | GET | `/api/v1/douyin/creator/fetch_creator_hot_topic_billboard` |
 | Douyin-Creator-API | 获取创作者中心热门视频榜单 | GET | `/api/v1/douyin/creator/fetch_creator_material_center_billboard` |
 | Douyin-Creator-API | 获取创作者中心配置 | GET | `/api/v1/douyin/creator/fetch_creator_material_center_config` |
-| Douyin-Creator-API | 获取话题 | GET | `/api/v1/douyin/creator/fetch_creator_material_center_related` |
+| Douyin-Creator-API | 获取话题/热点相关视频 | GET | `/api/v1/douyin/creator/fetch_creator_material_center_related` |
 | Douyin-Creator-API | 获取行业分类配置 | GET | `/api/v1/douyin/creator/fetch_industry_category_config` |
 | Douyin-Creator-API | 获取商单任务列表 | GET | `/api/v1/douyin/creator/fetch_mission_task_list` |
 | Douyin-Creator-API | 搜索用户 | GET | `/api/v1/douyin/creator/fetch_user_search` |
@@ -316,7 +316,7 @@
 | Douyin-DouPlus-API | DOU+成本计算 | POST | `/api/v1/douyin/douplus/calculate_cost` |
 | Douyin-DouPlus-API | 投放数据明细 | POST | `/api/v1/douyin/douplus/fetch_analyse_detail` |
 | Douyin-DouPlus-API | 投放数据趋势图 | POST | `/api/v1/douyin/douplus/fetch_analyse_graph` |
-| Douyin-DouPlus-API | 投放数据概览(账号 | POST | `/api/v1/douyin/douplus/fetch_analyse_overview` |
+| Douyin-DouPlus-API | 投放数据概览(账号/视频/直播) | POST | `/api/v1/douyin/douplus/fetch_analyse_overview` |
 | Douyin-DouPlus-API | 获取DOU+预计投放效果 | POST | `/api/v1/douyin/douplus/fetch_delivery_effect_estimate` |
 | Douyin-DouPlus-API | 获取可推广作品列表(含点赞评论量) | POST | `/api/v1/douyin/douplus/fetch_promotable_item_list` |
 | Douyin-DouPlus-API | 获取投放过的账号 | POST | `/api/v1/douyin/douplus/fetch_promoted_accounts` |
@@ -326,7 +326,7 @@
 | Douyin-DouPlus-API | 获取用户主页作品 | POST | `/api/v1/douyin/douplus/fetch_user_posts` |
 | Douyin-DouPlus-API | 获取视频详情(按ID或链接) | POST | `/api/v1/douyin/douplus/fetch_video_detail` |
 | Douyin-DouPlus-API | 获取 DOU+ 视频排行榜 | POST | `/api/v1/douyin/douplus/fetch_video_ranking` |
-| Douyin-DouPlus-API | 搜索直播间(抖音号 | POST | `/api/v1/douyin/douplus/search_live_room` |
+| Douyin-DouPlus-API | 搜索直播间(抖音号/昵称) | POST | `/api/v1/douyin/douplus/search_live_room` |
 | Douyin-DouPlus-API | 搜索 DOU+ 用户 | POST | `/api/v1/douyin/douplus/search_user` |
 | Douyin-DouPlus-API | 搜索用户 V2 | POST | `/api/v1/douyin/douplus/search_user_v2` |
 | Douyin-DouPlus-API | 搜索视频(按标题) | POST | `/api/v1/douyin/douplus/search_video` |

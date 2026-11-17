@@ -1,7 +1,7 @@
 # tikhub-skills
 
 > 把 TikHub 的社交媒体数据能力封装成 WorkBuddy Skill：4 个平台 × 2 个版本 = 8 个 skill。
-> 免费版走用户自己的 API Key，付费版走作者的 Key + 支付宝 AI 按量付费（A2M）网关。
+> 自备 API Key 版走用户自己的 API Key，付费版走作者的 Key + 支付宝 AI 按量付费（A2M）网关。
 
 平台本身的背景介绍（它是什么、覆盖哪些平台、怎么计费、有什么风险）见 [`tikhub.md`](./tikhub.md)。本文只讲**本仓库要做什么、怎么组织**。
 
@@ -34,7 +34,7 @@ TikHub 最低充值 $5，没有按次购买。但真实需求长这样：
 
 ## 2. 产品形态：8 个 Skill
 
-| 平台 | 免费版（BYOK） | 付费版（走作者 Key） | 接口规模 |
+| 平台 | 自备 API Key 版（BYOK） | 付费版（走作者 Key） | 接口规模 |
 |---|---|---|---|
 | 抖音 Douyin | `tikhub-douyin` | `tikhub-douyin-pro` | 332（已收录） |
 | TikTok | `tikhub-tiktok` | `tikhub-tiktok-pro` | ~400（待采集） |
@@ -43,16 +43,16 @@ TikHub 最低充值 $5，没有按次购买。但真实需求长这样：
 
 命名约定：
 
-- `tikhub-{platform}` = 免费版，用户自带 Token
+- `tikhub-{platform}` = 自备 API Key 版，用户自带 Token
 - `tikhub-{platform}-pro` = 付费版，按次付费取数据
 - `platform` 用 TikHub 的 slug（`douyin` / `tiktok` / `xiaohongshu` / `bilibili`），和官方 MCP 端点保持一致，方便对照文档
 - 接口规模是**预估**：TikHub 的 REST 端点总数多于 MCP 工具数（抖音是 332 端点 vs 247 工具），实际数字以采集结果为准
 
 **为什么不做一个 skill 内部自动判断？** 因为付费版要能在 SkillHub 上作为独立付费条目上架（`_skillhub_meta.json` 的 `pay_mode`）。代码层面两者共用同一份 core，只有传输层不同——拆分只发生在构建产物和商品层面。
 
-## 3. 免费版 vs 付费版
+## 3. 自备 API Key 版 vs 付费版
 
-|  | 免费版 | 付费版 `-pro` |
+|  | 自备 API Key 版 | 付费版 `-pro` |
 |---|---|---|
 | TikHub 的费用谁出 | 用户自己 | 作者 |
 | 用户需要什么 | 自己的 API Token | 支付宝可付款 + 买家支付依赖 |
@@ -60,7 +60,7 @@ TikHub 最低充值 $5，没有按次购买。但真实需求长这样：
 | 请求路径 | 直连 `api.tikhub.io` | 经作者网关，走 402 支付流程 |
 | 能不能看接口文档 | 能（本地索引全量） | 能（本地索引全量） |
 | 适合谁 | 有稳定用量、已有账号的开发者 | 偶发需求、不想充值的业务方 |
-| 计费 | 免费 | 每次调用单独付费 |
+| 计费 | 本 skill 不收费，TikHub 按量扣自己的余额 | 每次调用单独付费 |
 
 **两者能力完全一致**——索引、参数、CLI 命令、返回处理都一样。差别只在"谁付 TikHub 的钱"和"请求打到哪"。这个原则要守住：付费版不能是阉割版，否则用户会觉得被坑。
 
@@ -73,15 +73,20 @@ tikhub-skills/
 ├── README.md                       # 本文
 ├── tikhub.md                       # TikHub 平台背景介绍
 ├── build.py                        # src/ → skills/ 组装（含 --check 校验、--zip 打包）
+├── assets/
+│   └── icon-src/<平台>.png         # 1024 图标母版，tools/make_icons.py 的输入
+├── tools/
+│   └── make_icons.py               # 母版 → 512 图标（自备 API Key 版 / 带 PRO 角标的付费版）
 ├── src/
 │   ├── core/
 │   │   ├── tikhub.py               # 唯一的 CLI 实现，平台与版本靠 skill_meta.json 注入
-│   │   ├── SKILL.free.template.md  # 免费版 SKILL.md 模板
+│   │   ├── SKILL.free.template.md  # 自备 API Key 版 SKILL.md 模板
 │   │   └── SKILL.pro.template.md   # 付费版 SKILL.md 模板
 │   ├── platforms/<平台>/
 │   │   ├── meta.json               # 平台名、scope、示例问法
 │   │   ├── skill.body.md           # 平台专属章节（场景速查/ID要点/坑/实测）
-│   │   ├── _icon.png
+│   │   ├── _icon.png               # 自备 API Key 版图标（512，由 tools/make_icons.py 生成）
+│   │   ├── _icon_pro.png           # 付费版图标（带金色 PRO 角标；缺失时回落到 _icon.png）
 │   │   └── references/             # inventory.json + 分类文档
 │   └── editions/
 │       ├── free.json               # base_url=api.tikhub.io，凭证=用户 token
@@ -122,7 +127,7 @@ GATEWAY_URL=https://gw.example.com python build.py     # 发布构建：注入�
 
 ### 4.3 现状
 
-P0、P1 已完成。`src/core/tikhub.py` 是唯一实现，抖音的 332 个接口一次构建出免费版和付费版两个 skill；免费版的命令、参数、输出格式与原手写版逐项核对一致。
+P0、P1 已完成。`src/core/tikhub.py` 是唯一实现，抖音的 332 个接口一次构建出自备 API Key 版和付费版两个 skill；自备 API Key 版的命令、参数、输出格式与原手写版逐项核对一致。
 
 新增平台只需往 `src/platforms/<平台>/` 放 `meta.json` + `references/` + `skill.body.md`，不用碰 `core/`。
 
@@ -281,7 +286,7 @@ A2M 只解决收钱，不解决退钱。但"用户付了钱、TikHub 端点挂�
 
 | 阶段 | 内容 | 产出 | 状态 |
 |---|---|---|---|
-| P0 | 抽公共 core：`tikhub.py` 参数化 platform + edition，重构抖音版且保持现有用法不变 | `src/core/` | **已完成**（免费版逐项回归一致） |
+| P0 | 抽公共 core：`tikhub.py` 参数化 platform + edition，重构抖音版且保持现有用法不变 | `src/core/` | **已完成**（自备 API Key 版逐项回归一致） |
 | P1 | `build.py`：从 src 组装 skill 目录，校验产物完整性 | 构建流水线 | **已完成**（`--check` 可校验） |
 | P2 | 网关 MVP：402 出单 + 验付 + 转发 + 履约 + 订单幂等 | `gateway/` | **已完成**（35 项自测通过） |
 | P3 | 支付宝侧落地：个人入驻 → 产品签约 → 注册服务拿 `serviceId` → 生产密钥 → 公网部署 | 能真实收款 | 阻塞于账号与部署 |

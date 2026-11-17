@@ -1,6 +1,6 @@
 {
   "name": "TikHub 抖音数据接口（付费版）",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "pay_mode": 1,
   "description_zh": "抖音数据接口索引与调用工具（付费版），含 332 个接口与 CLI。按次付费：标准 ¥0.10/次、高价值 ¥0.50/次、批量 ¥2.00/次；额度包 ¥9.90（约 10–200 次）。",
   "description_en": "抖音 data API index and client (paid) with 332 endpoints and a CLI. Pay per call: standard CNY 0.10, premium 0.50, batch 2.00; credit pack CNY 9.90 (~10-200 calls).",

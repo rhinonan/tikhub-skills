@@ -34,7 +34,7 @@
   - `cookie` (必填,string) 用户 www.douyin.com 网页版 Cookie/User www.douyin.com web Cookie
   - `query` (必填,object) 分析查询对象/Analysis query object. 关键字段/key fields: startTime,endTime(秒级时间戳字符串/second timestamp string); analysisType(1=账号/account, 2=视频/video, 3=直播/live); authorSecIdList(账号 sec_uid 列表); statusList(投放状态过滤); metrics(指标列表,如 stat_cost,total_play,total_like,dy_comment,dy_share,dy_follow); SecondaryTargetIds; CollectWayIds. graph 额外/extra: dimension; detail 额外/extra: page,limit,orderByMetric,orderByType; 视频/直播分析额外/extra: liveRoomIdList
 
-## 投放数据概览(账号
+## 投放数据概览(账号/视频/直播)
 
 `POST /api/v1/douyin/douplus/fetch_analyse_overview`
 
@@ -147,7 +147,7 @@
   - `dim_type` (默认 5) 榜单维度/Ranking dimension: 1=低粉爆款, 2=高完播率, 3=高点赞率, 4=高涨粉率, 5=热度指数
   - `adv_id` 广告主ID,可留空/Advertiser id (optional)
 
-## 搜索直播间(抖音号
+## 搜索直播间(抖音号/昵称)
 
 `POST /api/v1/douyin/douplus/search_live_room`
 

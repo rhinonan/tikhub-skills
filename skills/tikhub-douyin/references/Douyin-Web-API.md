@@ -96,6 +96,11 @@
 `GET /api/v1/douyin/web/fetch_hot_search_result`
 
 - 返回：热榜数据
+- 返回结构（实测 2026-11-17）：
+  - `data.word_list[]` — 热搜词（51 条），字段 `word`/`hot_value`/`sentence_id`/`label`/`word_type`
+  - `data.word_list[].{view_count,discuss_video_count}` — 曝光量与投稿量（部分条目才填）
+  - `data.trending_list` / `data.trending_desc` / `data.active_time` — 趋势区与榜单时间
+  - ⚠️ 实测部分条目 `hot_value=0`（如置顶的政策类词条），排序要用 `view_count`/`discuss_video_count` 兜底
 
 ## 知识作品推荐
 
@@ -192,6 +197,19 @@
 
 - 用途：获取单个作品数据 V2，若此接口失效，请使用 `/fetch_one_video` 接口，或使用APP接口。
 - 返回：作品数据
+- 返回结构（实测 2026-11-17）：
+  - `data.aweme_detail` — 作品主体（obj，另有 `log_pb`/`status_code`）
+  - `aweme_detail.aweme_id` — 作品ID（str）
+  - `aweme_detail.desc` — 文案，`#话题` 原样保留（str）
+  - `aweme_detail.create_time` — 发布时间的**秒级**时间戳（int）
+  - `aweme_detail.duration` — 时长，单位**毫秒**（int，8010 ≈ 8.01s）
+  - `aweme_detail.aweme_type` — 0=视频，68=图集（int，图片在 `images[]`）
+  - `aweme_detail.share_url` — 分享链接（iesdouyin.com 短链）
+  - `aweme_detail.statistics.{digg_count,comment_count,share_count,collect_count,recommend_count}` — 互动数（int）
+  - `aweme_detail.author.{uid,sec_uid,unique_id,nickname,follower_count,total_favorited,signature,ip_location}` — 作者，`sec_uid` 可直接喂给资料/主页接口
+  - `aweme_detail.video.{play_addr.url_list[],bit_rate[],cover.url_list[],ratio,width,height,has_watermark}` — 播放地址；`bit_rate` 有 13 档可选码率
+  - `aweme_detail.music.{title,author,duration}`、`text_extra[].{hashtag_name,hashtag_id}` — 音乐与话题
+  - ⚠️ web 版 **`statistics.play_count` 实测恒为 0**（312789 赞但播放量为 0），播放量要走创作者中心/数据统计接口
 - Query：
   - `aweme_id` (必填,string) 作品id/Video id
 
@@ -337,6 +355,11 @@
 `GET /api/v1/douyin/web/fetch_user_post_videos`
 
 - 返回：用户作品数据
+- 返回结构（实测 2026-11-17）：
+  - `aweme_list[]` — 作品列表，单条结构基本同 `fetch_one_video_v2` 的 `aweme_detail`（字段有裁剪）
+  - `max_cursor` — 下一页游标，**实测是毫秒时间戳**（如 1794557654000），不是 0 起算的序号
+  - `has_more`（1/0）、`min_cursor`、`time_list[]` — 翻页控制与时间轴
+  - ⚠️ `count` 只是建议值：传 `count=2` 实测返回 4 条，**按 `aweme_list` 长度判断**，别按 count 算页数
 - Query：
   - `sec_user_id` (必填,string) 用户sec_user_id/User sec_user_id
   - `max_cursor` (string,默认 0) 最大游标/Maximum cursor
@@ -386,6 +409,13 @@
 `GET /api/v1/douyin/web/fetch_video_comments`
 
 - 返回：评论数据
+- 返回结构（实测 2026-11-17）：
+  - `comments[]` — 一级评论（`cid`/`text`（含 @ 与表情）/`create_time`(秒)/`digg_count`/`reply_comment_total`/`ip_label`）
+  - `comments[].user.{uid,sec_uid,nickname,avatar_thumb.url_list[]}` — 评论者
+  - `comments[].reply_comment[]` — 内嵌的少量回复（完整回复用 `fetch_video_comment_replies`）
+  - `total` — 评论总数（实测 4070，与 `comments` 条数无关）
+  - `cursor` / `has_more` — 下页游标（本页条数偏移）与是否还有下一页（1/0）
+  - ⚠️ 一级评论约 20 条/页（`count` 上限 ~20），回复接口要吃的是 `item_id`+`comment_id`，不是 `aweme_id`
 - Query：
   - `aweme_id` (必填,string) 作品id/Video id
   - `cursor` (integer,默认 0) 游标/Cursor
@@ -397,6 +427,10 @@
 
 - 用途：价格：0.005$ 一次。
 - 返回：video_id： 作品id
+- 返回结构（实测 2026-11-17）：
+  - 顶层即结果，无 `data` 包装：`video_id`/`original_video_url`/`file_size`/`file_size_in_mb`/`content_type`
+  - `original_video_url` — 无水印 mp4 直链（带时效签名，落盘后尽快下载）
+  - `file_size` 是**字符串**字节数，`file_size_in_mb` 是 float——别把前者当数字直接算
 - Query：
   - `aweme_id` (string) 作品id/Video id
   - `share_url` (string) 可选，分享链接/Optional, share link
@@ -483,6 +517,13 @@
 
 - 用途：获取指定用户的信息
 - 返回：用户信息
+- 返回结构（实测 2026-11-17）：
+  - `user.{uid,sec_uid,unique_id,short_id,nickname,signature}` — 四种 ID 与昵称签名
+  - `user.{follower_count,following_count,total_favorited,aweme_count,favoriting_count}` — 粉丝/关注/获赞/作品数/喜欢数（int）
+  - `user.ip_location` — 形如 `IP属地：浙江`，**带前缀**，取值需截断
+  - `user.avatar_{thumb,168x168,300x300,larger}.url_list[]` — 多尺寸头像
+  - `user.{city,country,custom_verify,commerce_user_level}` — 地域/认证/商业等级
+  - ⚠️ 只有静态快照，没有粉丝增量；要做增量就自己按时间落盘对比
 - Query：
   - `sec_user_id` (必填,string) 必填：用户主页链接中 /user/ 后的 sec_user_id，不是抖音号或 uid/Required: sec_user_id after /user/ in the profile URL, not the Douyin ID or uid
 

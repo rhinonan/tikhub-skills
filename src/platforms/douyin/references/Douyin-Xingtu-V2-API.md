@@ -491,7 +491,7 @@
   - `platform_source` (integer,默认 1) 平台来源/Platform source
   - `platform_channel` (integer,默认 1) 平台渠道/Platform channel
 
-## 批量获取视频数据(播放量
+## 批量获取视频数据(播放量/点赞等)
 
 `POST /api/v1/douyin/xingtu_v2/multi_get_item_stats`
 

@@ -58,19 +58,29 @@
 ## 已知坑
 
 - **榜单 `type=snapshot` 会静默返回空**：`snapshot_time` 没精确命中已存快照时，`data.objs` 是 `[]` 但 `data.page.total` 有值，HTTP 仍 200、照常计费。要稳就用 `type=range` + `start_date/end_date`（实测 total 1029、返回真实热点）。
+- **web 版作品的 `statistics.play_count` 恒为 0**：实测某条 31.2 万赞的作品 `play_count` 仍是 `0`，播放量得走创作者中心/数据统计接口，别拿它算播放。
+- **`fetch_user_post_videos` 的 `count` 只是建议值**：传 `count=2` 实测回 4 条；按 `aweme_list` 长度判断，别用 count 算页数。它的 `max_cursor` 是**毫秒时间戳**（如 `1794557654000`），不是 0 起算的序号。
+- **`search/fetch_general_search_v2` 的 `data` 是 `null`**：真实内容在顶层 `business_data[]`（实测 18 类卡片，按 `business_data[i].type` 区分视频/用户/直播）。
+- **`search/fetch_video_search_v5` 2026-11-17 实测连续 400**（未计费）；期间用 `search/fetch_general_search_v2` 或 `app/v3` 的视频搜索替代。
 - 参数名有历史遗留拼写：直播接口是 `sec_uid`、星图搜索是 `seach_type`、收藏/喜欢接口是 `counts`，照抄别"纠正"。
 - 已删除/受限作品仍返回 HTTP 200 + `filter_detail`，**照样计费**，批量前先抽样。
 - **Git Bash 路径转换**：`/api/v1/...` 会被 MSYS 改写成 `C:/.../api/v1/...`。脚本已兼容；裸 curl 时用 `MSYS_NO_PATHCONV=1 curl ...`。
 - 文档站把同一接口拆过多份页面，清单已按 `method+path` 去重（332 条）。
 
-## 实测记录（2026-11-10）
+## 实测记录（2026-11-17 复核）
 
-以下结构均为真实调用核对过，比文档里"返回：作品数据"这类描述更可用：
+以下结构均为真实调用核对过，比文档里"返回：作品数据"这类描述更可用；每个接口的完整字段表已写进
+`references/<分类>.md` 的「返回结构」段，`show <path>` 也会直接打印：
 
 | 接口 | data 结构 |
 |---|---|
 | `web/fetch_one_video_v2` | `data.aweme_detail`（作品）+ `log_pb` + `status_code`；正文 `desc`、`author.nickname/follower_count`、`statistics.digg_count/comment_count/share_count/collect_count`、`duration`(ms)、`create_time`(秒) |
-| `search/fetch_video_search_v5` | `data.items`（10 条/页，卡片结构：`type`/`aweme_info`/`card_info`，**视频数据在 `items[].aweme_info`**）+ `data.config` + `data.pagination`（`search_id`/`offset`/`cursor`/`backtrace`/`has_more`），翻页把这四个回传 |
+| `web/fetch_video_comments` | `comments[]`（`cid`/`text`/`digg_count`/`reply_comment_total`/`ip_label`/`user`）+ `total`（总数）+ `cursor`/`has_more`；约 20 条/页 |
+| `web/handler_user_profile` | `user.{uid,sec_uid,unique_id,short_id,nickname,signature,follower_count,following_count,total_favorited,aweme_count,favoriting_count,ip_location}` |
+| `web/fetch_user_post_videos` | `aweme_list[]`（同 `aweme_detail` 裁剪版）+ `max_cursor`（**毫秒时间戳**）+ `has_more`/`min_cursor`/`time_list` |
+| `web/fetch_hot_search_result` | `data.word_list[]`（`word`/`hot_value`/`sentence_id`/`label`/`view_count`/`discuss_video_count`）+ `trending_list` |
+| `web/fetch_video_high_quality_play_url` | 无 `data` 包装：`video_id`/`original_video_url`/`file_size`(str)/`file_size_in_mb`(float)/`content_type` |
+| `search/fetch_general_search_v2` | `data` 为 null；内容在 `business_data[]`（18 类卡片，按 `type` 区分） |
 | `billboard/fetch_hot_total_list` | `data.objs[]`（`rank`/`sentence`/`hot_score`/`video_count`/`sentence_tag_name`/`trends[]`）+ `data.page.total` |
 
 单次成本很低（个位数请求≈$0.01 量级），但每次调用都会计费，批量前务必先看余额。

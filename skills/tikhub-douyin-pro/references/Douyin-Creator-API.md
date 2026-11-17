@@ -121,7 +121,7 @@
 - 用途：获取抖音创作者中心配置信息
 - 返回：创作者中心配置数据
 
-## 获取话题
+## 获取话题/热点相关视频
 
 `GET /api/v1/douyin/creator/fetch_creator_material_center_related`
 

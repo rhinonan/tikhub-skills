@@ -121,7 +121,7 @@ def description(meta, edition, count):
 
 def skill_meta_json(meta, edition, count):
     zh = meta["platform_zh"]
-    ed = "付费版" if edition == "pro" else "免费版"
+    ed = "付费版" if edition == "pro" else "自备 API Key 版"
     if edition == "pro":
         desc_zh = (f"{zh}数据接口索引与调用工具（付费版），含 {count} 个接口与 CLI。"
                    "按次付费：标准 ¥0.10/次、高价值 ¥0.50/次、批量 ¥2.00/次；"
@@ -130,9 +130,10 @@ def skill_meta_json(meta, edition, count):
                    "Pay per call: standard CNY 0.10, premium 0.50, batch 2.00; "
                    "credit pack CNY 9.90 (~10-200 calls).")
     else:
-        desc_zh = (f"{zh}数据接口索引与调用工具（免费版），含 {count} 个接口与 CLI。"
+        desc_zh = (f"{zh}数据接口索引与调用工具（自备 API Key），含 {count} 个接口与 CLI。"
                    "需自备 TikHub Token（起充 5 美元）；不想充值可使用 Pro 版。")
-        desc_en = (f"{zh} data API index and client (free) with {count} endpoints and a CLI. "
+        desc_en = (f"{zh} data API index and client (bring your own API key) "
+                   f"with {count} endpoints and a CLI. "
                    "Requires your own TikHub token (USD 5 minimum top-up); "
                    "use the Pro version if you prefer pay-per-call.")
     return {
@@ -162,9 +163,10 @@ def zip_skill(name, target):
     out = os.path.join(DIST, f"{name}.zip")
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
         for root, dirs, files in os.walk(target):
-            dirs[:] = [d for d in dirs if d not in ("__pycache__", ".git")]
+            # _probe / out 是本地调试产物，别打进发布包
+            dirs[:] = [d for d in dirs if d not in ("__pycache__", ".git", "_probe", "out")]
             for f in files:
-                if f in (".token", ".payment-needed.txt"):
+                if f in (".token", ".payment-needed.txt", "_usage.txt") or f.endswith(".local"):
                     continue
                 p = os.path.join(root, f)
                 z.write(p, os.path.relpath(p, OUT))
@@ -212,8 +214,10 @@ def build_one(meta, pdir, ed, check, do_zip=False):
         shutil.rmtree(dst_ref)
     shutil.copytree(os.path.join(pdir, "references"), dst_ref)
 
-    # 2. 图标
-    icon_src = os.path.join(pdir, "_icon.png")
+    # 2. 图标：付费版优先用带 PRO 角标的 _icon_pro.png（由 tools/make_icons.py 生成）
+    icon_src = os.path.join(pdir, "_icon_pro.png" if ed["edition"] == "pro" else "_icon.png")
+    if not os.path.exists(icon_src):
+        icon_src = os.path.join(pdir, "_icon.png")
     if os.path.exists(icon_src):
         os.makedirs(target, exist_ok=True)
         shutil.copy2(icon_src, os.path.join(target, "_icon.png"))

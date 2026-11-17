@@ -1,9 +1,9 @@
 {
   "edition": "free",
   "suffix": "",
-  "label_zh": "免费版",
+  "label_zh": "自备 API Key 版",
   "base_url": "https://api.tikhub.io",
   "gateway_url": "",
   "pay_mode": 0,
-  "_note": "免费版：用用户自己的 TikHub token 直连官方接口"
+  "_note": "自备 API Key 版：用用户自己的 TikHub token 直连官方接口"
 }

@@ -12,7 +12,24 @@ agent_created: true
 
 接口来自 TikHub.io 文档站，只保留**{{platform_zh}}相关**（{{count}} 个，含免鉴权 Demo 与多平台解析）。清单已固化在 `references/`，不用每次翻文档。
 
-> 本版本是**免费版**：用你自己的 TikHub API Token 直连官方接口。TikHub 的起充额度为 **5 美元**；不想充值可使用同平台的 Pro 版（`{{name}}-pro`），按次付费、无需自备 Token。
+> 本版本**自备 API Key**：用你自己的 TikHub API Token 直连官方接口，本 skill 不代收任何费用。TikHub 的起充额度为 **5 美元**；不想充值可使用同平台的 Pro 版（`{{name}}-pro`），按次付费、无需自备 Token。
+
+## 0. 先自检（30 秒，强烈建议）
+
+```bash
+python3 scripts/tikhub.py doctor          # 环境/清单/文档/凭证一次看完
+python3 scripts/tikhub.py doctor --net    # 连网络一起测
+```
+
+看到 `[OK] 环境、清单、文档都齐` 再往下做；有 `[FAIL]` 就按提示修（多数是清单缺失或包没解压全）。
+
+**运行环境三条约定**，按这个来能省掉绝大多数"命令直接报错"：
+
+1. **解释器**：优先 `python3`，老环境用 `python`（脚本兼容 3.8+，版本太低会自己报错退出）。
+2. **工作目录**：脚本用自身路径定位清单，任意目录都能跑；但不确定 cwd 时请用**绝对路径**调用，
+   如 `python3 /path/to/{{name}}/scripts/tikhub.py search 评论`，避免 `scripts/tikhub.py: No such file`。
+3. **清单坏了也能干活**：`references/inventory.json` 缺失/损坏时，`search`/`show` 会自动降级扫
+   `references/*.md`；`call` 只要给完整 path 依旧能直连。所以"目录报错"不等于整个 skill 不可用。
 
 ## 何时使用
 
@@ -24,9 +41,9 @@ agent_created: true
 ## 一次性准备：Token
 
 ```bash
-python scripts/tikhub.py token <你的token>   # 存到 ~/.workbuddy/tikhub_token
-python scripts/tikhub.py token              # 查看是否已配置
-python scripts/tikhub.py ping               # 验证 token 是否可用
+python3 scripts/tikhub.py token <你的token>   # 存到 ~/.workbuddy/tikhub_token
+python3 scripts/tikhub.py token              # 查看是否已配置
+python3 scripts/tikhub.py ping               # 验证 token 是否可用
 ```
 
 - Token 在 https://user.tikhub.io 的 API token 菜单生成，请求头 `Authorization: Bearer <token>`。
@@ -36,19 +53,30 @@ python scripts/tikhub.py ping               # 验证 token 是否可用
 ## 三步工作流
 
 ```bash
-# ① 找接口：中文名/英文名/路径/用途 模糊搜索
-python scripts/tikhub.py search 评论 分页
+# ① 找接口：中文名/英文名/路径/用途 模糊搜索（多关键词按 AND，搜不到会自动放宽并给相近项）
+python3 scripts/tikhub.py search 评论 回复
 
-# ② 看参数：完整 path 或唯一关键词
-python scripts/tikhub.py show {{api_prefix}}/web/fetch_video_comments
+# ② 看参数：完整 path 最好；只给 web/fetch_video_comments 这种后缀也能唯一命中
+python3 scripts/tikhub.py show {{api_prefix}}/web/fetch_video_comments
 
 # ③ 调接口（GET 用 -q，POST 用 -b）
-python scripts/tikhub.py call {{api_prefix}}/web/fetch_video_comments \
-  -q aweme_id=7372484719365098803 -q cursor=0 -q count=20 --out out/comments.json
+python3 scripts/tikhub.py call {{api_prefix}}/web/fetch_video_comments \
+  -q aweme_id=7372484719365098803 --out out/comments.json
 ```
 
-- 大响应必须加 `--out 路径`，只把必要字段读进上下文，别把整份 JSON 塞进对话。
-- 分类浏览：`python scripts/tikhub.py list --folder {{folder_example}}`。
+三条实用开关，能省掉大部分调试和冤枉钱：
+
+| 开关 | 作用 | 什么时候用 |
+|---|---|---|
+| `--dry-run` | 只打印最终 URL / headers / body，**不发请求不计费** | 参数没把握、POST 接口、批量前核对 |
+| `--retry N` | 网络错误 / 429 / 5xx 自动退避重试（默认 2，`0` 关闭） | 网络不稳、限流 |
+| `--force` | 必填参数缺失时仍然发送（默认**本地拦截**） | 确认文档的必填标记有误时 |
+
+- **自动补全**：分页类参数（`cursor`/`max_cursor`/`page`/`count`/`page_size`/`offset`）没传时，
+  CLI 会按接口默认值补上并打印 `[autofill]`，不用一个个手填。
+- **调用前预检**：必填参数缺失会在本地拦住（不消耗额度），直接列出该补哪个参数。
+- 大响应必须加 `--out 路径`（目录不存在会自动创建），只把必要字段读进上下文，别把整份 JSON 塞进对话。
+- 分类浏览：`python3 scripts/tikhub.py list --folder {{folder_example}}`。
 
 {{platform_body}}
 
@@ -59,18 +87,53 @@ python scripts/tikhub.py call {{api_prefix}}/web/fetch_video_comments \
 {{index_table}}
 
 导航：`references/index.md`；单行速查表：`references/api-index.md`；机器可读：`references/inventory.json`。
+清单校准至 2026-11-10（接口数 {{count}}）；若与线上文档有出入，以 `show` 的参数表和实际返回为准。
+
+## 常见问题（FAQ）
+
+**Q1：`python scripts/tikhub.py` 报"找不到文件 / No such file"？**
+A：要么 cwd 不在 skill 根目录，要么环境里只有 `python3`。用绝对路径 + `python3`：
+`python3 <skill目录>/scripts/tikhub.py doctor`。
+
+**Q2：报"接口清单无法读取 / 找不到 inventory.json"？**
+A：skill 包没解压全。`references/` 里应有 `inventory.json`（约 400KB）+ 12 个分类 md。
+此时 `search`/`show` 已自动降级扫 md，`call` 给完整 path 仍可用；彻底修就重新解压或 `build.py` 重建。
+
+**Q3：`show` 出来一堆候选、看不到参数？**
+A：说明关键词太宽。用完整 path，或给更长的后缀（`web/fetch_video_comments`）。
+现在 `show` 即使命中多条，也会先打印最匹配那条的完整参数，其余作为候选列出。
+
+**Q4：`call` 报 422？**
+A：必填参数没传或类型不对。CLI 会打印字段级原因；`show <path>` 能看到完整参数表。
+分页类参数已自动补默认值，仍 422 多半是 id/cookie 这类必须自己给的值。
+
+**Q5：没 token 能不能先试用？**
+A：能。`Demo-API` 三个 `/api/v1/demo/...` 接口免鉴权、返回固定样例数据，
+拿来验证 CLI、字段结构和下游解析都够用。
+
+**Q6：怎么确认"这次调用花了多少 / 还剩多少"？**
+A：`GET /api/v1/tikhub/user/get_user_daily_usage`（当日用量）、
+`GET /api/v1/tikhub/user/get_user_info`（`data.user_data.balance` 余额）。
+批量前先 `--dry-run` 核参，再串行跑，别一上来就并发。
+
+**Q7：返回 200 但 `data` 是空的？**
+A：先看 `filter_detail`（作品已删/受限）和榜单的 `type=snapshot` 命中问题，见上文"已知坑"。
 
 ## 错误处理
 
-| 状态 | 含义 | 处理 |
+| 现象 | 含义 | 处理 |
 |---|---|---|
+| `python: command not found` | 环境只有 python3 | 换成 `python3 scripts/tikhub.py` |
+| `scripts/tikhub.py: No such file` | cwd 不对 | 用绝对路径调用，或先 `cd` 到 skill 根目录 |
+| 清单/目录读不到 | 包不完整 | 跑 `doctor` 看缺什么；`search/show` 已可降级，`call` 用完整 path |
 | 401 | token 无效/缺失 | 提示用户配 token，不要重试 |
 | 402 | TikHub 余额不足 | 换免费 Demo，或告知用户充值 |
 | 403 | 权限/账号异常 | 账号停用或邮箱未验证 |
-| 404 | 路径错 | 用 `show` 校正 path |
-| 422 | 参数缺失/类型错 | CLI 会直接列出缺哪个参数，补上再调 |
-| 429 | 限流 | 并发降到 ≤2，退避重试一次 |
-| 500 | 服务端错误 | 重试一次；仍失败换同类通道 |
+| 404 | 路径错 | CLI 会自动给相近 path；用 `show` 校正 |
+| 422 | 参数缺失/类型错 | CLI 列出缺哪个参数，补上再调 |
+| 429 | 限流 | 并发降到 ≤2；`--retry` 已自动退避，仍失败等 30s |
+| 5xx | 服务端错误 | 已自动重试；持续失败换同类通道（Web → App V3） |
+| 网络超时 | 本地网络/代理 | `doctor --net` 自检；调大 `--timeout`，`--retry 3` |
 
 ## 输出与合规
 

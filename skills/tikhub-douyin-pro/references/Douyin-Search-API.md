@@ -97,6 +97,11 @@
 
 - 用途：获取抖音 App 中综合搜索栏的搜索结果（非单独视频搜索）。
 - 返回：`data`: 搜索结果列表
+- 返回结构（实测 2026-11-17）：
+  - ⚠️ **`data` 为 `null`**，真实内容在顶层 `business_data[]`（实测 18 类卡片）
+  - `business_data[i].type` — 卡片类型，视频/用户/直播的字段各不相同，先判类型再解析
+  - `global_config` / `business_config` / `log_pb` — 透传配置与日志，一般不用
+  - 入口建议：先按 `type` 过滤出视频卡片，再取内部的 `aweme_info`（结构与 `aweme_detail` 同源）
 - Body(JSON)：
   - `keyword` (string,默认 猫咪) 关键词 / Keyword
   - `cursor` (integer,默认 0) 偏移游标，用于翻页，从上一次请求返回的响应中获取 / Offset cursor for pagination, obtained from the last response
@@ -300,6 +305,10 @@
 
 - 用途：按关键词搜索视频（V5 版本），只返回视频内容。
 - 返回：`config`: 本次搜索的配置信息（透传）
+- 返回结构（实测 2026-11-17）：
+  - ⚠️ 2026-11-17 实测：参数按文档传（`keyword`/`offset`/`page`/`search_id`/`backtrace`）连续两次返回 **HTTP 400**（官方提示 Please retry，未计费）
+  - 当前可用替代：`search/fetch_general_search_v2`（综合搜索，能用）或 `app/v3` 的视频搜索
+  - 恢复后返回结构为 `data.items[]`（10 条/页，视频在 `items[].aweme_info`）+ `data.pagination`（`search_id`/`offset`/`cursor`/`backtrace`/`has_more`）
 - Body(JSON)：
   - `keyword` (string,默认 猫咪) 搜索关键词 / Search keyword
   - `offset` (integer,默认 0) 翻页游标，从上一次响应的 data.pagination.offset 获取，首次请求传 0 / Offset cursor for pagination, obtained from data.pagination.offset of the last response, 0 for the first request

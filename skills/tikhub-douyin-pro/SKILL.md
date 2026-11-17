@@ -1,7 +1,7 @@
 ---
 name: tikhub-douyin-pro
 description: 抖音（Douyin）数据接口调用（付费版，按次付费：标准 ¥0.10/次、高价值 ¥0.50/次、批量 ¥2.00/次，用户无需注册或充值 TikHub），收录 332 个抖音相关接口：作品详情与分享链接解析、批量作品、无水印播放地址、弹幕、评论与回复、用户资料与主页作品、喜欢/收藏/关注/粉丝、话题与音乐、综合/视频/用户/直播搜索、热榜（热点/上升/同城/垂类/低粉爆款）、星图达人画像与商业榜、巨量算数指数、创作者中心投稿分析、DOU+ 投放、直播流。当用户要抓取抖音作品/账号/评论/搜索/热榜数据，或问"抖音某个数据怎么拿""TikHub 有没有 XX 接口"时使用。本 skill 只收抖音，不含其他平台；不提供登录、发布、点赞等写操作。
-version: 1.0.0
+version: 1.2.0
 category: data-acquisition
 author: 接口索引整理；接口文档与 API 版权归 TikHub.io 所有
 license: 脚本与文档结构可自由使用；接口文档内容版权归 TikHub.io
@@ -21,21 +21,38 @@ agent_created: true
 
 **不适用**：其他平台（本 skill 只收抖音）；发内容、点赞、登录等写操作（TikHub 不提供）。
 
+## 0. 先自检（30 秒，强烈建议）
+
+```bash
+python3 scripts/tikhub.py doctor          # 环境/清单/文档/凭证一次看完
+python3 scripts/tikhub.py doctor --net    # 连网络（网关连通性）一起测
+```
+
+看到 `[OK] 环境、清单、文档都齐` 再往下做；有 `[FAIL]` 按提示修（多数是包没解压全）。
+
+**运行环境三条约定**：
+
+1. **解释器**：优先 `python3`，老环境用 `python`（脚本兼容 3.8+）。
+2. **工作目录**：脚本用自身路径定位清单，任意目录都能跑；不确定 cwd 时用**绝对路径**调用，
+   如 `python3 /path/to/tikhub-douyin-pro/scripts/tikhub.py search 评论`。
+3. **清单坏了也能干活**：`references/inventory.json` 缺失/损坏时，`search`/`show` 自动降级扫
+   `references/*.md`；`call` 给完整 path 仍可调用。
+
 ## 一次性准备：支付依赖
 
 ```bash
-python scripts/tikhub.py ping                # 验证网关连通
+python3 scripts/tikhub.py ping                # 验证网关连通
 ```
 
-- 不需要注册 TikHub，也不需要预充值；每次调用单独付款（标准 ¥0.10 / 高价值 ¥0.50 / 批量 ¥2.00）。也可以购买额度包：`python scripts/tikhub.py recharge`（¥9.90 / 200 credits，按接口档位约 10–200 次）。
+- 不需要注册 TikHub，也不需要预充值；每次调用单独付款（标准 ¥0.10 / 高价值 ¥0.50 / 批量 ¥2.00）。也可以购买额度包：`python3 scripts/tikhub.py recharge`（¥9.90 / 200 credits，按接口档位约 10–200 次）。
 - 买家侧需要支付依赖（`alipay-bot`，由 `npx -y @alipay/agent-payment@latest install` 安装，需要 Node.js ≥ 18）。缺了支付依赖会明确报错，不会静默失败。
 - 付款由脚本自动编排：首次调用返回 402，脚本唤起支付宝付款，拿到 `Payment-Proof` 后自动重试同一请求。
 
 ## 查询额度
 
 ```bash
-python scripts/tikhub.py balance              # 剩余 credits、累计购买/消耗/退款
-python scripts/tikhub.py usage --limit 20     # 最近调用明细（档位、扣减、状态、路径）
+python3 scripts/tikhub.py balance              # 剩余 credits、累计购买/消耗/退款
+python3 scripts/tikhub.py usage --limit 20     # 最近调用明细（档位、扣减、状态、路径）
 ```
 
 - 两个命令都是只读，不产生费用。
@@ -45,13 +62,13 @@ python scripts/tikhub.py usage --limit 20     # 最近调用明细（档位、�
 
 ```bash
 # ① 找接口：中文名/英文名/路径/用途 模糊搜索（本地检索，不花钱）
-python scripts/tikhub.py search 评论 分页
+python3 scripts/tikhub.py search 评论 回复
 
 # ② 看参数：完整 path 或唯一关键词（本地查询，不花钱）
-python scripts/tikhub.py show /api/v1/douyin/web/fetch_video_comments
+python3 scripts/tikhub.py show /api/v1/douyin/web/fetch_video_comments
 
 # ③ 调接口（GET 用 -q，POST 用 -b）—— 这一步按次付费
-python scripts/tikhub.py call /api/v1/douyin/web/fetch_video_comments \
+python3 scripts/tikhub.py call /api/v1/douyin/web/fetch_video_comments \
   -q aweme_id=7372484719365098803 -q cursor=0 -q count=20 --out out/comments.json
 ```
 
@@ -63,8 +80,18 @@ python scripts/tikhub.py call /api/v1/douyin/web/fetch_video_comments \
 ```
 
 - `search` / `show` / `list` 都是本地索引，**不产生费用**，可以放心多查。
-- 大响应必须加 `--out 路径`，只把必要字段读进上下文。
-- 分类浏览：`python scripts/tikhub.py list --folder Douyin-Web-API`。
+- 大响应必须加 `--out 路径`（目录不存在会自动创建），只把必要字段读进上下文。
+- 分类浏览：`python3 scripts/tikhub.py list --folder Douyin-Web-API`。
+
+**省钱三件套**（付费版尤其重要）：
+
+| 开关 | 作用 |
+|---|---|
+| `--dry-run` | 打印最终请求（URL/headers/body），**不发送、不扣费**——付款前先核一遍参数 |
+| `--retry N` | 网络错误 / 429 / 5xx 自动退避重试（默认 2，`0` 关闭） |
+| `--force` | 必填参数缺失时仍然发送（默认本地拦截，避免花钱买 422） |
+
+分页类参数（`cursor`/`page`/`count`/`page_size`/`offset`）没传时会自动补默认值并打印 `[autofill]`。
 
 ## 计费规则
 
@@ -140,19 +167,29 @@ python scripts/tikhub.py call /api/v1/douyin/web/fetch_video_comments \
 ## 已知坑
 
 - **榜单 `type=snapshot` 会静默返回空**：`snapshot_time` 没精确命中已存快照时，`data.objs` 是 `[]` 但 `data.page.total` 有值，HTTP 仍 200、照常计费。要稳就用 `type=range` + `start_date/end_date`（实测 total 1029、返回真实热点）。
+- **web 版作品的 `statistics.play_count` 恒为 0**：实测某条 31.2 万赞的作品 `play_count` 仍是 `0`，播放量得走创作者中心/数据统计接口，别拿它算播放。
+- **`fetch_user_post_videos` 的 `count` 只是建议值**：传 `count=2` 实测回 4 条；按 `aweme_list` 长度判断，别用 count 算页数。它的 `max_cursor` 是**毫秒时间戳**（如 `1794557654000`），不是 0 起算的序号。
+- **`search/fetch_general_search_v2` 的 `data` 是 `null`**：真实内容在顶层 `business_data[]`（实测 18 类卡片，按 `business_data[i].type` 区分视频/用户/直播）。
+- **`search/fetch_video_search_v5` 2026-11-17 实测连续 400**（未计费）；期间用 `search/fetch_general_search_v2` 或 `app/v3` 的视频搜索替代。
 - 参数名有历史遗留拼写：直播接口是 `sec_uid`、星图搜索是 `seach_type`、收藏/喜欢接口是 `counts`，照抄别"纠正"。
 - 已删除/受限作品仍返回 HTTP 200 + `filter_detail`，**照样计费**，批量前先抽样。
 - **Git Bash 路径转换**：`/api/v1/...` 会被 MSYS 改写成 `C:/.../api/v1/...`。脚本已兼容；裸 curl 时用 `MSYS_NO_PATHCONV=1 curl ...`。
 - 文档站把同一接口拆过多份页面，清单已按 `method+path` 去重（332 条）。
 
-## 实测记录（2026-11-10）
+## 实测记录（2026-11-17 复核）
 
-以下结构均为真实调用核对过，比文档里"返回：作品数据"这类描述更可用：
+以下结构均为真实调用核对过，比文档里"返回：作品数据"这类描述更可用；每个接口的完整字段表已写进
+`references/<分类>.md` 的「返回结构」段，`show <path>` 也会直接打印：
 
 | 接口 | data 结构 |
 |---|---|
 | `web/fetch_one_video_v2` | `data.aweme_detail`（作品）+ `log_pb` + `status_code`；正文 `desc`、`author.nickname/follower_count`、`statistics.digg_count/comment_count/share_count/collect_count`、`duration`(ms)、`create_time`(秒) |
-| `search/fetch_video_search_v5` | `data.items`（10 条/页，卡片结构：`type`/`aweme_info`/`card_info`，**视频数据在 `items[].aweme_info`**）+ `data.config` + `data.pagination`（`search_id`/`offset`/`cursor`/`backtrace`/`has_more`），翻页把这四个回传 |
+| `web/fetch_video_comments` | `comments[]`（`cid`/`text`/`digg_count`/`reply_comment_total`/`ip_label`/`user`）+ `total`（总数）+ `cursor`/`has_more`；约 20 条/页 |
+| `web/handler_user_profile` | `user.{uid,sec_uid,unique_id,short_id,nickname,signature,follower_count,following_count,total_favorited,aweme_count,favoriting_count,ip_location}` |
+| `web/fetch_user_post_videos` | `aweme_list[]`（同 `aweme_detail` 裁剪版）+ `max_cursor`（**毫秒时间戳**）+ `has_more`/`min_cursor`/`time_list` |
+| `web/fetch_hot_search_result` | `data.word_list[]`（`word`/`hot_value`/`sentence_id`/`label`/`view_count`/`discuss_video_count`）+ `trending_list` |
+| `web/fetch_video_high_quality_play_url` | 无 `data` 包装：`video_id`/`original_video_url`/`file_size`(str)/`file_size_in_mb`(float)/`content_type` |
+| `search/fetch_general_search_v2` | `data` 为 null；内容在 `business_data[]`（18 类卡片，按 `type` 区分） |
 | `billboard/fetch_hot_total_list` | `data.objs[]`（`rank`/`sentence`/`hot_score`/`video_count`/`sentence_tag_name`/`trends[]`）+ `data.page.total` |
 
 单次成本很低（个位数请求≈$0.01 量级），但每次调用都会计费，批量前务必先看余额。
@@ -162,7 +199,7 @@ python scripts/tikhub.py call /api/v1/douyin/web/fetch_video_comments \
 
 ## 分类索引
 
-共 332 个接口。按分类查 → 打开对应参考文件；不确定用什么接口 → `python scripts/tikhub.py search <关键词>`。
+共 332 个接口。按分类查 → 打开对应参考文件；不确定用什么接口 → `python3 scripts/tikhub.py search <关键词>`。
 
 | 分类 | 接口数 | 参考文件 |
 |---|---|---|
@@ -180,17 +217,22 @@ python scripts/tikhub.py call /api/v1/douyin/web/fetch_video_comments \
 | Hybrid-Parsing | 1 | `references/Hybrid-Parsing.md` |
 
 导航：`references/index.md`；单行速查表：`references/api-index.md`；机器可读：`references/inventory.json`。
+清单校准至 2026-11-10（接口数 332）；若与线上文档有出入，以 `show` 的参数表和实际返回为准。
 
 ## 错误处理
 
-| 状态 | 含义 | 处理 |
+| 现象 | 含义 | 处理 |
 |---|---|---|
+| `python: command not found` | 环境只有 python3 | 换成 `python3 scripts/tikhub.py` |
+| `scripts/tikhub.py: No such file` | cwd 不对 | 用绝对路径调用，或先 `cd` 到 skill 根目录 |
+| 清单/目录读不到 | 包不完整 | 跑 `doctor` 看缺什么；`search/show` 可降级扫 md，`call` 用完整 path 仍可用 |
 | 402 | 需要付款 | 脚本会自动唤起支付宝付款并重试；中断时可用 `--proof` 手动重试 |
 | 403 | 接口未开放 | 联系提供方 |
-| 404 | 路径错 | 用 `show` 校正 path |
+| 404 | 路径错 | CLI 会自动给相近 path；用 `show` 校正 |
 | 422 | 参数缺失/类型错 | CLI 会直接列出缺哪个参数，补上再调 |
-| 429 | 限流 | 并发降到 ≤2，退避重试一次 |
+| 429 | 限流 | 并发降到 ≤2；`--retry` 已自动退避 |
 | 502 | 上游失败 | 本次未计费，直接重试；持续失败换同类通道 |
+| 网络超时 | 本地网络/代理 | `doctor --net` 自检；调大 `--timeout`，`--retry 3` |
 
 ## 输出与合规
 
