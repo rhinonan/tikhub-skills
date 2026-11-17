@@ -24,3 +24,6 @@ Thumbs.db
 
 # 运行期支付账单临时文件
 .payment-needed.txt
+
+# 打包产物（上传 SkillHub 用）
+dist/
