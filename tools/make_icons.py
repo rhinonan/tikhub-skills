@@ -1,23 +1,18 @@
 #!/usr/bin/env python3
-"""从 1024 母版导出 skill 图标。
+"""从 1024 母版导出产品图标（合并成一个产品后，只有这一套图标）。
 
-    assets/icon-src/<platform>.png  (1024x1024 RGBA 母版)
-        -> src/platforms/<platform>/_icon.png      512x512 自备 API Key 版
-        -> src/platforms/<platform>/_icon_pro.png  512x512 付费版（右下金色 PRO 徽章）
-
-合并后的产品图标走 `--product`：
-    assets/icon-src/cn-social-data.png
+    assets/icon-src/cn-social-data.png  (1024x1024 母版)
         -> src/assets/_icon.png      512x512 免费版
-        -> src/assets/_icon_pro.png  512x512 付费版（带 PRO 角标）
+        -> src/assets/_icon_pro.png  512x512 付费版（底部金色 PRO 徽章）
 
-母版是手绘/生成的成品图，本脚本只做等比缩放与角标合成，不改图形本身。
-build.py 在打包时会按版本挑选对应文件，见 build_one()。
+母版是 AI 出的成品图（经 tools/prep_ai_icon.py 清理水印与边缘），本脚本只做
+等比缩放、统一圆角与角标合成，不改图形本身。
+build.py 打包时按版本挑对应文件，见 build_one()。
 
 依赖：pillow（build.py 本身仍是零依赖，这个脚本只在改图时手动跑）
 
-    python tools/make_icons.py                # 全部平台
-    python tools/make_icons.py douyin         # 单个平台
-    python tools/make_icons.py --product      # 合并产品图标
+    python tools/make_icons.py            # 等价于 --product
+    python tools/make_icons.py --product
 """
 
 import os
@@ -26,8 +21,7 @@ import sys
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SRC_DIR = os.path.join(ROOT, "assets", "icon-src")
-PLATFORMS_DIR = os.path.join(ROOT, "src", "platforms")
+SRC_DIR = os.path.join(ROOT, "assets", "icon-src")   # 母版目录（默认 cn-social-data.png）
 
 OUT_SIZE = 512          # 产物尺寸
 MASTER_SIZE = 1024      # 母版尺寸
@@ -143,25 +137,6 @@ def add_pro_badge(im, text=PRO_TEXT):
     return Image.alpha_composite(im, rim)
 
 
-def export(platform):
-    master_path = os.path.join(SRC_DIR, f"{platform}.png")
-    if not os.path.exists(master_path):
-        raise SystemExit(f"缺母版：{os.path.relpath(master_path, ROOT)}")
-
-    target_dir = os.path.join(PLATFORMS_DIR, platform)
-    os.makedirs(target_dir, exist_ok=True)
-
-    master = apply_rounded(Image.open(master_path).convert("RGBA"))
-    free = master.resize((OUT_SIZE, OUT_SIZE), Image.LANCZOS)
-    free.save(os.path.join(target_dir, "_icon.png"), optimize=True)
-
-    pro = add_pro_badge(master)
-    pro.resize((OUT_SIZE, OUT_SIZE), Image.LANCZOS).save(
-        os.path.join(target_dir, "_icon_pro.png"), optimize=True)
-
-    print(f"[icon] {platform:12s} -> _icon.png / _icon_pro.png  ({OUT_SIZE}px)")
-
-
 def export_product():
     """合并产品图标：母版路径取 src/product.json 的 icon 字段。"""
     product_path = os.path.join(ROOT, "src", "product.json")
@@ -175,7 +150,7 @@ def export_product():
     master_path = os.path.join(ROOT, rel)
     if not os.path.exists(master_path):
         raise SystemExit(f"缺产品图标母版：{os.path.relpath(master_path, ROOT)}\n"
-                         "先运行 python tools/make_engine_icon.py")
+                         "先跑 tools/prep_ai_icon.py 把 AI 出图清理成母版")
 
     target_dir = os.path.join(ROOT, "src", "assets")
     os.makedirs(target_dir, exist_ok=True)
@@ -189,17 +164,10 @@ def export_product():
 
 
 def main():
-    args = [a for a in sys.argv[1:] if not a.startswith("-")]
-    if "--product" in sys.argv[1:]:
-        export_product()
-        return
-    only = args or [
-        os.path.splitext(f)[0]
-        for f in sorted(os.listdir(SRC_DIR))
-        if f.endswith(".png")
-    ]
-    for platform in only:
-        export(platform)
+    extra = [a for a in sys.argv[1:] if not a.startswith("-")]
+    if extra:
+        raise SystemExit(f"未知参数：{' '.join(extra)}\n{__doc__}")
+    export_product()
 
 
 if __name__ == "__main__":
