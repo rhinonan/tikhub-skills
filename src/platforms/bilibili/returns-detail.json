@@ -1,0 +1,24 @@
+{
+ "_note": "实测返回结构。tools/patch_returns.py 会写入 inventory.json 的 returns_detail 并注入分类 md；CLI 的 show 也会打印。",
+ "/api/v1/bilibili/web/fetch_one_video": [
+  "`data` 是对象（4 个字段）：`code`, `message`, `ttl`, `data`",
+  "`data.data` 是对象（46 个字段）：`bvid`, `aid`, `videos`, `tid`, `tid_v2`, `tname`, `tname_v2`, `copyright`",
+  "`data.data` 是对象（46 个字段）：`bvid`, `aid`, `videos`, `tid`, `tid_v2`, `tname`, `tname_v2`, `copyright`, `pic`, `title`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ],
+ "/api/v1/bilibili/web/fetch_video_comments": [
+  "`data` 是对象（4 个字段）：`code`, `message`, `ttl`, `data`",
+  "`data.data` 是对象（12 个字段）：`page`, `config`, `replies`, `upper`, `top`, `vote`, `blacklist`, `assist`",
+  "`data.data` 是对象（12 个字段）：`page`, `config`, `replies`, `upper`, `top`, `vote`, `blacklist`, `assist`, `mode`, `support_mode`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ],
+ "/api/v1/bilibili/web/fetch_com_popular": [
+  "`data` 是对象（4 个字段）：`code`, `message`, `ttl`, `data`",
+  "`data.data` 是对象（2 个字段）：`list`, `no_more`",
+  "`data.data.list` 是数组（长度 20）；首元素字段：`aid`, `videos`, `tid`, `tname`, `copyright`, `pic`, `title`, `pubdate`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ]
+}

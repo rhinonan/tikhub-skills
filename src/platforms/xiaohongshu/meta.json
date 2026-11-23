@@ -1,0 +1,18 @@
+{
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "platform_en": "Xiaohongshu",
+  "api_prefixes": ["/api/v1/xiaohongshu"],
+  "version": "2.0.0",
+  "scope": "笔记详情与评论、用户主页与笔记/收藏列表、笔记/用户/商品搜索、话题与商品详情、蒲公英博主画像与商业数据、内容广场与关键词指数",
+  "usage_zh": [
+    "这个小红书博主最近发了哪些笔记",
+    "搜索「露营」相关的小红书笔记",
+    "这篇笔记的评论数据"
+  ],
+  "usage_en": [
+    "Recent notes from this Xiaohongshu creator",
+    "Search Xiaohongshu notes about camping",
+    "Comment data for this note"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "platform": "bilibili",
+  "platform_zh": "B站",
+  "platform_en": "Bilibili",
+  "api_prefixes": ["/api/v1/bilibili"],
+  "version": "2.0.0",
+  "scope": "视频详情与播放流/字幕/弹幕、评论与回复、用户资料与投稿/收藏/动态、综合与分类搜索、热门与排行榜、直播与番剧、花火 UP 主商业数据",
+  "usage_zh": [
+    "这个 B 站 UP 主最近的投稿数据",
+    "这个视频的播放地址和清晰度",
+    "B 站热门视频榜前 20"
+  ],
+  "usage_en": [
+    "Recent uploads from this Bilibili creator",
+    "Playback URLs and quality for this video",
+    "Top 20 Bilibili popular videos"
+  ]
+}

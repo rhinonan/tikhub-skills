@@ -1,0 +1,34 @@
+{
+  "slug": "cn-social-data",
+  "name_zh": "中文社媒数据引擎",
+  "name_en": "Chinese Social Media Data Engine",
+  "version": "2.0.0",
+  "platforms": [
+    "douyin",
+    "weibo",
+    "xiaohongshu",
+    "bilibili",
+    "zhihu",
+    "wechat",
+    "kuaishou",
+    "common"
+  ],
+  "icon": "assets/icon-src/cn-social-data.png",
+  "pricing": {
+    "tiers": {
+      "standard": {"credits": 1, "amount": "0.10", "per_call": true},
+      "premium": {"credits": 6, "amount": "0.50", "per_call": false},
+      "batch": {"credits": 30, "amount": "2.00", "per_call": false}
+    },
+    "cost_thresholds": {"standard_max": 0.0105, "premium_max": 0.05},
+    "pack": {"credits": 200, "amount": "9.90"}
+  },
+  "examples_zh": [
+    "下载这个抖音视频的无水印版本",
+    "把这个抖音号最近 30 条作品和评论导出",
+    "看看今天微博热搜和抖音热榜前 20",
+    "这个小红书博主的粉丝数和笔记数据怎么样",
+    "导出这篇公众号文章的正文和阅读量",
+    "找几个 B 站美食区的达人"
+  ]
+}

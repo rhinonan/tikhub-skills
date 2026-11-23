@@ -3,142 +3,120 @@ name: {{name}}
 description: {{description}}
 version: {{version}}
 category: data-acquisition
-author: 接口索引整理；接口文档与 API 版权归 TikHub.io 所有
-license: 脚本与文档结构可自由使用；接口文档内容版权归 TikHub.io，使用需遵守其服务条款
+author: rhinonan
+license: MIT
 agent_created: true
 ---
 
-# {{platform_zh}}数据接口（TikHub）
+# 中文社媒数据引擎（免费版）
 
-接口来自 TikHub.io 文档站，只保留**{{platform_zh}}相关**（{{count}} 个，含免鉴权 Demo 与多平台解析）。清单已固化在 `references/`，不用每次翻文档。
+下载抖音无水印视频、解析分享链接、批量导出评论、查账号与作品数据、追热搜热榜、找达人——用一套 CLI 查接口、调接口，覆盖抖音、微博、小红书、B站、知乎、微信、快手，收录 {{count}} 个接口。只读数据，不含登录、发布、点赞等写操作。
 
-> 本版本**自备 API Key**：用你自己的 TikHub API Token 直连官方接口，本 skill 不代收任何费用。TikHub 的起充额度为 **5 美元**；不想充值可使用同平台的 Pro 版（`{{name}}-pro`），按次付费、无需自备 Token。
+> **免费版 = 自备上游 Key。** 数据由 TikHub 提供，需要你自己的 TikHub token，本 skill 不向你收费。
+> 不想注册或充值上游？安装付费版 `cn-social-data-pro`，按次付费、无需上游账号。
 
-## 0. 先自检（30 秒，强烈建议）
+## 能帮你做什么
 
-```bash
-python3 scripts/tikhub.py doctor          # 环境/清单/文档/凭证一次看完
-python3 scripts/tikhub.py doctor --net    # 连网络一起测
-```
+| 用户这样说 | 对应能力 | 第一步 |
+|---|---|---|
+| 下载抖音/快手/B站无水印视频、解析分享链接 | 无水印播放地址、链接解析 | `search 无水印` / `search 分享链接` |
+| 导出某账号最近作品和评论 | 主页作品、一级/二级评论 | `search 评论 --platform douyin` |
+| 看看这个博主/UP主/公众号的数据 | 用户资料、粉丝数、作品/文章列表 | `search 用户信息 --platform <平台>` |
+| 今天微博热搜、抖音热榜是什么 | 热榜、热搜榜单 | `search 热榜` |
+| 找某领域的达人，看粉丝画像 | 星图/蒲公英/花火、粉丝画像 | `search 达人` / `search 粉丝画像` |
+| 导出公众号或微博文章正文 | 文章详情、互动数据 | `search 文章详情 --platform 微信` |
+| 搜某个关键词在各平台的内容 | 综合/视频/用户搜索 | `search 搜索 --platform <平台>` |
 
-看到 `[OK] 环境、清单、文档都齐` 再往下做；有 `[FAIL]` 就按提示修（多数是清单缺失或包没解压全）。
+绝大多数需求都走这三步：`search 关键词` → `show <候选路径>` → `call <路径> -q ...`。
 
-**运行环境三条约定**，按这个来能省掉绝大多数"命令直接报错"：
-
-1. **解释器**：优先 `python3`，老环境用 `python`（脚本兼容 3.8+，版本太低会自己报错退出）。
-2. **工作目录**：脚本用自身路径定位清单，任意目录都能跑；但不确定 cwd 时请用**绝对路径**调用，
-   如 `python3 /path/to/{{name}}/scripts/tikhub.py search 评论`，避免 `scripts/tikhub.py: No such file`。
-3. **清单坏了也能干活**：`references/inventory.json` 缺失/损坏时，`search`/`show` 会自动降级扫
-   `references/*.md`；`call` 只要给完整 path 依旧能直连。所以"目录报错"不等于整个 skill 不可用。
-
-## 何时使用
-
-- 要拿{{platform_zh}}的{{scope}}。
-- 想确认"某个{{platform_zh}}数据有没有现成接口、参数怎么传、是 GET 还是 POST"。
-
-**不适用**：其他平台（本 skill 只收{{platform_zh}}）；发内容、点赞、登录等写操作（TikHub 不提供）。
-
-## 一次性准备：Token
+## 0. 先自检
 
 ```bash
-python3 scripts/tikhub.py token <你的token>   # 存到 ~/.workbuddy/tikhub_token
-python3 scripts/tikhub.py token              # 查看是否已配置
-python3 scripts/tikhub.py ping               # 验证 token 是否可用
+python3 scripts/social.py doctor
+python3 scripts/social.py doctor --net    # 顺带测网络与凭证
 ```
 
-- Token 在 https://user.tikhub.io 的 API token 菜单生成，请求头 `Authorization: Bearer <token>`。
-- 也读环境变量 `TIKHUB_API_KEY`（优先级最高）。
-- **没 token 也能先跑通链路**：`Demo-API` 的 `/api/v1/demo/...` 接口免鉴权、返回固定数据、1 小时缓存。
+约定：
+
+- 命令都在 **skill 根目录**下执行；在别的目录时用绝对路径 `python3 <skill目录>/scripts/social.py ...`。
+- 解释器 `python3` 优先，老环境用 `python`。
+- 所有命令都不写入业务系统，只读数据。
+
+## 覆盖平台
+
+{{platform_table}}
 
 ## 三步工作流
 
 ```bash
-# ① 找接口：中文名/英文名/路径/用途 模糊搜索（多关键词按 AND，搜不到会自动放宽并给相近项）
-python3 scripts/tikhub.py search 评论 回复
+# 1) 搜：中文名、英文名、路径、用途都能搜
+python3 scripts/social.py search 评论 --platform weibo
 
-# ② 看参数：完整 path 最好；只给 web/fetch_video_comments 这种后缀也能唯一命中
-python3 scripts/tikhub.py show {{api_prefix}}/web/fetch_video_comments
+# 2) 看：参数、必填项、返回结构、注意事项
+python3 scripts/social.py show weibo/web_v2/fetch_post_comments
 
-# ③ 调接口（GET 用 -q，POST 用 -b）
-python3 scripts/tikhub.py call {{api_prefix}}/web/fetch_video_comments \
-  -q aweme_id=7372484719365098803 --out out/comments.json
+# 3) 调：先 dry-run 确认，再真调并落盘
+python3 scripts/social.py call weibo/web_v2/fetch_post_comments \
+  -q id=5283919831764022 -q count=20 --dry-run
+python3 scripts/social.py call weibo/web_v2/fetch_post_comments \
+  -q id=5283919831764022 --out out/comments.json
 ```
 
-三条实用开关，能省掉大部分调试和冤枉钱：
+免费版也可用 `python3 scripts/social.py estimate <path ...>` 预估上游成本；免费版不拦截调用，付费版会强制先确认。
 
-| 开关 | 作用 | 什么时候用 |
-|---|---|---|
-| `--dry-run` | 只打印最终 URL / headers / body，**不发请求不计费** | 参数没把握、POST 接口、批量前核对 |
-| `--retry N` | 网络错误 / 429 / 5xx 自动退避重试（默认 2，`0` 关闭） | 网络不稳、限流 |
-| `--force` | 必填参数缺失时仍然发送（默认**本地拦截**） | 确认文档的必填标记有误时 |
+常用参数：
 
-- **自动补全**：分页类参数（`cursor`/`max_cursor`/`page`/`count`/`page_size`/`offset`）没传时，
-  CLI 会按接口默认值补上并打印 `[autofill]`，不用一个个手填。
-- **调用前预检**：必填参数缺失会在本地拦住（不消耗额度），直接列出该补哪个参数。
-- 大响应必须加 `--out 路径`（目录不存在会自动创建），只把必要字段读进上下文，别把整份 JSON 塞进对话。
-- 分类浏览：`python3 scripts/tikhub.py list --folder {{folder_example}}`。
+| 想做什么 | 命令 |
+|---|---|
+| 按平台/分类浏览 | `list` / `list --platform douyin` / `list --folder Douyin-Web-API` |
+| 看某平台有哪些分类 | `list --platform wechat` |
+| 短路径命中多个平台 | 加 `--platform` 消歧 |
+| POST + JSON body | `call <path> -b '{"url":"..."}'` |
+| body 是数组 | `call <path> -b '["id1","id2"]'` |
+| 首次接入新平台 | 先 `search <平台名>`，再 `show <候选>` |
 
-{{platform_body}}
+## 一次性准备：Token
 
-## 分类索引
+数据由 **[TikHub](https://tikhub.io)** 提供，免费版用你自己的 token：
 
-共 {{count}} 个接口。按分类查 → 打开对应参考文件；不确定用什么接口 → `python scripts/tikhub.py search <关键词>`。
+1. 注册并生成 API Key（控制台：`https://user.tikhub.io`，最低充值 $5，按次扣费）。
+2. 保存在下面任一位置，CLI 按优先级读取：
+   - 环境变量 `TIKHUB_API_KEY`
+   - `python3 scripts/social.py token <你的token>`（写入 `~/.workbuddy/tikhub_token`）
+   - skill 目录下的 `.token`
 
-{{index_table}}
+没有 token 也能先跑通链路：`common` 平台下的 `demo/*` 接口返回固定数据、不扣额度：
 
-导航：`references/index.md`；单行速查表：`references/api-index.md`；机器可读：`references/inventory.json`。
-清单校准至 2026-11-10（接口数 {{count}}）；若与线上文档有出入，以 `show` 的参数表和实际返回为准。
+```bash
+python3 scripts/social.py call demo/douyin/web/fetch_one_video --out out/demo.json
+```
 
-## 常见问题（FAQ）
+## 平台速查
 
-**Q1：`python scripts/tikhub.py` 报"找不到文件 / No such file"？**
-A：要么 cwd 不在 skill 根目录，要么环境里只有 `python3`。用绝对路径 + `python3`：
-`python3 <skill目录>/scripts/tikhub.py doctor`。
+{{platform_bodies}}
 
-**Q2：报"接口清单无法读取 / 找不到 inventory.json"？**
-A：skill 包没解压全。`references/` 里应有 `inventory.json`（约 400KB）+ 12 个分类 md。
-此时 `search`/`show` 已自动降级扫 md，`call` 给完整 path 仍可用；彻底修就重新解压或 `build.py` 重建。
+## 分类导航
 
-**Q3：`show` 出来一堆候选、看不到参数？**
-A：说明关键词太宽。用完整 path，或给更长的后缀（`web/fetch_video_comments`）。
-现在 `show` 即使命中多条，也会先打印最匹配那条的完整参数，其余作为候选列出。
+完整的分类清单在 `references/index.md`（约 {{count}} 个接口分成若干类，每个平台一组）。**不要一次把所有分类文档读进上下文**：
 
-**Q4：`call` 报 422？**
-A：必填参数没传或类型不对。CLI 会打印字段级原因；`show <path>` 能看到完整参数表。
-分页类参数已自动补默认值，仍 422 多半是 id/cookie 这类必须自己给的值。
+- 用 `search` / `list` / `show` 按需定位；
+- 机器可读清单是 `references/inventory.json`，需要批量处理时直接读它；
+- 每个分类的详细参数在 `references/<分类>.md`，只在确认要用某一类时打开。
 
-**Q5：没 token 能不能先试用？**
-A：能。`Demo-API` 三个 `/api/v1/demo/...` 接口免鉴权、返回固定样例数据，
-拿来验证 CLI、字段结构和下游解析都够用。
+## 常见问题
 
-**Q6：怎么确认"这次调用花了多少 / 还剩多少"？**
-A：`GET /api/v1/tikhub/user/get_user_daily_usage`（当日用量）、
-`GET /api/v1/tikhub/user/get_user_info`（`data.user_data.balance` 余额）。
-批量前先 `--dry-run` 核参，再串行跑，别一上来就并发。
-
-**Q7：返回 200 但 `data` 是空的？**
-A：先看 `filter_detail`（作品已删/受限）和榜单的 `type=snapshot` 命中问题，见上文"已知坑"。
-
-## 错误处理
-
-| 现象 | 含义 | 处理 |
-|---|---|---|
-| `python: command not found` | 环境只有 python3 | 换成 `python3 scripts/tikhub.py` |
-| `scripts/tikhub.py: No such file` | cwd 不对 | 用绝对路径调用，或先 `cd` 到 skill 根目录 |
-| 清单/目录读不到 | 包不完整 | 跑 `doctor` 看缺什么；`search/show` 已可降级，`call` 用完整 path |
-| 401 | token 无效/缺失 | 提示用户配 token，不要重试 |
-| 402 | TikHub 余额不足 | 换免费 Demo，或告知用户充值 |
-| 403 | 权限/账号异常 | 账号停用或邮箱未验证 |
-| 404 | 路径错 | CLI 会自动给相近 path；用 `show` 校正 |
-| 422 | 参数缺失/类型错 | CLI 列出缺哪个参数，补上再调 |
-| 429 | 限流 | 并发降到 ≤2；`--retry` 已自动退避，仍失败等 30s |
-| 5xx | 服务端错误 | 已自动重试；持续失败换同类通道（Web → App V3） |
-| 网络超时 | 本地网络/代理 | `doctor --net` 自检；调大 `--timeout`，`--retry 3` |
+| 问题 | 处理 |
+|---|---|
+| 401 / Invalid token | token 没配或过期，按上面重新保存 |
+| 402 / 余额不足 | 上游账户余额不够，去控制台充值；或先用 `demo/*` 接口 |
+| 422 | 必填参数漏了，`show <path>` 看参数表 |
+| 429 | 限流，降低并发或等 30s |
+| 404 | 路径写错，用 `search`/`show` 重新确认 |
+| data 为 null | 有些接口内容在 `business_data` 等顶层字段，用 `--raw` 看完整响应 |
+| 某接口失效 | 换同平台同类通道（Web → App 版本），或用 `hybrid/video_data` 兜底 |
 
 ## 输出与合规
 
-- 先抓 1~2 条确认字段结构，再批量；批量串行或并发 ≤3，中间结果落盘。
-- 只采集公开数据用于分析/研究，不用于批量私信、骚扰、隐私挖掘；遵守 TikHub 与各平台条款。
-- 按次计费：响应里 `cache_url` 是 24h 免费缓存链接；已删除/受限作品仍返回 HTTP 200 + `filter_detail`，**照样计费**，批量前先抽样。
-- 结果默认写当前工作区（如 `报告/`、`data/`），文件名带日期+关键词。
-- 查用量：`GET /api/v1/tikhub/user/get_user_daily_usage`；查余额：`GET /api/v1/tikhub/user/get_user_info`。
+- `--out` 把 `data` 落盘；`--raw` 输出完整响应；`--preview N` 控制终端预览长度。
+- 只采集公开数据；不要高频轰炸上游，不要用于侵犯隐私或绕过平台风控。
+- 数据版权归原平台与内容作者，遵守目标平台的用户协议与当地法规（含个人信息保护要求）。

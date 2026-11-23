@@ -1,0 +1,24 @@
+{
+ "_note": "实测返回结构。tools/patch_returns.py 会写入 inventory.json 的 returns_detail 并注入分类 md；CLI 的 show 也会打印。",
+ "/api/v1/xiaohongshu/app_v2/get_user_posted_notes": [
+  "`data` 是对象（6 个字段）：`code`, `success`, `data`, `msg`, `debug_id`, `debug_info`",
+  "`data.data` 是对象（3 个字段）：`notes`, `tags`, `has_more`",
+  "`data.data.notes` 是数组（长度 22）；首元素字段：`has_music`, `time_desc`, `sticky`, `title`, `likes`, `create_time`, `display_title`, `guide_context`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ],
+ "/api/v1/xiaohongshu/web_v3/fetch_user_info": [
+  "`data` 是对象（6 个字段）：`ok`, `status`, `code`, `success`, `msg`, `data`",
+  "`data.data` 是对象（9 个字段）：`liked`, `result`, `basic_info`, `interactions`, `collected`, `tags`, `tab_public`, `extra_info`, `posted`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ],
+ "/api/v1/xiaohongshu/app_v2/search_notes": [
+  "`data` 是对象（10 个字段）：`code`, `success`, `data`, `msg`, `search_id`, `search_session_id`, `page`, `next_page`, `debug_id`, `debug_info`",
+  "`data.data` 是对象（20 个字段）：`request_dqa_instant`, `ai_mode_enable`, `items`, `search_dqa_new_page_exp`, `can_cut`, `strategy_info`, `cur_cut_number`, `request_dqa`",
+  "`data.data` 是对象（20 个字段）：`request_dqa_instant`, `ai_mode_enable`, `items`, `search_dqa_new_page_exp`, `can_cut`, `strategy_info`, `cur_cut_number`, `request_dqa`, `query_type`, `taxonomy1`",
+  "`data.data.items` 是数组（长度 20）；首元素字段：`mix_track_id`, `new_help_style`, `model_type`, `note`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ]
+}

@@ -1,0 +1,2288 @@
+[
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "检查微博是否允许带图评论/Check if Weibo allows image comments",
+  "name_zh": "检查微博是否允许带图评论",
+  "name_en": "Check if Weibo allows image comments",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/check_allow_comment_with_pic",
+  "purpose": "检查指定微博是否允许用户在评论时上传图片",
+  "returns": "result: true表示允许带图评论，false表示不允许",
+  "notice": "不同微博的图片评论权限可能不同",
+  "query_params": [
+   {
+    "name": "id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "5092682368025584",
+    "desc": "微博ID/Weibo ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "id = \"5092682368025584\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取单个作品数据/Get single post data",
+  "name_zh": "获取单个作品数据",
+  "name_en": "Get single post data",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_post_detail",
+  "purpose": "获取指定微博的详细信息，包括内容、作者、互动数据等",
+  "returns": "微博详细数据，包含完整文本、图片、视频、点赞数、评论数、转发数等",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "5092682368025584",
+    "desc": "作品id/Post id"
+   },
+   {
+    "name": "is_get_long_text",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "true",
+    "example": "true",
+    "desc": "是否获取长微博全文/Whether to get the full text of long Weibo posts (true/false)"
+   }
+  ],
+  "body_params": [],
+  "request_example": "id = \"5092682368025584\"\nis_get_long_text = \"true\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取用户信息/Get user information",
+  "name_zh": "获取用户信息",
+  "name_en": "Get user information",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_user_info",
+  "purpose": "获取微博用户的详细信息，包括昵称、头像、简介、关注数、粉丝数等",
+  "returns": "用户详细信息数据",
+  "notice": "uid和custom参数至少需要提供一个；如果同时提供，优先使用uid；建议优先使用uid参数",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "1722594714",
+    "desc": "用户id/User id"
+   },
+   {
+    "name": "custom",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "shuqi",
+    "desc": "自定义微博用户名/Custom Weibo username"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"1722594714\"\n# or\ncustom = \"shuqi\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取用户基本信息/Get user basic information",
+  "name_zh": "获取用户基本信息",
+  "name_en": "Get user basic information",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_user_basic_info",
+  "purpose": "获取微博用户的基本信息（轻量级接口）",
+  "returns": "用户基本信息，包括用户ID、用户名、头像、简介、认证信息",
+  "notice": "与fetch_user_info相比，本接口返回数据更少，响应更快；适合批量用户信息获取和用户卡片展示",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "7277477906",
+    "desc": "用户id/User id"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"7277477906\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取微博用户文章数据/Get Weibo user posts",
+  "name_zh": "获取微博用户文章数据",
+  "name_en": "Get Weibo user posts",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_user_posts",
+  "purpose": "获取指定用户发布的微博列表，支持分页和多种数据详细程度",
+  "returns": "微博列表数据，包含微博内容、图片、视频等信息；包含 since_id 字段用于翻页",
+  "notice": "feature=0性能最佳，feature=3数据最全",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "7277477906",
+    "desc": "用户id/User id"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页数/Page number"
+   },
+   {
+    "name": "feature",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": 0,
+    "desc": "特征值，控制返回数据的数量和字段：0=返回10条基础数据，1=返回20条扩展数据，2=返回20条图片相关数据，3=返回20条视频相关数据，字段逐级增加/Feature type: 0=10 basic posts, 1=20 extended posts, 2=20 image-related posts, 3=20 video-related posts, fields increase progressively"
+   },
+   {
+    "name": "since_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "翻页标识，用于获取下一页数据/Pagination identifier for getting next page data"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"7277477906\"\npage = 1\nfeature = 0",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv",
+  "returns_detail": [
+   "`data` 是对象（2 个字段）：`data`, `ok`",
+   "`data.data` 是对象（7 个字段）：`since_id`, `list`, `status_visible`, `bottom_tips_visible`, `bottom_tips_text`, `topicList`, `total`",
+   "`data.data.list` 是数组（长度 20）；首元素字段：`visible`, `created_at`, `id`, `idstr`, `mid`, `mblogid`, `user`, `can_edit`",
+   "响应消息：请求成功，本次请求将被计费。",
+   "实测时间：2026-11-23"
+  ]
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取微博用户原创微博数据/Get Weibo user original posts",
+  "name_zh": "获取微博用户原创微博数据",
+  "name_en": "Get Weibo user original posts",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_user_original_posts",
+  "purpose": "获取指定用户发布的原创微博列表（排除转发内容）",
+  "returns": "原创微博列表，包含微博内容、图片、视频、互动数据等",
+  "notice": "与fetch_user_posts的区别：本接口只返回原创微博，排除转发；since_id必须先调用fetch_user_posts获取，第一页必传，后续页面不传",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "7277477906",
+    "desc": "用户id/User id"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页数/Page number"
+   },
+   {
+    "name": "since_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "翻页标识，用于获取下一页数据/Pagination identifier for getting next page data"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"7277477906\"\npage = 1\nsince_id = \"4924526881242703\"  # from fetch_user_posts response",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取微博评论/Get Weibo comments",
+  "name_zh": "获取微博评论",
+  "name_en": "Get Weibo comments",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_post_comments",
+  "purpose": "获取指定微博的一级评论列表",
+  "returns": "评论列表数据，包含评论内容、评论者信息、点赞数等；包含 max_id 字段用于翻页",
+  "notice": "当没有更多评论时，max_id 为空",
+  "query_params": [
+   {
+    "name": "id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "5283919831764022",
+    "desc": "微博ID/Weibo ID"
+   },
+   {
+    "name": "count",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 10,
+    "example": 10,
+    "desc": "评论数量/Number of comments"
+   },
+   {
+    "name": "max_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "页码/Page number"
+   }
+  ],
+  "body_params": [],
+  "request_example": "id = \"5283919831764022\"\ncount = 10\nmax_id = \"\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取微博子评论/Get Weibo sub-comments",
+  "name_zh": "获取微博子评论",
+  "name_en": "Get Weibo sub-comments",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_post_sub_comments",
+  "purpose": "获取指定评论的回复（子评论）列表",
+  "returns": "子评论列表数据，包含回复内容、回复者信息、点赞数等；包含 max_id 字段用于翻页",
+  "notice": "与fetch_post_comments的区别：本接口获取的是评论的回复，而非微博的主评论",
+  "query_params": [
+   {
+    "name": "id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "5283574244704555",
+    "desc": "主评论ID/Comment ID"
+   },
+   {
+    "name": "count",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 10,
+    "example": 10,
+    "desc": "子评论数量/Number of sub-comments"
+   },
+   {
+    "name": "max_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "分页标识/Page identifier"
+   }
+  ],
+  "body_params": [],
+  "request_example": "id = \"5283574244704555\"\ncount = 10\nmax_id = \"\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "搜索用户微博/Search user posts",
+  "name_zh": "搜索用户微博",
+  "name_en": "Search user posts",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/search_user_posts",
+  "purpose": "在指定用户的微博中搜索包含特定关键词的内容",
+  "returns": "搜索结果列表，包含微博内容、作者信息、互动数据等",
+  "notice": "搜索结果受用户隐私设置影响；时间戳参数使用Unix时间戳格式",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "7277477906",
+    "desc": "用户ID/User ID"
+   },
+   {
+    "name": "q",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索关键词/Search keyword"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页数/Page number"
+   },
+   {
+    "name": "starttime",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": 1772294400,
+    "example": 1772294400,
+    "desc": "开始时间戳/Start timestamp"
+   },
+   {
+    "name": "endtime",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": 1772294400,
+    "example": 1772294400,
+    "desc": "结束时间戳/End timestamp"
+   },
+   {
+    "name": "hasori",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "是否包含原创微博，1=包含，0=不包含/Include original posts, 1=include, 0=exclude"
+   },
+   {
+    "name": "hasret",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "是否包含转发微博，1=包含，0=不包含/Include retweets, 1=include, 0=exclude"
+   },
+   {
+    "name": "hastext",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "是否包含文字微博，1=包含，0=不包含/Include text posts, 1=include, 0=exclude"
+   },
+   {
+    "name": "haspic",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "是否包含图片微博，1=包含，0=不包含/Include image posts, 1=include, 0=exclude"
+   },
+   {
+    "name": "hasvideo",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "是否包含视频微博，1=包含，0=不包含/Include video posts, 1=include, 0=exclude"
+   },
+   {
+    "name": "hasmusic",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "是否包含音乐微博，1=包含，0=不包含/Include music posts, 1=include, 0=exclude"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"7277477906\"\nq = \"python\" # 为空表示搜索全部内容\npage = 1",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取用户微博视频收藏夹列表/Get user video collection list",
+  "name_zh": "获取用户微博视频收藏夹列表",
+  "name_en": "Get user video collection list",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_user_video_collection_list",
+  "purpose": "获取指定用户的视频收藏夹列表",
+  "returns": "收藏夹列表，包含收藏夹ID、名称、描述、视频数量等",
+  "notice": "收藏夹列表受用户隐私设置影响；部分用户可能没有创建视频收藏夹",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "7277477906",
+    "desc": "用户ID/User ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"7277477906\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取用户微博视频收藏夹详情/Get user video collection detail",
+  "name_zh": "获取用户微博视频收藏夹详情",
+  "name_en": "Get user video collection detail",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_user_video_collection_detail",
+  "purpose": "获取指定收藏夹的详细内容，包括视频列表",
+  "returns": "收藏夹信息和视频列表，包含视频标题、封面、时长、播放数等；包含 next_cursor 和 has_more 字段用于翻页",
+  "notice": "不同排序方式的cursor不通用，切换排序需重新开始分页",
+  "query_params": [
+   {
+    "name": "cid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "4883992307236954",
+    "desc": "收藏夹ID/Collection ID"
+   },
+   {
+    "name": "cursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "分页游标/Pagination cursor"
+   },
+   {
+    "name": "tab_code",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": 0,
+    "desc": "排序方式：0=默认，1=最热，2=最新/Sort type: 0=default, 1=hottest, 2=latest"
+   }
+  ],
+  "body_params": [],
+  "request_example": "cid = \"4883992307236954\"\ncursor = \"\"\ntab_code = 0",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取微博用户全部视频/Get user all videos",
+  "name_zh": "获取微博用户全部视频",
+  "name_en": "Get user all videos",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_user_video_list",
+  "purpose": "获取指定用户发布的所有视频内容（瀑布流展示）",
+  "returns": "视频列表数据，包含视频标题、封面、播放量等信息；包含 next_cursor 和 has_more 字段用于翻页",
+  "notice": "与收藏夹接口的区别：本接口获取用户发布的视频，收藏夹接口获取用户收藏的视频",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "7277477906",
+    "desc": "用户ID/User ID"
+   },
+   {
+    "name": "cursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "0",
+    "desc": "分页游标/Pagination cursor"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"7277477906\"\ncursor = \"0\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取用户关注列表/Get user following list",
+  "name_zh": "获取用户关注列表",
+  "name_en": "Get user following list",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_user_following",
+  "purpose": "获取指定用户的关注列表（该用户关注了谁）",
+  "returns": "关注用户列表，包含用户名、头像、简介、粉丝数等",
+  "notice": "关注列表受用户隐私设置影响；page参数从0开始，而不是1；与fetch_user_fans的区别：本接口获取用户关注了谁，fetch_user_fans获取谁关注了该用户",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "1722594714",
+    "desc": "用户ID/User ID"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": 0,
+    "desc": "页码/Page number"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"1722594714\"\npage = 0",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取用户粉丝列表/Get user fans list",
+  "name_zh": "获取用户粉丝列表",
+  "name_en": "Get user fans list",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_user_fans",
+  "purpose": "获取指定用户的粉丝列表（谁关注了该用户）",
+  "returns": "粉丝用户列表，包含用户名、头像、简介、粉丝数等",
+  "notice": "粉丝列表受用户隐私设置影响；page参数从0开始，而不是1；与fetch_user_following的区别：本接口获取谁关注了该用户，fetch_user_following获取用户关注了谁",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "1722594714",
+    "desc": "用户ID/User ID"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": 0,
+    "desc": "页码/Page number"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"1722594714\"\npage = 0",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取所有分组信息/Get all groups information",
+  "name_zh": "获取所有分组信息",
+  "name_en": "Get all groups information",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_all_groups",
+  "purpose": "获取微博平台的所有分组信息，包括默认分组和用户自定义分组",
+  "returns": "分组列表，包含分组ID、名称、容器ID等",
+  "notice": "返回的gid和containerid可用于时间轴接口的参数；分组信息变化不频繁，建议缓存",
+  "query_params": [],
+  "body_params": [],
+  "request_example": "# No parameters needed",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取微博主页推荐时间轴/Get user recommend timeline",
+  "name_zh": "获取微博主页推荐时间轴",
+  "name_en": "Get user recommend timeline",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_user_recommend_timeline",
+  "purpose": "获取微博主页的推荐时间轴内容，基于用户兴趣展示个性化推荐",
+  "returns": "推荐微博列表，包含微博内容、作者信息、互动数据等；包含 max_id 字段用于翻页",
+  "notice": "建议先调用fetch_all_groups获取可用分组",
+  "query_params": [
+   {
+    "name": "refresh",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": 0,
+    "desc": "刷新类型，0=正常刷新，1=强制刷新/Refresh type, 0=normal refresh, 1=force refresh"
+   },
+   {
+    "name": "group_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "102803",
+    "example": "102803",
+    "desc": "分组ID/Group ID"
+   },
+   {
+    "name": "containerid",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "102803",
+    "example": "102803",
+    "desc": "容器ID/Container ID"
+   },
+   {
+    "name": "extparam",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "discover|new_feed",
+    "example": "discover|new_feed",
+    "desc": "扩展参数/Extended parameters"
+   },
+   {
+    "name": "max_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "0",
+    "desc": "最大ID/Max ID"
+   },
+   {
+    "name": "count",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 10,
+    "example": 10,
+    "desc": "获取数量/Count"
+   }
+  ],
+  "body_params": [],
+  "request_example": "refresh = 0\ngroup_id = \"102803\"\ncontainerid = \"102803\"\nmax_id = \"0\"\ncount = 10",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取微博热门榜单时间轴/Get hot ranking timeline",
+  "name_zh": "获取微博热门榜单时间轴",
+  "name_en": "Get hot ranking timeline",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_hot_ranking_timeline",
+  "purpose": "获取微博平台各种类型的热门榜单内容",
+  "returns": "热门微博列表，包含微博内容、作者信息、互动数据等",
+  "notice": "不同榜单更新频率不同：小时榜实时性最强，周榜影响力较大",
+  "query_params": [
+   {
+    "name": "ranking_type",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "hour",
+    "desc": "榜单类型：hour=小时榜，yesterday=昨日榜，day_before=前日榜，week=周榜，male=男榜，female=女榜/Ranking type: hour=hourly, yesterday=yesterday, day_before=day before, week=weekly, male=male ranking, female=female ranking"
+   },
+   {
+    "name": "since_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "0",
+    "desc": "分页标识，默认为0/Pagination identifier, default is 0"
+   },
+   {
+    "name": "max_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "0",
+    "desc": "最大ID，默认为0/Max ID, default is 0"
+   },
+   {
+    "name": "count",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 10,
+    "example": 10,
+    "desc": "获取数量，默认10/Count, default is 10"
+   }
+  ],
+  "body_params": [],
+  "request_example": "ranking_type = \"hour\"\nmax_id = \"0\"\ncount = 10",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取微博热搜词条(10条)/Get Weibo hot search index (10 items)",
+  "name_zh": "获取微博热搜词条(10条)",
+  "name_en": "Get Weibo hot search index (10 items)",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_hot_search_index",
+  "purpose": "快速获取微博热搜前10条",
+  "returns": "热搜词条列表，包含关键词、热度值、排名等",
+  "notice": "只返回前10条热搜；热搜更新频繁，建议缓存2-5分钟；如需完整热搜，使用fetch_hot_search_summary",
+  "query_params": [],
+  "body_params": [],
+  "request_example": "# No parameters needed",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取微博完整热搜榜单(50条)/Get Weibo complete hot search ranking (50 items)",
+  "name_zh": "获取微博完整热搜榜单(50条)",
+  "name_en": "Get Weibo complete hot search ranking (50 items)",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_hot_search_summary",
+  "purpose": "获取微博完整热搜榜单（50条）",
+  "returns": "完整热搜列表，包含排名、关键词、标签（热点/沸点/官宣/新）、热度值",
+  "notice": "与fetch_hot_search_index的区别：本接口返回50条，fetch_hot_search_index返回10条；rank为0表示置顶内容；建议缓存5-10分钟",
+  "query_params": [],
+  "body_params": [],
+  "request_example": "# No parameters needed",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.0015,
+  "cost_source": "csv",
+  "returns_detail": [
+   "`data` 是对象（2 个字段）：`total`, `data`",
+   "`data.data` 是数组（长度 51）；首元素字段：`rank`, `is_top`, `keyword`, `keyword_url`, `tag`, `heat`",
+   "响应消息：请求成功，本次请求将被计费。",
+   "实测时间：2026-11-23"
+  ]
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取微博热搜榜单/Get Weibo hot search ranking",
+  "name_zh": "获取微博热搜榜单",
+  "name_en": "Get Weibo hot search ranking",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_hot_search",
+  "purpose": "获取微博实时热搜榜单数据",
+  "returns": "热搜数据，包含realtime（实时热搜）、hotgov等多个板块",
+  "notice": "热搜更新频繁，建议缓存2-5分钟",
+  "query_params": [],
+  "body_params": [],
+  "request_example": "# No parameters needed",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取微博文娱榜单/Get Weibo entertainment ranking",
+  "name_zh": "获取微博文娱榜单",
+  "name_en": "Get Weibo entertainment ranking",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_entertainment_ranking",
+  "purpose": "获取微博文娱榜单数据（娱乐圈、影视、综艺等）",
+  "returns": "文娱话题列表，包含话题、热度值、排名、分类等",
+  "notice": "建议缓存5-10分钟",
+  "query_params": [],
+  "body_params": [],
+  "request_example": "# No parameters needed",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取微博生活榜单/Get Weibo life ranking",
+  "name_zh": "获取微博生活榜单",
+  "name_en": "Get Weibo life ranking",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_life_ranking",
+  "purpose": "获取微博生活榜单数据（美食、旅游、健康、时尚等）",
+  "returns": "生活话题列表，包含话题、热度值、排名、分类等",
+  "notice": "建议缓存5-10分钟",
+  "query_params": [],
+  "body_params": [],
+  "request_example": "# No parameters needed",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取微博社会榜单/Get Weibo social ranking",
+  "name_zh": "获取微博社会榜单",
+  "name_en": "Get Weibo social ranking",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_social_ranking",
+  "purpose": "获取微博社会榜单数据（时事新闻、社会热点、民生话题等）",
+  "returns": "社会话题列表，包含话题、热度值、排名、分类等",
+  "notice": "社会热点变化较快，建议缓存2-5分钟",
+  "query_params": [],
+  "body_params": [],
+  "request_example": "# No parameters needed",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "获取微博相似搜索词推荐/Get Weibo similar search recommendations",
+  "name_zh": "获取微博相似搜索词推荐",
+  "name_en": "Get Weibo similar search recommendations",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_similar_search",
+  "purpose": "根据关键词获取微博推荐的相似搜索词",
+  "returns": "相似搜索词列表，包含推荐词、搜索次数等",
+  "notice": "相似词推荐相对稳定，可缓存15-30分钟",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "#微博奇遇记#",
+    "desc": "搜索关键词/Search keyword"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword = \"#微博奇遇记#\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "微博智能搜索/Weibo AI Search",
+  "name_zh": "微博智能搜索",
+  "name_en": "Weibo AI Search",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_ai_search",
+  "purpose": "通过微博AI智能搜索获取搜索结果",
+  "returns": "AI搜索结果，包含推荐内容、相关话题等",
+  "notice": "AI搜索结果会根据用户行为进行个性化调整",
+  "query_params": [
+   {
+    "name": "query",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "#法国#",
+    "desc": "搜索关键词/Search keyword"
+   }
+  ],
+  "body_params": [],
+  "request_example": "query = \"#法国#\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "微博AI搜索内容扩展/Weibo AI Search Content Extension",
+  "name_zh": "微博AI搜索内容扩展",
+  "name_en": "Weibo AI Search Content Extension",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_ai_related_search",
+  "purpose": "获取与关键词相关的内容扩展（相关问题、博主推荐、参考博文等）",
+  "returns": "HTML格式的扩展内容，包含相关问题、博主推荐、参考博文等",
+  "notice": "返回内容为HTML格式，需要进行HTML解析处理；HTML结构可能会发生变化，需要做好容错处理",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "#微博奇遇记#",
+    "desc": "搜索关键词/Search keyword"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword = \"#微博奇遇记#\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "微博高级搜索/Weibo Advanced Search",
+  "name_zh": "微博高级搜索",
+  "name_en": "Weibo Advanced Search",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_advanced_search",
+  "purpose": "微博高级搜索，支持多维度筛选",
+  "returns": "搜索结果列表，包含微博内容、作者信息、图片、视频、互动数据等",
+  "notice": "视频播放需设置请求头 Referer=https://weibo.com/",
+  "query_params": [
+   {
+    "name": "q",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "yu7",
+    "desc": "搜索关键词/Search keyword"
+   },
+   {
+    "name": "search_type",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "hot",
+    "desc": "搜索类型/Search type: all(全部), hot(热门), original(原创), verified(认证用户), media(媒体), viewpoint(观点)"
+   },
+   {
+    "name": "include_type",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "pic",
+    "desc": "包含类型/Include type: all(全部), pic(含图片), video(含视频), music(含音乐), link(含短链)"
+   },
+   {
+    "name": "timescope",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "custom:2025-09-01-0:2025-09-08-23",
+    "desc": "时间范围/Time scope (custom:start:end)"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页码/Page number"
+   }
+  ],
+  "body_params": [],
+  "request_example": "q = \"python\"\nsearch_type = \"hot\"\ninclude_type = \"pic\"\npage = 1",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "地区省市映射/Region City List",
+  "name_zh": "地区省市映射",
+  "name_en": "Region City List",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_city_list",
+  "purpose": "获取地区省市映射数据，用于用户搜索等接口的地区筛选参数",
+  "returns": "省市映射数据，用于fetch_user_search等接口的region参数",
+  "notice": "返回的编码格式为 custom:省代码:市代码，如 custom:11:1",
+  "query_params": [
+   {
+    "name": "normalized",
+    "in": "query",
+    "required": false,
+    "type": "boolean",
+    "default": true,
+    "example": "",
+    "desc": "是否返回标准化结构（省份列表+城市数组）/Whether to return normalized structure"
+   }
+  ],
+  "body_params": [],
+  "request_example": "normalized = True",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "实时搜索/Weibo Realtime Search",
+  "name_zh": "实时搜索",
+  "name_en": "Weibo Realtime Search",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_realtime_search",
+  "purpose": "获取微博实时搜索结果（按时间排序的最新微博）",
+  "returns": "实时搜索结果列表，包含微博内容、作者信息、图片、视频、互动数据等",
+  "notice": "视频播放需设置请求头 Referer=https://weibo.com/；返回结构与高级搜索一致",
+  "query_params": [
+   {
+    "name": "query",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "yu7",
+    "desc": "搜索关键词/Search keyword"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页码/Page number"
+   }
+  ],
+  "body_params": [],
+  "request_example": "query = \"苹果发布会\"\npage = 1",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "用户搜索/User search",
+  "name_zh": "用户搜索",
+  "name_en": "User search",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_user_search",
+  "purpose": "搜索微博用户，支持多种筛选条件",
+  "returns": "用户列表，包含uid、昵称、头像、粉丝数、主页链接",
+  "notice": "筛选参数过多可能导致无结果",
+  "query_params": [
+   {
+    "name": "query",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "yu7",
+    "desc": "搜索关键词/Query（提供则视为“全部”搜索；留空则仅应用高级筛选参数）"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页码/Page"
+   },
+   {
+    "name": "region",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "custom:11:1",
+    "desc": "地区编码，从 /city_list 获取/Region code from /city_list"
+   },
+   {
+    "name": "auth",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "org_vip",
+    "desc": "认证类型 org_vip(机构)/per_vip(个人)/ord(普通)/Auth type"
+   },
+   {
+    "name": "gender",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "man",
+    "desc": "性别 man / women / Gender"
+   },
+   {
+    "name": "age",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "22y",
+    "desc": "年龄段 18y/22y/29y/39y/40y / Age bucket"
+   },
+   {
+    "name": "nickname",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "张三",
+    "desc": "昵称筛选/Nickname filter"
+   },
+   {
+    "name": "tag",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "摄影",
+    "desc": "标签筛选/Tag filter"
+   },
+   {
+    "name": "school",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "清华大学",
+    "desc": "学校筛选/School filter"
+   },
+   {
+    "name": "work",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "字节跳动",
+    "desc": "公司筛选/Company filter"
+   }
+  ],
+  "body_params": [],
+  "request_example": "query = \"yu7\"\npage = 1",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "视频搜索（热门/全部）/Weibo video search (hot/all)",
+  "name_zh": "视频搜索（热门/全部）",
+  "name_en": "Weibo video search (hot/all)",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_video_search",
+  "purpose": "搜索微博视频内容，支持热门和全部模式",
+  "returns": "视频列表，包含微博ID、作者、内容、视频链接、互动数据",
+  "notice": "播放视频需设置Referer=https://weibo.com/",
+  "query_params": [
+   {
+    "name": "query",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "yu7",
+    "desc": "搜索关键词/Search keyword"
+   },
+   {
+    "name": "mode",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "hot",
+    "example": "hot",
+    "desc": "搜索模式：hot=热门 / all=全部"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页码/Page number"
+   }
+  ],
+  "body_params": [],
+  "request_example": "query = \"yu7\"\nmode = \"hot\"\npage = 1",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "图片搜索/Weibo picture search",
+  "name_zh": "图片搜索",
+  "name_en": "Weibo picture search",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_pic_search",
+  "purpose": "搜索微博图片内容，按微博ID聚合多图",
+  "returns": "图片列表，包含微博ID、缩略图、原图链接、作者信息、图片数量",
+  "notice": "缩略图会自动转换为原图链接",
+  "query_params": [
+   {
+    "name": "query",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "yu7",
+    "desc": "搜索关键词/Search keyword"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页码/Page number"
+   }
+  ],
+  "body_params": [],
+  "request_example": "query = \"yu7\"\npage = 1",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-Web-V2-API",
+  "name": "话题搜索/Weibo topic search",
+  "name_zh": "话题搜索",
+  "name_en": "Weibo topic search",
+  "method": "GET",
+  "path": "/api/v1/weibo/web_v2/fetch_topic_search",
+  "purpose": "搜索微博话题，获取话题名称、封面、讨论量、阅读量",
+  "returns": "话题列表，包含话题名、封面图、讨论数、阅读数",
+  "notice": "数量单位（万/亿）已转换为整数",
+  "query_params": [
+   {
+    "name": "query",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "yu7",
+    "desc": "搜索关键词/Search keyword"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页码/Page number"
+   }
+  ],
+  "body_params": [],
+  "request_example": "query = \"yu7\"\npage = 1",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取用户信息/Get user information",
+  "name_zh": "获取用户信息",
+  "name_en": "Get user information",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_user_info",
+  "purpose": "获取微博用户的基本信息，包括昵称、头像、简介、关注数、粉丝数等",
+  "returns": "用户基本信息数据",
+  "notice": "如果用户设置了隐私保护，部分信息可能无法获取",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "7648703289",
+    "desc": "用户ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"7648703289\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv",
+  "returns_detail": [
+   "`data` 是对象（7 个字段）：`channelInfo`, `config`, `header`, `headerBack`, `profileSkin`, `footer`, `navigationBar`",
+   "`data.channelInfo` 是对象（2 个字段）：`channelConfig`, `channels`",
+   "`data.header` 是对象（2 个字段）：`config`, `data`",
+   "`data.headerBack` 是对象（2 个字段）：`config`, `default`",
+   "响应消息：请求成功，本次请求将被计费。",
+   "实测时间：2026-11-23"
+  ]
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取用户详细信息/Get user detail information",
+  "name_zh": "获取用户详细信息",
+  "name_en": "Get user detail information",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_user_info_detail",
+  "purpose": "获取微博用户的详细信息，比基本信息更加完整，包括认证信息、标签、等级等",
+  "returns": "用户详细信息数据",
+  "notice": "如果用户设置了隐私保护，部分信息可能无法获取",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "7648703289",
+    "desc": "用户ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"7648703289\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取用户发布的微博/Get user timeline",
+  "name_zh": "获取用户发布的微博",
+  "name_en": "Get user timeline",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_user_timeline",
+  "purpose": "获取指定用户发布的微博列表，支持分页和多种内容筛选",
+  "returns": "微博列表数据，包含微博内容、图片、视频等信息",
+  "notice": "如果用户设置了隐私保护，可能无法获取微博列表；每页返回数量约为20条微博；使用时间筛选时必须同时指定filter_type=month和month参数",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "7648703289",
+    "desc": "用户ID"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页码"
+   },
+   {
+    "name": "filter_type",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "all",
+    "example": "all",
+    "desc": "筛选类型"
+   },
+   {
+    "name": "month",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "20251010",
+    "desc": "时间筛选(YYYYMMDD格式)"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"7648703289\"\npage = 1\nfilter_type = \"all\"\n# or filter_type = \"video\" for videos only\n# or filter_type = \"month\" with month = \"20251010\" for time filter",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取用户视频列表/Get user videos",
+  "name_zh": "获取用户视频列表",
+  "name_en": "Get user videos",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_user_videos",
+  "purpose": "获取指定用户发布的视频列表（瀑布流展示）",
+  "returns": "视频列表数据，包含视频标题、封面、播放量等信息；包含 moreInfo.params.since_id 字段用于翻页",
+  "notice": "只返回包含视频的微博；使用游标翻页（since_id），不使用页码翻页",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "7648703289",
+    "desc": "用户ID"
+   },
+   {
+    "name": "since_id",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "翻页游标"
+   }
+  ],
+  "body_params": [],
+  "request_example": "# First page\nuid = \"7648703289\"\nsince_id = None\n\n# Next page (use since_id from previous response)\n# since_id = \"4763250669650541\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取用户参与的超话列表/Get user super topics",
+  "name_zh": "获取用户参与的超话列表",
+  "name_en": "Get user super topics",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_user_super_topics",
+  "purpose": "获取指定用户参与的超话列表",
+  "returns": "用户参与的超话列表数据",
+  "notice": "如果用户设置了隐私保护，可能无法获取超话列表",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "7648703289",
+    "desc": "用户ID"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页码"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"7648703289\"\npage = 1",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取用户相册/Get user album",
+  "name_zh": "获取用户相册",
+  "name_en": "Get user album",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_user_album",
+  "purpose": "获取指定用户的相册内容",
+  "returns": "用户相册数据，包含图片列表等信息",
+  "notice": "如果用户设置了隐私保护，可能无法获取相册；使用游标翻页（since_id），不使用页码翻页",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "7648703289",
+    "desc": "用户ID"
+   },
+   {
+    "name": "since_id",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "翻页游标"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"7648703289\"\nsince_id = None  # First page\n# since_id = \"5012154263666753_4990205358511630|1034:4990204960768042_20240328_-1\"  # Next page",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取用户文章列表/Get user articles",
+  "name_zh": "获取用户文章列表",
+  "name_en": "Get user articles",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_user_articles",
+  "purpose": "获取指定用户发布的文章列表",
+  "returns": "用户文章列表数据",
+  "notice": "如果用户没有发布过文章，返回空列表；使用游标翻页（since_id），不使用页码翻页",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "1725941200",
+    "desc": "用户ID"
+   },
+   {
+    "name": "since_id",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "翻页游标"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"1725941200\"\nsince_id = None  # First page",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取用户音频列表/Get user audios",
+  "name_zh": "获取用户音频列表",
+  "name_en": "Get user audios",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_user_audios",
+  "purpose": "获取指定用户发布的音频列表",
+  "returns": "用户音频列表数据",
+  "notice": "如果用户没有发布过音频，返回空列表；使用游标翻页（since_id），不使用页码翻页",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "1725941200",
+    "desc": "用户ID"
+   },
+   {
+    "name": "since_id",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "翻页游标"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"1725941200\"\nsince_id = None  # First page",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取用户主页动态/Get user profile feed",
+  "name_zh": "获取用户主页动态",
+  "name_en": "Get user profile feed",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_user_profile_feed",
+  "purpose": "获取指定用户主页的动态流",
+  "returns": "用户主页动态数据",
+  "notice": "如果用户设置了隐私保护，可能无法获取动态；使用游标翻页（since_id），不使用页码翻页",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "6580994757",
+    "desc": "用户ID"
+   },
+   {
+    "name": "since_id",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "翻页游标"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"6580994757\"\nsince_id = None  # First page\n# since_id = \"2|1769360821762|5258923930289595,,,,,,1768788000,,,,,-1,-1\"  # Next page",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取用户粉丝列表/Get user followers",
+  "name_zh": "获取用户粉丝列表",
+  "name_en": "Get user followers",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_user_followers",
+  "purpose": "获取指定用户的粉丝列表，返回粉丝的用户信息（昵称、头像、简介、粉丝数、最新微博等）",
+  "returns": "粉丝列表数据",
+  "notice": "该接口走微博移动端(m.weibo.cn)H5接口，依赖服务端缓存的已登录Cookie，Cookie失效时会返回错误；使用 `page` 递增翻页，翻到 `data.list.next_page` 为空或0时表示没有更多数据；每页固定返回20条，微博会过滤部分账号（触发博主自保护策略），因此单页实际返回数量可能不足20条；微博限制粉丝列表的可翻页深度（实测约1000条后 `users` 返回空数组、`next_page` 为0）",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "1856404484",
+    "desc": "用户ID"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页码，从1开始"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"1856404484\"\npage = 1  # First page\n# page = 2  # Next page",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取用户关注列表/Get user following",
+  "name_zh": "获取用户关注列表",
+  "name_en": "Get user following",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_user_following",
+  "purpose": "获取指定用户的关注列表，返回被关注用户的信息（昵称、头像、简介、粉丝数、最新微博等）",
+  "returns": "关注列表数据",
+  "notice": "该接口走微博移动端(m.weibo.cn)H5接口，依赖服务端缓存的已登录Cookie，Cookie失效时会返回错误；每页返回约20条，使用 since_id 游标翻页，不使用页码翻页；响应中不再返回 since_id 即表示已翻到底，此时 users 可能仍有不足20条的最后一批数据；用户信息嵌套在 data.users[].user 中，与粉丝列表接口的结构不同",
+  "query_params": [
+   {
+    "name": "uid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "1856404484",
+    "desc": "用户ID"
+   },
+   {
+    "name": "since_id",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "翻页游标，格式为\"时间戳|偏移量\"，首次请求不传，后续请求使用返回的since_id值"
+   },
+   {
+    "name": "sort_type",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 2,
+    "example": 2,
+    "desc": "排序类型: 1=按最新微博时间排序, 2=按关注时间排序（默认）"
+   }
+  ],
+  "body_params": [],
+  "request_example": "uid = \"1856404484\"\nsince_id = None  # First page\n# since_id = \"1787913903|40\"  # Next page\nsort_type = 2",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取微博详情/Get post detail",
+  "name_zh": "获取微博详情",
+  "name_en": "Get post detail",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_status_detail",
+  "purpose": "获取指定微博的详细信息",
+  "returns": "微博详细数据，包含完整文本、图片、视频、点赞数、评论数、转发数等",
+  "notice": "如果微博已被删除或设置为私密，可能无法获取",
+  "query_params": [
+   {
+    "name": "status_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "5016922058656962",
+    "desc": "微博ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "status_id = \"5016922058656962\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取微博评论/Get post comments",
+  "name_zh": "获取微博评论",
+  "name_en": "Get post comments",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_status_comments",
+  "purpose": "获取指定微博的一级评论列表（也适用于视频评论）",
+  "returns": "评论列表数据，包含评论内容、评论者信息、点赞数等；包含 max_id 字段用于翻页",
+  "notice": "每次返回约20条评论；当没有更多评论时，max_id 为空或相同",
+  "query_params": [
+   {
+    "name": "status_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "5258708168476831",
+    "desc": "微博ID"
+   },
+   {
+    "name": "max_id",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "翻页游标"
+   },
+   {
+    "name": "sort_type",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "0",
+    "desc": "排序类型: 0=按热度排序, 1=按时间排序"
+   }
+  ],
+  "body_params": [],
+  "request_example": "status_id = \"5258708168476831\"\nmax_id = None  # First page\nsort_type = \"0\"  # Sort by popularity",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取微博转发列表/Get post reposts",
+  "name_zh": "获取微博转发列表",
+  "name_en": "Get post reposts",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_status_reposts",
+  "purpose": "获取指定微博的转发列表（也适用于视频转发）",
+  "returns": "转发列表数据，包含转发内容、转发者信息等；包含 max_id 字段用于翻页",
+  "notice": "每次返回约20条转发；当没有更多转发时，max_id 为空或相同",
+  "query_params": [
+   {
+    "name": "status_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "5016922058656962",
+    "desc": "微博ID"
+   },
+   {
+    "name": "max_id",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "翻页游标"
+   }
+  ],
+  "body_params": [],
+  "request_example": "status_id = \"5016922058656962\"\nmax_id = None  # First page",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取微博点赞列表/Get post likes",
+  "name_zh": "获取微博点赞列表",
+  "name_en": "Get post likes",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_status_likes",
+  "purpose": "获取指定微博的点赞列表（也适用于视频点赞）",
+  "returns": "点赞列表数据，包含点赞者信息、点赞类型等",
+  "notice": "每次返回约50条点赞记录",
+  "query_params": [
+   {
+    "name": "status_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "5016922058656962",
+    "desc": "微博ID"
+   },
+   {
+    "name": "attitude_type",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "0",
+    "desc": "点赞类型: 0=全部, 1=点赞, 2=开心, 3=惊讶, 4=伤心, 5=愤怒, 6=打赏, 8=抱抱"
+   }
+  ],
+  "body_params": [],
+  "request_example": "status_id = \"5016922058656962\"\nattitude_type = \"0\"  # All types",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取视频详情/Get video detail",
+  "name_zh": "获取视频详情",
+  "name_en": "Get video detail",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_video_detail",
+  "purpose": "获取单个视频的详细信息，包括视频播放地址；**重要**: 从微博视频链接（如 https://weibo.com/tv/show/1034:5232127105761312）获取真实视频ID的必需步骤",
+  "returns": "视频详细数据，包含视频播放地址、封面、时长、标题等；**items[0].data.idstr**: 真实的视频微博ID，可用于获取评论等操作",
+  "notice": "返回的视频地址可能有时效性；支持获取高清视频地址；**获取评论前必须先调用此接口**: 链接中的ID不能直接用于获取评论，需要先通过此接口获取 items[0].data.idstr 中的真实ID",
+  "query_params": [
+   {
+    "name": "mid",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "5242977759006596",
+    "desc": "视频微博ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "mid = \"5242977759006596\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取短视频精选Feed流/Get video featured feed",
+  "name_zh": "获取短视频精选Feed流",
+  "name_en": "Get video featured feed",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_video_featured_feed",
+  "purpose": "获取微博短视频精选页的Feed流",
+  "returns": "短视频精选Feed流数据，包含视频列表等",
+  "notice": "每页返回约20条视频",
+  "query_params": [
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "页码，首页不传，第二页传2"
+   }
+  ],
+  "body_params": [],
+  "request_example": "page = None  # First page\n# page = \"2\"  # Second page",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "综合搜索/Comprehensive search",
+  "name_zh": "综合搜索",
+  "name_en": "Comprehensive search",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_search_all",
+  "purpose": "在微博中进行综合搜索，返回相关内容。支持多种搜索类型",
+  "returns": "搜索结果列表，包含微博内容、作者信息、图片、视频等",
+  "notice": "搜索结果按相关度排序；仅使用 page 参数进行翻页",
+  "query_params": [
+   {
+    "name": "query",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "NVIDIA",
+    "desc": "搜索关键词"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页码"
+   },
+   {
+    "name": "search_type",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "搜索类型: 1=综合, 61=实时, 3=用户, 64=视频, 63=图片, 62=关注, 60=热门, 21=全网, 38=话题, 98=超话, 92=地点, 97=商品"
+   }
+  ],
+  "body_params": [],
+  "request_example": "query = \"NVIDIA\"\npage = 1\nsearch_type = 1  # General search\n# search_type = 3  # Search users\n# search_type = 64  # Search videos",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "AI智搜/AI Smart Search",
+  "name_zh": "AI智搜",
+  "name_en": "AI Smart Search",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_ai_smart_search",
+  "purpose": "使用微博AI智搜功能进行搜索，返回AI增强的搜索结果",
+  "returns": "AI智搜结果，包含AI增强的搜索内容",
+  "notice": "此接口为AI增强搜索，返回结果经过AI处理",
+  "query_params": [
+   {
+    "name": "query",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "人工智能",
+    "desc": "搜索关键词"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页码"
+   }
+  ],
+  "body_params": [],
+  "request_example": "query = \"人工智能\"\npage = 1",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取首页推荐Feed流/Get home recommend feed",
+  "name_zh": "获取首页推荐Feed流",
+  "name_en": "Get home recommend feed",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_home_recommend_feed",
+  "purpose": "获取微博首页推荐Feed流",
+  "returns": "首页推荐Feed流数据",
+  "notice": "推荐内容基于热门话题和热点事件",
+  "query_params": [
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "页码，首页不传，第二页传2"
+   },
+   {
+    "name": "count",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 15,
+    "example": 15,
+    "desc": "每页数量"
+   }
+  ],
+  "body_params": [],
+  "request_example": "page = None  # First page\ncount = 15",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取热搜榜/Get hot search",
+  "name_zh": "获取热搜榜",
+  "name_en": "Get hot search",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_hot_search",
+  "purpose": "获取微博热搜榜，支持多个分类",
+  "returns": "热搜榜数据，包含热搜词条、热度等",
+  "notice": "热搜榜实时更新",
+  "query_params": [
+   {
+    "name": "category",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "realtimehot",
+    "example": "realtimehot",
+    "desc": "热搜分类: mineband=我的, realtimehot=热搜, social=社会, fun=文娱, technologynav=科技, lifenav=生活, region=同城, sportnav=体育, gamenav=ACG"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页码"
+   },
+   {
+    "name": "count",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 20,
+    "example": 20,
+    "desc": "每页数量"
+   },
+   {
+    "name": "region_name",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "北京",
+    "desc": "同城热搜城市名称，仅 category=region 时有效，支持: 北京/上海/广州/深圳/杭州/成都/重庆/武汉/南京/天津/西安/长沙/郑州/苏州/东莞/青岛/沈阳/合肥等，默认北京"
+   }
+  ],
+  "body_params": [],
+  "request_example": "category = \"realtimehot\"\npage = 1\ncount = 20",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取热搜分类列表/Get hot search categories",
+  "name_zh": "获取热搜分类列表",
+  "name_en": "Get hot search categories",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_hot_search_categories",
+  "purpose": "获取微博热搜榜的所有可用分类列表",
+  "returns": "热搜分类列表数据，包含各分类名称和标识",
+  "notice": "返回的分类可用于 fetch_hot_search 接口的 category 参数",
+  "query_params": [],
+  "body_params": [],
+  "request_example": "# No parameters required",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "folder": "Weibo-App-API",
+  "name": "获取热搜简报/Get hot search brief",
+  "name_zh": "获取热搜简报",
+  "name_en": "Get hot search brief",
+  "method": "GET",
+  "path": "/api/v1/weibo/app/fetch_hot_search_brief",
+  "purpose": "获取微博热搜简报（今日热点事件纪要），返回当日热点事件的AI摘要，",
+  "returns": "热搜简报数据（微博原始响应），简报内容嵌套在AI智搜卡片中，取值路径为:",
+  "notice": "简报由微博智搜（AI）生成，内容每隔一段时间更新一次，更新时间见 slogan_info.dynamic_wenan；单次返回当日约20条热点事件，该接口不支持翻页；简报内容为多层嵌套的JSON字符串，调用方需要逐层反序列化后才能取到事件列表；简报由AI边生成边返回，命中生成中的响应时服务端会自动重试；极端情况下仍可能返回生成中的响应，",
+  "query_params": [],
+  "body_params": [],
+  "request_example": "# 无需参数 / No parameters required",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ }
+]

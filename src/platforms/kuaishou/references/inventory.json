@@ -1,0 +1,1455 @@
+[
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-Web-API",
+  "name": "获取单个作品数据 V1/Get single video data V1",
+  "name_zh": "获取单个作品数据 V1",
+  "name_en": "Get single video data V1",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/web/fetch_one_video",
+  "purpose": "获取单个作品数据，此接口不支持图文作品",
+  "returns": "视频数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "share_text",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "https://www.kuaishou.com/f/X-f2k5KJpiXN1SY",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "share_text = \"https://www.kuaishou.com/f/X-f2k5KJpiXN1SY\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.002,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-Web-API",
+  "name": "获取单个作品数据 V2/Get single video data V2",
+  "name_zh": "获取单个作品数据 V2",
+  "name_en": "Get single video data V2",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/web/fetch_one_video_v2",
+  "purpose": "快手单一视频查询接口V2",
+  "returns": "视频数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "photo_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "3xtdqvdnqd3psuc",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "photo_id = \"3xtdqvdnqd3psuc\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.002,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-Web-API",
+  "name": "链接获取作品数据/Fetch single video by URL",
+  "name_zh": "链接获取作品数据",
+  "name_en": "Fetch single video by URL",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/web/fetch_one_video_by_url",
+  "purpose": "根据链接获取单个作品数据",
+  "returns": "视频数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "url",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "https://v.kuaishou.com/GKTpYm",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "url = \"https://v.kuaishou.com/GKTpYm\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.002,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-Web-API",
+  "name": "获取作品一级评论/Fetch video comments",
+  "name_zh": "获取作品一级评论",
+  "name_en": "Fetch video comments",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/web/fetch_one_video_comment",
+  "purpose": "获取单个作品评论数据",
+  "returns": "评论数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "photo_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "3x7gxp2zhgjv832",
+    "desc": ""
+   },
+   {
+    "name": "pcursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "photo_id = \"3x7gxp2zhgjv832\"\npcursor = None",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.002,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-Web-API",
+  "name": "获取作品二级评论/Fetch video sub comments",
+  "name_zh": "获取作品二级评论",
+  "name_en": "Fetch video sub comments",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/web/fetch_one_video_sub_comment",
+  "purpose": "获取单个作品二级评论数据",
+  "returns": "评论数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "photo_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "3xgarycnydawq3g",
+    "desc": ""
+   },
+   {
+    "name": "pcursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "909377053156",
+    "desc": ""
+   },
+   {
+    "name": "root_comment_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "908850553827",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "photo_id = \"3xgarycnydawq3g\"\npcursor = \"909377053156\"\nroot_comment_id = \"908850553827\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-Web-API",
+  "name": "生成分享短连接/Generate share short URL",
+  "name_zh": "生成分享短连接",
+  "name_en": "Generate share short URL",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/web/generate_share_short_url",
+  "purpose": "生成分享短连接",
+  "returns": "短连接",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "photo_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "3xtdqvdnqd3psuc",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "body = {\n    \"photo_id\": \"3xtdqvdnqd3psuc\"\n}\n\n# [返回示例/Example Response]\n```json\n{\n  \"code\": 200,\n  \"request_id\": \"3fe5f6dc-e88c-4915-a6fa-2a63a2743342\",\n  \"router\": \"/api/v1/kuaishou/web/generate_share_short_url\",\n  \"params\": {\n    \"photo_id\": \"3xtdqvdnqd3psuc\"\n  },\n  \"data\": {\n    \"result\": 1,\n    \"hostName\": \"public-bjzey-rs6-kce-node1155.idchb1az3.hb1.kwaidc.com\",\n    \"cache-scope\": \"nocache\",\n    \"error_msg\": null,\n    \"max-age\": 0,\n    \"share\": {\n      \"shareMethod\": \"TOKEN\",\n      \"shareMethodType\": null,\n      \"shareChannel\": \"COPY_LINK\",\n      \"shareMode\": \"APP\",\n      \"kpn\": \"KUAISHOU\",\n      \"subBiz\": \"BROWSE_SLIDE_PHOTO\",\n      \"appName\": \"as\",\n      \"appIconUrl\": \"https://static.yximgs.com/udata/pkg/ks-share-sdk/cardlogonew.png\",\n      \"shareObject\": {\n        \"copylinkSuccessTips\": \"链接复制成功，快去分享给朋友吧\",\n        \"shareMessage\": \"https://v.kuaishou.com/KDh1s1j1 上一秒他是市民，下一秒他是市长 大哥突如其来的专业，让人笑不活了。\"搞笑 \"非物质文化遗产 \"...更多\",\n        \"kwaiToken\": \"X8hIM7myjQen2bi\",\n        \"shareId\": \"18546252276277\",\n        \"shareObjectId\": \"3xtdqvdnqd3psuc\",\n        \"shareResourceType\": \"PHOTO_OTHER\",\n        \"shortLink\": \"https://v.kuaishou.com/KDh1s1j1\"\n      },\n      \"extParams\": {\n        \"shareMode\": \"app\",\n        \"tokenExtParams\": \"{}\",\n        \"expTag\": \"1_i/0_unknown0\",\n        \"shareMethod\": \"token\",\n        \"useMmuTitle\": false,\n        \"logExt\": \"{\"expTag\":\"1_i/0_unknown0\",\"trendingType\":\"\"}\",\n        \"templateStyle\": \"\",\n        \"shareInfoWrap\": \"{\"shareTitleInfo\":{\"title\":\"分享一个作品给你\",\"subTitle\":\"推荐你看这个视频\"},\"shareId\":\"18546252276277\",\"docId\":9,\"groupName\":\"\",\"shareType\":\"PHOTO_OTHER\",\"coverUrlKey\":null,\"coverUrl\":null,\"tagType\":null,\"webShareVerifyData\":null}\",\n        \"battleTemplateId\": \"\",\n        \"templateGenerationType\": \"\"\n      }\n    },\n    \"host-name\": \"public-bjzey-rs6-kce-node1155.idchb1az3.hb1.kwaidc.com\"\n  }\n}\n```",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-Web-API",
+  "name": "获取用户信息/Fetch user info",
+  "name_zh": "获取用户信息",
+  "name_en": "Fetch user info",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/web/fetch_user_info",
+  "purpose": "",
+  "returns": "",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "3xz63mn6fngqtiq",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_id = \"3xz63mn6fngqtiq\"\n\n    # [返回示例/Example Response]\n    ```json\n    {\n        \"code\": 200,\n        \"request_id\": \"782e6fa2-4c8e-4fac-b151-78db03c10b8d\",\n        \"router\": \"/api/v1/kuaishou/web/fetch_user_info\",\n        \"params\": {\n            \"user_id\": \"3xz63mn6fngqtiq\"\n        },\n        \"data\": {\n            \"result\": 1,\n            \"userProfile\": {\n                \"profile\": {\n                    \"user_profile_bg_url\": \"//s2-10623.kwimgs.com/kos/nlav10623/vision_images/profile_background.5bc08b1bf4fba1f4.svg\",\n                    \"user_id\": \"3xz63mn6fngqtiq\",\n                    \"user_name\": \"权少爱吃小汉堡🍔\",\n                    \"headurl\": \"https://p66-pro.a.yximgs.com/uhead/AB/2025/08/11/21/BMjAyNTA4MTEyMTEyNDlfMjI4OTA1ODAyXzFfaGQ5ODdfODg4_s.jpg\",\n                    \"user_text\": \"感谢你的关注木木哒 我玩得游戏叫:Gmod\n\n禁止冒充搬运视频 违者必究\"\n                },\n                \"gender\": \"M\",\n                \"showCollectTab\": false,\n                \"livingInfo\": {\n                    \"living\": false,\n                    \"livingId\": null,\n                    \"iconType\": 0\n                },\n                \"ownerCount\": {\n                    \"fan\": 4300985,\n                    \"like\": 37676016,\n                    \"follow\": 198,\n                    \"photo_public\": 237\n                },\n                \"userDefineId\": \"quanshaogmod\",\n                \"isFollowing\": false,\n                \"isUserIsolated\": false\n            },\n            \"host-name\": \"public-bjzey-c3-kce-node67.idchb1az3.hb1.kwaidc.com\"\n        }\n    }\n    ```",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.002,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-Web-API",
+  "name": "获取用户直播回放/Fetch user live replay",
+  "name_zh": "获取用户直播回放",
+  "name_en": "Fetch user live replay",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/web/fetch_user_live_replay",
+  "purpose": "获取用户直播回放列表",
+  "returns": "用户直播回放列表",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "3xz63mn6fngqtiq",
+    "desc": ""
+   },
+   {
+    "name": "pcursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_id = \"3xz63mn6fngqtiq\"\npcursor = None\n\n# [返回示例/Example Response]\n```json\n\n```",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-Web-API",
+  "name": "获取用户收藏作品/Fetch user collect",
+  "name_zh": "获取用户收藏作品",
+  "name_en": "Fetch user collect",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/web/fetch_user_collect",
+  "purpose": "获取用户收藏作品",
+  "returns": "用户收藏作品列表",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "3xz63mn6fngqtiq",
+    "desc": ""
+   },
+   {
+    "name": "pcursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_id = \"3xz63mn6fngqtiq\"\npcursor = None\n\n# [返回示例/Example Response]\n```json\n\n```",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-Web-API",
+  "name": "获取快手热榜 V1/Fetch Kuaishou Hot List V1",
+  "name_zh": "获取快手热榜 V1",
+  "name_en": "Fetch Kuaishou Hot List V1",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/web/fetch_kuaishou_hot_list_v1",
+  "purpose": "获取快手热榜 V1",
+  "returns": "快手热榜 V1 列表",
+  "notice": "",
+  "query_params": [],
+  "body_params": [],
+  "request_example": "# [返回示例/Example Response]\n```json\n\n```",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv",
+  "returns_detail": [
+   "⚠️ 实测失败：HTTP 400（None）"
+  ]
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-Web-API",
+  "name": "获取快手热榜 V2/Fetch Kuaishou Hot List V2",
+  "name_zh": "获取快手热榜 V2",
+  "name_en": "Fetch Kuaishou Hot List V2",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/web/fetch_kuaishou_hot_list_v2",
+  "purpose": "获取快手热榜 V2",
+  "returns": "快手热榜 V2 列表",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "board_type",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "1",
+    "example": "1",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "# [返回示例/Example Response]\n```json\n\n```",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-Web-API",
+  "name": "获取用户ID/Fetch user ID",
+  "name_zh": "获取用户ID",
+  "name_en": "Fetch user ID",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/web/fetch_get_user_id",
+  "purpose": "通过用户分享链接获取用户ID",
+  "returns": "用户ID",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "share_link",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "https://v.kuaishou.com/KcdKDwFp",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "share_link = \"https://v.kuaishou.com/KcdKDwFp\"\n\nshare_link = \"https://c.kuaishou.com/fw/user/3xcuu5habgc8z29\"\n\nshare_link = \"https://live.kuaishou.com/profile/3xcuu5habgc8z29?fid=2357689552&cc=share_copylink\"\n\n# [返回示例/Example Response]\n```json\n```",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "视频详情V1/Video detailsV1",
+  "name_zh": "视频详情V1",
+  "name_en": "Video detailsV1",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/fetch_one_video",
+  "purpose": "获取单个作品数据接口 V1",
+  "returns": "视频数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "photo_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "3xhpk3xcf6e4iac",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "photo_id = \"3xhpk3xcf6e4iac\"\nphoto_id = \"5246975215478907538\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv",
+  "returns_detail": [
+   "`data` 是对象（3 个字段）：`result`, `photos`, `host-name`",
+   "`data.photos` 是数组（长度 1）；首元素字段：`longVideo`, `supportType`, `coronaVipInfo`, `enableCoronaViewLater`, `canShowQuickCommentGuide`, `showSpecialFollowIcon`, `danmakuInfo`, `inputPromptGuide`",
+   "响应消息：请求成功，本次请求将被计费。",
+   "实测时间：2026-11-23"
+  ]
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "快手批量视频查询接口/Kuaishou batch video query API",
+  "name_zh": "快手批量视频查询接口",
+  "name_en": "Kuaishou batch video query API",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/fetch_videos_batch",
+  "purpose": "批量获取多个作品数据，单次请求最多支持40个视频ID；如果此接口连续请求失败，可以尝试使用价格更昂贵的V2接口进行冗余请求；此接口收费标准默认为：40 * 0.001 = 0.04 美元/次",
+  "returns": "视频数据列表",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "photo_ids",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "5228960823332207296,5196309727975443273,5222486898325987583",
+    "desc": "多个作品ID用逗号分隔，单次最多40个/Multiple photo IDs separated by commas, max 40 per request"
+   }
+  ],
+  "body_params": [],
+  "request_example": "photo_ids = \"5228960823332207296,5196309727975443273,5222486898325987583\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.04,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "根据链接获取单个作品数据/Fetch single video by URL",
+  "name_zh": "根据链接获取单个作品数据",
+  "name_en": "Fetch single video by URL",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/fetch_one_video_by_url",
+  "purpose": "根据链接获取单个作品数据",
+  "returns": "视频数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "share_text",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "https://v.kuaishou.com/cNYP0Z",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "share_text = \"https://v.kuaishou.com/cNYP0Z\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "精选/推荐Feed流/Selection feed",
+  "name_zh": "精选/推荐Feed流",
+  "name_en": "Selection feed",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/fetch_selection_feed",
+  "purpose": "获取 App 首页「精选 / 推荐」频道的推荐作品流；推荐流无游标翻页，想要更多内容直接再次调用即可（结果随推荐策略变化，不保证顺序与去重）",
+  "returns": "推荐作品流数据",
+  "notice": "",
+  "query_params": [],
+  "body_params": [],
+  "request_example": "",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "生成快手分享链接/Generate Kuaishou share link",
+  "name_zh": "生成快手分享链接",
+  "name_en": "Generate Kuaishou share link",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/generate_kuaishou_share_link",
+  "purpose": "生成快手分享链接",
+  "returns": "分享链接",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "shareObjectId",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "3xg5wjqdtekbb3u",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "shareObjectId = \"3xg5wjqdtekbb3u\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "获取单个作品评论数据/Get single video comment data",
+  "name_zh": "获取单个作品评论数据",
+  "name_en": "Get single video comment data",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/fetch_video_comment",
+  "purpose": "获取单个作品评论数据",
+  "returns": "评论数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "photo_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "3x7gxp2zhgjv832",
+    "desc": ""
+   },
+   {
+    "name": "pcursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "photo_id = \"3x7gxp2zhgjv832\"\npcursor = None",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "评论二级回复/Video sub comments",
+  "name_zh": "评论二级回复",
+  "name_en": "Video sub comments",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/fetch_video_sub_comments",
+  "purpose": "获取某条一级评论（楼主评论）下的二级回复列表，使用游标分页",
+  "returns": "二级回复列表数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "photo_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "5218546261880462502",
+    "desc": ""
+   },
+   {
+    "name": "root_comment_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "14000000123456789",
+    "desc": ""
+   },
+   {
+    "name": "pcursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "首页留空，翻页传上一页响应的 pcursor"
+   },
+   {
+    "name": "count",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 8,
+    "example": "",
+    "desc": "默认 8，范围 1-20"
+   }
+  ],
+  "body_params": [],
+  "request_example": "",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "获取单个用户数据V2/Get single user data V2",
+  "name_zh": "获取单个用户数据V2",
+  "name_en": "Get single user data V2",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/fetch_one_user_v2",
+  "purpose": "获取单个用户数据 V2；此接口收费较贵，但稳定性更高，具体价格请在用户后台查看价格表",
+  "returns": "用户数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "3xz63mn6fngqtiq",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_id = \"3xz63mn6fngqtiq\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "用户视频列表V2/User video list V2",
+  "name_zh": "用户视频列表V2",
+  "name_en": "User video list V2",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/fetch_user_post_v2",
+  "purpose": "用户视频列表 V2；此接口收费较贵，但稳定性更高，具体价格请在用户后台查看价格表",
+  "returns": "视频数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "903511772",
+    "desc": ""
+   },
+   {
+    "name": "pcursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "第一次请求留空，后续传上一页响应的 pcursor"
+   },
+   {
+    "name": "sort",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "latest",
+    "example": "",
+    "desc": "latest(最新, 默认) / hot(热门)"
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_id = \"903511772\"\npcursor = \"\"\nsort = \"latest\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "获取用户热门作品数据/Get user hot post data",
+  "name_zh": "获取用户热门作品数据",
+  "name_en": "Get user hot post data",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/fetch_user_hot_post",
+  "purpose": "获取用户热门作品数据",
+  "returns": "作品数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "228905802",
+    "desc": ""
+   },
+   {
+    "name": "pcursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_id = \"228905802\"\npcursor = None",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "获取用户直播信息/Get user live info",
+  "name_zh": "获取用户直播信息",
+  "name_en": "Get user live info",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/fetch_user_live_info",
+  "purpose": "获取用户直播信息",
+  "returns": "直播信息",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "1377082950",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_id = \"1377082950\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "综合搜索/Comprehensive search",
+  "name_zh": "综合搜索",
+  "name_en": "Comprehensive search",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/search_comprehensive",
+  "purpose": "快手综合搜索接口，支持搜索视频、用户等内容，并提供多维度筛选功能",
+  "returns": "搜索结果数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "汽车之家",
+    "desc": ""
+   },
+   {
+    "name": "pcursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": ""
+   },
+   {
+    "name": "sort_type",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "all",
+    "example": "",
+    "desc": "可选值: all(综合排序), newest(最新发布), most_likes(最多点赞)"
+   },
+   {
+    "name": "publish_time",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "all",
+    "example": "",
+    "desc": "可选值: all(全部), one_day(近一日), one_week(近一周), one_month(近一月)"
+   },
+   {
+    "name": "duration",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "all",
+    "example": "",
+    "desc": "可选值: all(全部), under_1_min(1分钟以内), 1_to_5_min(1-5分钟), over_5_min(5分钟以上)"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword = \"汽车之家\"\nsort_type = \"most_likes\"\npublish_time = \"one_week\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "搜索视频V2/Search video V2",
+  "name_zh": "搜索视频V2",
+  "name_en": "Search video V2",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/search_video_v2",
+  "purpose": "搜索视频 V2；此接口收费较贵，但稳定性更高，具体价格请在用户后台查看价格表",
+  "returns": "视频数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "人工智能",
+    "desc": ""
+   },
+   {
+    "name": "pcursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "首次留空，翻页传上一页响应的 pcursor / Empty for first page, pass pcursor from previous response"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword = \"人工智能\"\npcursor = \"\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv",
+  "returns_detail": [
+   "`data` 是对象（14 个字段）：`portalFlag`, `recoPcursor`, `host-name`, `jumpToSlideMode`, `ussid`, `mixFeeds`, `extParams`, `pcursor`, `recoInterestFlag`, `result`, `responseCode`, `llsid`",
+   "响应消息：请求成功，本次请求将被计费。",
+   "实测时间：2026-11-23"
+  ]
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "搜索用户V2/Search user V2",
+  "name_zh": "搜索用户V2",
+  "name_en": "Search user V2",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/search_user_v2",
+  "purpose": "搜索用户 V2；此接口收费较贵，但稳定性更高，具体价格请在用户后台查看价格表",
+  "returns": "用户数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "人工智能",
+    "desc": ""
+   },
+   {
+    "name": "pcursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "首次留空，翻页传上一页响应的 pcursor / Empty for first page"
+   },
+   {
+    "name": "user_relation",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "all",
+    "example": "",
+    "desc": "all / same_city / verified / live / following"
+   },
+   {
+    "name": "user_gender",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "all",
+    "example": "",
+    "desc": "all / male / female"
+   },
+   {
+    "name": "fans_sort",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "default",
+    "example": "",
+    "desc": "default / most_to_least / least_to_most"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword = \"人工智能\"\npcursor = \"\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "搜索图片作品/Search image",
+  "name_zh": "搜索图片作品",
+  "name_en": "Search image",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/search_image",
+  "purpose": "关键词搜索图片作品，使用游标分页",
+  "returns": "图片作品搜索结果",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "风景",
+    "desc": ""
+   },
+   {
+    "name": "pcursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "首次留空，翻页传上一页响应的 pcursor"
+   }
+  ],
+  "body_params": [],
+  "request_example": "",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "搜索直播间/Search live",
+  "name_zh": "搜索直播间",
+  "name_en": "Search live",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/search_live",
+  "purpose": "关键词搜索正在直播的直播间，使用游标分页",
+  "returns": "直播间搜索结果",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "带货",
+    "desc": ""
+   },
+   {
+    "name": "pcursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "首次留空，翻页传上一页响应的 pcursor"
+   }
+  ],
+  "body_params": [],
+  "request_example": "",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "搜索音乐/Search music",
+  "name_zh": "搜索音乐",
+  "name_en": "Search music",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/search_music",
+  "purpose": "关键词搜索音乐（歌曲名 / 歌手 / 关键词），使用游标分页",
+  "returns": "音乐搜索结果",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "周杰伦",
+    "desc": ""
+   },
+   {
+    "name": "pcursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "首次留空，翻页传上一页响应的 pcursor"
+   }
+  ],
+  "body_params": [],
+  "request_example": "",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "搜索话题标签/Search tag",
+  "name_zh": "搜索话题标签",
+  "name_en": "Search tag",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/search_tag",
+  "purpose": "关键词搜索话题标签（hashtag），结果在 tags[] 中。可配合 /fetch_tag_feed 翻该标签内容流",
+  "returns": "话题标签搜索结果",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "挑战",
+    "desc": ""
+   },
+   {
+    "name": "pcursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "首次留空，翻页传上一页响应的 pcursor"
+   }
+  ],
+  "body_params": [],
+  "request_example": "",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "话题标签聚合页/Tag feed",
+  "name_zh": "话题标签聚合页",
+  "name_en": "Tag feed",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/fetch_tag_feed",
+  "purpose": "话题标签聚合页：给定标签，返回标签信息(tagInfo) + 关联作品流(mixFeeds[])。hashtag 页有 4 个子 tab",
+  "returns": "标签信息 + 作品流数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "general_tag_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "清纯甜美少女",
+    "desc": "话题标签传标签名或 search_tag 的数字 id；声音标签传编码串"
+   },
+   {
+    "name": "tab",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "hot",
+    "example": "",
+    "desc": "hot(最热门) / latest(最新发布) / image(图片) / live(直播)"
+   },
+   {
+    "name": "tag_name",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "话题标签建议传，等于标签名"
+   },
+   {
+    "name": "tag_type",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": "",
+    "desc": "1=话题标签，29=声音/音乐标签"
+   },
+   {
+    "name": "tag_source",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 2,
+    "example": "",
+    "desc": "2=搜索进入话题页，3=作品页声音标签"
+   },
+   {
+    "name": "from_photo_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "进入标签页的源作品 photoId（可选）"
+   },
+   {
+    "name": "pcursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "首次留空，翻页传上一页响应的 pcursor"
+   }
+  ],
+  "body_params": [],
+  "request_example": "",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "快手直播榜单/Kuaishou live top list",
+  "name_zh": "快手直播榜单",
+  "name_en": "Kuaishou live top list",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/fetch_live_top_list",
+  "purpose": "快手直播榜单",
+  "returns": "榜单数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "subTabId",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": "",
+    "desc": ""
+   },
+   {
+    "name": "subTabName",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "subTabId = 0\nsubTabName = None",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "快手热榜分类/Kuaishou hot categories",
+  "name_zh": "快手热榜分类",
+  "name_en": "Kuaishou hot categories",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/fetch_hot_board_categories",
+  "purpose": "快手热榜分类",
+  "returns": "分类数据",
+  "notice": "",
+  "query_params": [],
+  "body_params": [],
+  "request_example": "",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv",
+  "returns_detail": [
+   "`data` 是对象（4 个字段）：`result`, `boards`, `location`, `host-name`",
+   "`data.boards` 是数组（长度 5）；首元素字段：`type`, `boardId`, `boardName`, `bannerIconUrl`, `bannerLinkUrl`, `backgroundUrl`, `darkBackgroundUrl`, `shareTitle`",
+   "响应消息：请求成功，本次请求将被计费。",
+   "实测时间：2026-11-23"
+  ]
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "快手热榜详情/Kuaishou hot board detail",
+  "name_zh": "快手热榜详情",
+  "name_en": "Kuaishou hot board detail",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/fetch_hot_board_detail",
+  "purpose": "快手热榜详情",
+  "returns": "详情数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "boardType",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": "",
+    "desc": ""
+   },
+   {
+    "name": "boardId",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": "1",
+    "example": "",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "boardType = 1\nboardId = 1",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "快手热搜人物榜单/Kuaishou hot search person board",
+  "name_zh": "快手热搜人物榜单",
+  "name_en": "Kuaishou hot search person board",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/fetch_hot_search_person",
+  "purpose": "快手热搜人物榜单",
+  "returns": "榜单数据",
+  "notice": "",
+  "query_params": [],
+  "body_params": [],
+  "request_example": "",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "快手购物榜单/Kuaishou shopping top list",
+  "name_zh": "快手购物榜单",
+  "name_en": "Kuaishou shopping top list",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/fetch_shopping_top_list",
+  "purpose": "快手购物榜单",
+  "returns": "榜单数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "subTabId",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": "",
+    "desc": ""
+   },
+   {
+    "name": "subTabName",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "subTabId = 0\nsubTabName = None",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "快手品牌榜单/Kuaishou brand top list",
+  "name_zh": "快手品牌榜单",
+  "name_en": "Kuaishou brand top list",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/fetch_brand_top_list",
+  "purpose": "快手品牌榜单",
+  "returns": "榜单数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "subTabId",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": "",
+    "desc": ""
+   },
+   {
+    "name": "subTabName",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": ""
+   }
+  ],
+  "body_params": [],
+  "request_example": "subTabId = 0\nsubTabName = None",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "folder": "Kuaishou-App-API",
+  "name": "音乐榜单/Music ranking",
+  "name_zh": "音乐榜单",
+  "name_en": "Music ranking",
+  "method": "GET",
+  "path": "/api/v1/kuaishou/app/fetch_music_ranking",
+  "purpose": "获取音乐榜单（歌曲列表，结果在 musics[]），使用游标分页",
+  "returns": "音乐榜单数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "tab_id",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 100002,
+    "example": "",
+    "desc": "100002=热歌榜（默认），100063=π计划推荐榜"
+   },
+   {
+    "name": "count",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 20,
+    "example": "",
+    "desc": "默认 20，范围 1-50"
+   },
+   {
+    "name": "pcursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "首次留空，翻页传上一页响应的 pcursor"
+   }
+  ],
+  "body_params": [],
+  "request_example": "",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ }
+]

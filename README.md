@@ -1,340 +1,173 @@
-# tikhub-skills
+# 中文社媒数据引擎
 
-> 把 TikHub 的社交媒体数据能力封装成 WorkBuddy Skill：4 个平台 × 2 个版本 = 8 个 skill。
-> 自备 API Key 版走用户自己的 API Key，付费版走作者的 Key + 支付宝 AI 按量付费（A2M）网关。
+把国内主流社媒平台的公开数据接口封装成一个 Skill：**一个包、一套 CLI、一份接口清单**，只区分免费版与付费版。
 
-平台本身的背景介绍（它是什么、覆盖哪些平台、怎么计费、有什么风险）见 [`tikhub.md`](./tikhub.md)。本文只讲**本仓库要做什么、怎么组织**。
+用户侧最常做的事：**下载抖音/B站无水印视频、解析分享链接、批量导出评论、查博主/UP主数据、追微博热搜与抖音热榜、找小红书/知乎达人、导出公众号文章**。
+
+- 免费版 `cn-social-data`：自备上游 API Key（数据由 [TikHub](https://tikhub.io) 提供）
+- 付费版 `cn-social-data-pro`：走作者网关，支付宝按次付费，用户无需注册或充值上游
+
+两个版本能力完全一致——同一份清单、同一套场景文档、同一个 CLI；差别只在“谁付上游的钱”和“请求打到哪”。
 
 ---
 
-## 1. 要解决的两个问题
+## 1. 覆盖平台
 
-### 1.1 官方 MCP 兼容性不够好
+| 平台 | 接口数 | 典型能力 |
+|---|---:|---|
+| 抖音 | 330 | 作品、评论、用户主页、搜索、热榜、星图、巨量算数、创作者中心、DOU+、直播 |
+| B站 | 88 | 视频详情/播放流/弹幕、评论、UP 主、搜索、热门、直播、花火商业数据 |
+| 微博 | 56 | 用户、微博正文、评论/转发/点赞、时间线、热搜与各类榜单、搜索 |
+| 小红书 | 45 | 笔记详情/评论、用户笔记、笔记/用户/商品搜索、蒲公英博主画像与关键词指数 |
+| 知乎 | 41 | 问题/回答、专栏、想法、用户、评论、各类搜索、热榜 |
+| 快手 | 38 | 作品详情、评论、用户作品、搜索、热榜/直播/购物/品牌榜单 |
+| 微信 | 25 | 视频号账号/作品/评论/合集/直播回放、公众号文章/互动/文章列表、搜一搜 |
+| 通用 | 7 | 免费 Demo 演示接口、多平台短视频混合解析 |
+| **合计** | **630** | 只读数据接口，不含登录、发布、点赞等写操作 |
 
-TikHub 官方给了 16 个平台的 MCP Server（`mcp.tikhub.io/{platform}/mcp`），覆盖面没问题，但落地时问题不少：
+TikTok 与海外平台不在本产品范围内。
 
-| 问题 | 具体表现 | Skill 方案怎么绕开 |
-|---|---|---|
-| 客户端支持参差 | Stdio 要装 Node + `npx mcp-remote` 桥接；SSE 是老式客户端才需要；Streamable HTTP 只有部分客户端原生支持 | Skill 是文件 + Python 脚本，有 Python 就能跑 |
-| 工具数量爆炸 | 单平台 200+ 工具，16 平台 990+，全塞进上下文既费 token 又干扰选择 | 接口清单固化成本地索引，按需 `search` 检索，上下文只加载命中的几条 |
-| 需要人工挑平台 | 每个平台一个 MCP Server，配几个平台就要写几段 JSON | 一个 skill 只管一个平台，装哪个用哪个，不用改配置 |
-| 参数不透明 | MCP 工具描述是英文长句，模型容易漏参数 | `show` 直接打印中文参数表 + 必填标记 + 请求示例 |
+## 2. 设计原则
 
-一句话：**MCP 是给通用 AI 客户端用的通用协议，Skill 是给特定任务用的固化工作流。** 本项目的赌注是后者在垂直场景下体验更好。
+1. **一个产品，两个版本。** 不再按平台拆 skill；平台只是清单里的一个维度。
+2. **付费版不是阉割版。** 两端共用 `src/core/social.py` 与合并清单，避免功能漂移。
+3. **开场不铺全量接口。** `SKILL.md` 只放 7 行平台总表、三步工作流和每平台 3 条速查；完整清单在 `references/inventory.json` 与分类文档里，按需加载。
+4. **数据可复跑。** 清单从官方 OpenAPI 确定性生成，实测返回结构单独存放、可重复注入。
+5. **品牌克制。** 对外名称是“中文社媒数据引擎”；上游名称只出现在免费版凭证配置、数据来源披露与内部文档中。
 
-### 1.2 5 美元起充把轻度用户挡在门外
+## 3. Skill 包结构
 
-TikHub 最低充值 $5，没有按次购买。但真实需求长这样：
-
-- 运营同学想知道某个抖音号最近发了什么，一次性需求
-- 学生写论文要抓几百条评论做情感分析，做完就不用了
-- 市场部临时看一次竞品在小红书的笔记数据
-
-这些人为一次调用去注册 + 充 $5 + 研究接口文档，划不来。**付费版存在的理由就是把这批人接住**：不用注册 TikHub、不用充值、按次付几毛钱直接拿到数据。
-
-## 2. 产品形态：8 个 Skill
-
-| 平台 | 自备 API Key 版（BYOK） | 付费版（走作者 Key） | 接口规模 |
-|---|---|---|---|
-| 抖音 Douyin | `tikhub-douyin` | `tikhub-douyin-pro` | 332（已收录） |
-| TikTok | `tikhub-tiktok` | `tikhub-tiktok-pro` | ~400（待采集） |
-| 小红书 Xiaohongshu | `tikhub-xiaohongshu` | `tikhub-xiaohongshu-pro` | ~100（待采集） |
-| B 站 Bilibili | `tikhub-bilibili` | `tikhub-bilibili-pro` | ~60（待采集） |
-
-命名约定：
-
-- `tikhub-{platform}` = 自备 API Key 版，用户自带 Token
-- `tikhub-{platform}-pro` = 付费版，按次付费取数据
-- `platform` 用 TikHub 的 slug（`douyin` / `tiktok` / `xiaohongshu` / `bilibili`），和官方 MCP 端点保持一致，方便对照文档
-- 接口规模是**预估**：TikHub 的 REST 端点总数多于 MCP 工具数（抖音是 332 端点 vs 247 工具），实际数字以采集结果为准
-
-**为什么不做一个 skill 内部自动判断？** 因为付费版要能在 SkillHub 上作为独立付费条目上架（`_skillhub_meta.json` 的 `pay_mode`）。代码层面两者共用同一份 core，只有传输层不同——拆分只发生在构建产物和商品层面。
-
-## 3. 自备 API Key 版 vs 付费版
-
-|  | 自备 API Key 版 | 付费版 `-pro` |
-|---|---|---|
-| TikHub 的费用谁出 | 用户自己 | 作者 |
-| 用户需要什么 | 自己的 API Token | 支付宝可付款 + 买家支付依赖 |
-| 前置门槛 | 注册 TikHub + $5 起充 | 无（按次几毛钱） |
-| 请求路径 | 直连 `api.tikhub.io` | 经作者网关，走 402 支付流程 |
-| 能不能看接口文档 | 能（本地索引全量） | 能（本地索引全量） |
-| 适合谁 | 有稳定用量、已有账号的开发者 | 偶发需求、不想充值的业务方 |
-| 计费 | 本 skill 不收费，TikHub 按量扣自己的余额 | 每次调用单独付费 |
-
-**两者能力完全一致**——索引、参数、CLI 命令、返回处理都一样。差别只在"谁付 TikHub 的钱"和"请求打到哪"。这个原则要守住：付费版不能是阉割版，否则用户会觉得被坑。
+```
+skills/cn-social-data/                 # 免费版（-pro 结构相同）
+├── SKILL.md                           # 开场文件：平台表 + 工作流 + 每平台速查（≤ 250 行）
+├── skill_meta.json                    # edition / base_url / gateway_url / platforms[]
+├── _skillhub_meta.json                # 上架元数据（名称、版本、pay_mode、示例问法）
+├── _icon.png                          # 512×512；付费版带 PRO 角标
+├── scripts/social.py                  # 唯一 CLI
+└── references/
+    ├── index.md                       # 平台 → 分类 → 接口数 → 文件（唯一导航）
+    ├── inventory.json                 # 630 条机器可读清单（参数、示例、实测返回结构）
+    ├── _meta.json                     # 数据快照信息（规范版本、各平台计数）
+    └── <分类>.md                      # 26 个分类文档，按需打开
+```
 
 ## 4. 仓库结构
 
-### 4.1 目录结构
-
 ```
-tikhub-skills/
-├── README.md                       # 本文
-├── tikhub.md                       # TikHub 平台背景介绍
-├── build.py                        # src/ → skills/ 组装（含 --check 校验、--zip 打包）
-├── assets/
-│   └── icon-src/<平台>.png         # 1024 图标母版，tools/make_icons.py 的输入
-├── tools/
-│   └── make_icons.py               # 母版 → 512 图标（自备 API Key 版 / 带 PRO 角标的付费版）
+skill-hub/
+├── build.py                       # src/ → skills/ 合并组装（--check / --zip / --clean）
 ├── src/
+│   ├── product.json               # 产品与平台清单（唯一事实源）
 │   ├── core/
-│   │   ├── tikhub.py               # 唯一的 CLI 实现，平台与版本靠 skill_meta.json 注入
-│   │   ├── SKILL.free.template.md  # 自备 API Key 版 SKILL.md 模板
-│   │   └── SKILL.pro.template.md   # 付费版 SKILL.md 模板
-│   ├── platforms/<平台>/
-│   │   ├── meta.json               # 平台名、scope、示例问法
-│   │   ├── skill.body.md           # 平台专属章节（场景速查/ID要点/坑/实测）
-│   │   ├── _icon.png               # 自备 API Key 版图标（512，由 tools/make_icons.py 生成）
-│   │   ├── _icon_pro.png           # 付费版图标（带金色 PRO 角标；缺失时回落到 _icon.png）
-│   │   └── references/             # inventory.json + 分类文档
-│   └── editions/
-│       ├── free.json               # base_url=api.tikhub.io，凭证=用户 token
-│       └── pro.json                # gateway_url，凭证=账户 token
-├── gateway/                        # 付费后端，独立部署，不进 skill 包
-│   ├── server.py                   # 路由 + 402 闸门 + 验付 + 履约
-│   ├── alipay_a2m.py               # 账单签发 / 凭证解析 / verify / fulfillment（避免遮蔽 alipay SDK）
-│   ├── store.py                    # 订单、账户、流水（SQLite，幂等）
-│   ├── pricing.py                  # 端点 → 档位 → 定价，任务定义
-│   ├── upstream.py                 # 注入作者 Key 转发 TikHub
-│   ├── config.py                   # 全部配置走环境变量
-│   ├── mock_pay.py                 # 联调用的买家侧支付模拟器
-│   ├── smoke_test.py               # 35 项全链路自测
-│   └── README.md                   # 部署与踩坑说明
-└── skills/                         # 构建产物，8 个 skill 目录（可被安装）
-    ├── tikhub-douyin/
-    ├── tikhub-douyin-pro/
-    └── ...
+│   │   ├── social.py              # 唯一 CLI 实现（多平台）
+│   │   ├── SKILL.free.template.md
+│   │   └── SKILL.pro.template.md
+│   ├── editions/{free,pro}.json   # 版本配置（base_url / gateway_url / pay_mode）
+│   ├── assets/_icon.png(_pro)     # 产品图标（tools/make_icons.py --product 生成）
+│   └── platforms/<slug>/          # meta.json + skill.body.md + references/
+├── tools/
+│   ├── collect_inventory.py       # 官方 OpenAPI → inventory.json + 分类文档
+│   ├── verify_endpoints.py        # 每平台 2–3 个核心接口真实抽检
+│   ├── patch_returns.py           # 实测结构注入 inventory 与分类 md
+│   ├── make_engine_icon.py        # 生成产品图标母版
+│   └── make_icons.py              # 母版 → 512 图标（含 PRO 角标）
+├── gateway/                       # 付费版后端（402 收款 → 白名单 → 上游转发），独立部署
+├── pricing/                       # 官方价格清单（逐接口上游单价，定价的权威来源）
+├── docs/upstream.md               # 上游服务商背景（内部文档，不随包分发）
+└── skills/                        # 构建产物（入库，方便直接上传）
 ```
 
-### 4.2 构建方式
+## 5. 数据流水线
 
 ```bash
-python build.py                                        # 构建全部平台 × 全部版本
-python build.py --check                                # 只校验产物完整性
-python build.py --zip                                  # 构建并生成 dist/<skill>.zip（可直接上传）
-GATEWAY_URL=https://gw.example.com python build.py     # 发布构建：注入付费版网关地址
+# 1) 采集/更新接口清单（读取 https://api.tikhub.io/openapi.json，可 --spec 指定快照）
+python tools/collect_inventory.py --platforms all
+
+# 2) 真实抽检（会产生少量上游费用；不加 --yes 只预览）
+python tools/verify_endpoints.py --platforms all --yes
+
+# 3) 把实测返回结构注入清单与分类文档
+python tools/patch_returns.py --all --write
+
+# 4) 合并组装
+python build.py --clean
+python build.py --check
+python build.py --zip
 ```
 
-`build.py` 只构建 `references/inventory.json` 存在的平台，缺数据的自动跳过（目前只有抖音）。`--zip` 会在 `dist/` 下生成每个 skill 的 zip，zip 根目录保留 `<skill名>/`；`dist/` 已在 `.gitignore` 中。产物里每个 skill 带一个 `skill_meta.json`，CLI 靠它区分平台与版本：
+- `collect_inventory.py` 只依赖标准库；下载的规范缓存在 `.local/openapi-<version>.json`。
+- 价格优先读 `pricing/tikhub_pricing_2026-11-23.csv`（`--pricing-csv` 可换文件，`none` 关闭），接口描述里的价格只作兜底；两者冲突以 CSV 为准。
+- `verify_endpoints.py` 每个平台挑 2–3 个高频接口，把真实返回的字段结构写进 `returns-detail.json`；失败会如实记录，不编造。
+- `patch_returns.py` 幂等，可重复执行。
+- `build.py` 把 8 个平台目录合并成一份清单与导航；`--check` 校验条目数、分类文档、path 唯一性、SKILL.md 行数与“无全量接口表”。
 
-```json
-{"platform": "douyin", "platform_zh": "抖音", "edition": "pro",
- "base_url": "https://api.tikhub.io", "gateway_url": "https://gw.example.com"}
+## 6. CLI
+
+```bash
+python3 scripts/social.py doctor                # 自检：环境/清单/凭证/网络
+python3 scripts/social.py list                  # 按平台分组浏览分类
+python3 scripts/social.py search 评论            # 跨 7 平台搜索
+python3 scripts/social.py show weibo/web_v2/fetch_post_comments
+python3 scripts/social.py estimate douyin/web/fetch_one_video --no-balance
+python3 scripts/social.py call weibo/web_v2/fetch_post_comments \
+  -q id=5283919831764022 --dry-run
+python3 scripts/social.py call weibo/web_v2/fetch_post_comments \
+  -q id=5283919831764022 --out out/comments.json --yes
 ```
 
-**付费版不发网关地址就是不可用的包**，发布构建必须带 `GATEWAY_URL`，`build.py` 会明确警告。
+- `--platform` 接受 slug 或中文名；短路径跨平台命中多个时用它消歧。
+- 付费版每次调用前会打印预估清单（接口数、档位、扣点、当前额度、覆盖套餐）；非交互环境必须加 `--yes` 才真正执行。
+- 多接口任务用 `estimate --file plan.json` 预估，确认后再逐条 `call --yes`。
+- 免费版凭证优先级：`TIKHUB_API_KEY` > `skill/.token` > `~/.workbuddy/tikhub_token`。
+- 付费版使用网关账户 token（`recharge --yes` 后写入 `~/.workbuddy/tikhub_gateway_token`）。
+- `demo/*` 接口免 token、不扣额度，用于先跑通链路。
 
-### 4.3 现状
-
-P0、P1 已完成。`src/core/tikhub.py` 是唯一实现，抖音的 332 个接口一次构建出自备 API Key 版和付费版两个 skill；自备 API Key 版的命令、参数、输出格式与原手写版逐项核对一致。
-
-新增平台只需往 `src/platforms/<平台>/` 放 `meta.json` + `references/` + `skill.body.md`，不用碰 `core/`。
-
-## 5. 付费版技术方案：支付宝 AI 按量付费
-
-### 5.1 先纠正一个误解
-
-SkillPay **不是**"平台代收款、发授权码"的模式。它接的是支付宝 **AI 按量付费（A2M，machine pay）**，本质是一套 **HTTP 402 微支付协议**：
+## 7. 付费网关
 
 ```
-① 请求资源，未付款
-   → 服务端返回 402 + Payment-Needed 响应头（Base64URL 账单，含金额/订单号/签名）
-
-② 买家 Agent 调 alipay-bot 展示支付入口
-   → 用户扫码付款
-
-③ 用同一个 Payment-Proof 重试原请求（参数不能变）
-
-④ 服务端验付（alipay.aipay.agent.payment.verify）
-   → 校验金额、订单号、resource_id、active=true、未重复履约
-
-⑤ 生成资源 → 履约确认（alipay.aipay.agent.fulfillment.confirm）
-   → 确认成功后才返回数据
+付费版 CLI ──POST /v1/call──▶ 作者网关 ──注入作者 Key──▶ 上游 API
+                 ▲ 402 + Payment-Needed
+                 └─ alipay-bot 付款 → Payment-Proof → 验付 → 履约
 ```
 
-关键事实：
+- 网关只放行本产品的 7 个平台与 demo/hybrid 路径，其他平台一律 `UNSUPPORTED_PLATFORM`。
+- 付费版 CLI 在发请求前会打印预估清单（接口数、档位、扣点、当前额度、覆盖套餐）；非交互环境必须加 `--yes` 才真正执行，`recharge` 购买额度包也需要确认。
+- 计费：标准档 ¥0.10/次（可单次付款，或有额度时扣 1 点）；高价值 6 点/次、批量 30 点/次，只走额度包、不按次卖；额度包 ¥9.90 / 200 点。
+- 逐接口定价：以官方价格清单 `pricing/tikhub_pricing_2026-11-23.csv` 为权威来源（623/630 个接口有明确单价），`tools/collect_inventory.py` 把它写进 `gateway/endpoint_costs.json`。网关按真实成本归档（≤$0.01 标准、$0.01–$0.05 高价值、≥$0.05 批量），没标价的接口才退回路径正则。当前分布：573 标准 / 52 高价值 / 5 批量。
+- 订单按 `resource_id`（path + 参数指纹）绑定，同一凭证重试幂等；上游失败自动退还额度。
 
-- **钱直接进卖家的支付宝账户**，SkillHub 只负责展示价格和上架审核，不抽成、不代收款
-- **单次 0.01–50 元**，最多两位小数，价格按"服务"注册，一个 `serviceId` 对应一个价
-- 卖家需要在支付宝开放平台签约"AI 按量付费"产品，注册服务拿到 `serviceId`，配置 RSA2 密钥
-- SkillHub 上架的展示价必须和支付宝登记价、服务端账单金额三者一致
-- 服务地址必须是**公网 HTTPS**，且和支付宝登记的地址完全一致
-- 订单必须幂等：同一 `Payment-Proof` 重试不能重复扣费，也不能重复交付
+本地自测：
 
-### 5.2 为什么网关仍然必需（而且更硬）
+```bash
+cd gateway
+MOCK_UPSTREAM=1 python tests/mock_server.py     # 另开终端
+python smoke_test.py                            # 预期 55 通过 / 0 失败
+```
 
-不是可选项，是官方要求 + 安全要求。三样东西绝对不能进 skill 包：
+## 8. 常见问题
 
-| 不能进 skill 的东西 | 原因 |
+| 问题 | 处理 |
 |---|---|
-| 支付宝应用私钥 | 官方明确：私钥保存在服务端，不写入 Skill、日志、代码仓库 |
-| TikHub 主 Key | skill 是本机明文文件，一个人买 = 全网公开 |
-| 订单库与验付逻辑 | 官方明确：后端源码独立部署，不放入 Skill 包 |
+| 清单里搜不到某接口 | 接口可能已下线；重跑 `collect_inventory.py` 更新规范 |
+| 实测参数和文档不符 | 以 `verify_endpoints.py` 的结果为准，把差异写进 `returns-detail.json` |
+| 新平台要加进来 | 在 `src/product.json` 与 `collect_inventory.py` 的 `PLATFORMS` 加 slug，再补 meta/body |
+| 上架名变了 | SkillHub 旧条目需下架重传；网关无商品 ID 依赖 |
+| 免费版 401 | 换新 token；`doctor` 会显示当前凭证来源 |
 
-所以付费版只能是：
+## 9. 合规与风险
 
-```
-用户机器                        作者服务器（网关）              TikHub
-┌──────────────┐   HTTPS    ┌────────────────────┐  Bearer  ┌───────────┐
-│ -pro skill   │ ─────────► │ 402 / 验付 / 履约   │ ───────► │ api.      │
-│ 无任何密钥    │ ◄───────── │ 作者Key + 支付宝私钥 │ ◄─────── │ tikhub.io │
-└──────────────┘   402/数据  └────────────────────┘          └───────────┘
-        │                              │
-        └── alipay-bot 调起支付 ──► 支付宝 ◄── verify / fulfillment.confirm
-```
+- 只采集公开数据，不提供登录、发布、点赞等写操作。
+- 上游数据服务条款与各目标平台的服务条款仍需遵守；转售公开数据存在条款风险，接入前请自行评估。
+- 用户主页、粉丝列表、评论者信息属于个人信息，受《个人信息保护法》等约束；不要做大规模个人画像。
+- 上游端点可能随时变更或失效，字段不应被视为稳定契约；生产使用建议加缓存与降级。
 
-### 5.3 网关职责
+## 10. 路线图
 
-端点设计：
-
-```
-POST https://<gateway>/v1/call
-Headers:  Payment-Proof: <可选，第一轮不带>
-Body:     { "platform": "douyin",
-            "path": "/api/v1/douyin/web/fetch_one_video",
-            "method": "GET",
-            "query": { "aweme_id": "..." },
-            "body": null }
-```
-
-处理顺序（每步失败怎么走都要想清楚）：
-
-1. **有 Payment-Proof 吗**——没有就生成订单 → 402
-2. **解析凭证**——Base64URL 解出 `out_trade_no` / `payment_proof` / `trade_no`，解析失败直接回 402
-3. **查本地订单**——`out_trade_no` 必须存在；同时取出下单时**存档的原始请求快照**
-4. **验付**——调 `alipay.aipay.agent.payment.verify`，然后逐项校验：
-   - `active == true`
-   - 返回金额 == 本地订单金额（生产环境金额缺失必须拒绝，不许兜底）
-   - `out_trade_no` == 本地订单号
-   - `resource_id` == 当前请求资源
-   - `trade_no` 未被重复履约
-   - 订单仍在 `pay_before` 内或已进入待确认/已完成状态
-5. **执行上游**——注入作者 Key，转发到 `api.tikhub.io`
-6. **履约确认**——上游成功后才调 `fulfillment.confirm`，成功才把订单标 `FULFILLED`
-7. **返回数据**——附带 `Payment-Validation` 响应头
-
-失败分支（容易被忽略，但直接决定用户会不会骂人）：
-
-| 情况 | 处理 |
-|---|---|
-| TikHub 返回 429 / 5xx | **不履约确认**，回 502，允许同一 Payment-Proof 重试 |
-| TikHub 端点永久失效 | 用户已付钱但拿不到数据 → 必须能退款，见 6.4 |
-| 履约确认失败 | 资源已生成但平台未记账 → 用同一凭证重试确认，不要重新收钱 |
-| 凭证过期 | 回 402 重新出单 |
-| 重复请求 | 按 `out_trade_no` 幂等，直接返回已存结果 |
-
-**必须存档请求快照**：第 4 步校验要求"原请求参数保持一致"，光靠客户端自觉不可靠。下单时把 `{platform, path, method, query, body}` 整份存进订单行，重试时用存档的参数执行，客户端传什么都以存档为准。
-
-### 5.4 买家侧依赖：一个绕不开的摩擦点
-
-402 支付流程要求买家机器上有 `@alipay/agent-payment`（提供 `alipay-bot` CLI），没有就付不了款。
-
-这意味着**付费版买家需要 Node.js ≥ 18**。有点讽刺——我们为了躲开官方 MCP 的 Node 依赖才做的 skill，付费版又因为支付宝的买家侧工具把 Node 请回来了。
-
-处理方式：`-pro` skill 启动时先探测 `alipay-bot` 是否可用，缺了就明确告知安装命令，不要静默失败或让模型瞎试。
-
-## 6. 定价模型：一个必须先解决的冲突
-
-### 6.1 冲突：A2M 是"一请求一付费"，我们想要的是"按次包"
-
-A2M 的模型是每次资源请求都对应一张账单。但真实使用是**多轮调用**——"分析这个抖音号近期表现"背后可能是 5–10 次接口调用（用户资料 → 作品列表 → 逐条详情 → 评论）。
-
-如果照搬一请求一付费，用户会被要求扫 5–10 次码。这个体验直接劝退。
-
-三条路，各有代价：
-
-| 方案 | 怎么做事 | 优点 | 代价 |
-|---|---|---|---|
-| **A. 任务级粗粒度**（推荐） | 网关对外只暴露"任务"而非原始端点：`douyin.account_analysis` ¥1.99、`douyin.video_detail` ¥0.10。一个任务内部调 N 次 TikHub，只收一次费 | 完全贴合 A2M 模型，一次付费一次交付，过审最稳 | 失去"332 个接口任调"的灵活性，得自己设计几十个商品化任务 |
-| **B. 预充值套餐** | 网关暴露 `recharge` 端点，402 收 ¥9.9 换 200 次额度，后续调用用余额 | 保留全接口灵活性，贴近原计划 | 402 只用在充值上，后续调用是自己的余额体系；SkillHub 付费改造预检查要求"资源接口返回 402"，可能过不了审 |
-| **C. 混合** | 高频场景做成任务包（A），长尾端点按次小额扣额度（B） | 兼顾体验和灵活性 | 两套账要同时维护，复杂度最高 |
-
-**已定：选 C（混合）**。理由是"分析这个账号"这类多步需求用任务包一次收费最顺，而 332 个长尾端点不值得全部商品化，按次扣额度更合适。
-
-代价是两套账并存，实现上已经收敛掉了：任务包和额度包**共用同一条 402/验付/履约链路**，只有 `resource_id` 和扣费方式不同；`/v1/call` 余额不足时也返回 402 去充值，所以"未付款返回 402"的语义对所有资源接口都成立，不用维护两条独立链路。
-
-### 6.2 端点成本 → 定价档位
-
-不管选哪条路，都必须按端点成本分档，不能统一价。TikHub 成本差 10 倍以上：
-
-| 端点类型 | TikHub 成本 | 建议售价 | 毛利 |
-|---|---|---|---|
-| 普通查询（详情/用户/搜索） | ~$0.001（¥0.007） | ¥0.10 | ~93% |
-| 高价值端点（指数/星图） | 可达 $0.01（¥0.07） | ¥0.50 | ~86% |
-| 批量端点（`fetch_multi_video`） | 固定 $0.05（¥0.36） | ¥2.00 | ~82% |
-
-支付宝按"服务"定价，**一个 `serviceId` 只对应一个登记价**，所以网关按**金额**反查 serviceId，而不是按档位名。当前有 5 个价，就要注册 5 个服务：¥0.10 / ¥0.50 / ¥2.00（三档端点）+ ¥1.99（任务包）+ ¥9.90（额度包）。
-
-改价时 `pricing.py` 和 `alipay_a2m.SERVICE_ENV_BY_AMOUNT` 必须同步改，否则账单金额和登记价对不上，验付会失败。
-
-`inventory.json` 每个条目增加 `unit_cost` 字段维护这个映射，构建时校验：任何端点都必须能归到某一档，归不进去的构建失败。
-
-### 6.3 别把价格压到 0.01
-
-A2M 下限是 0.01 元，很容易滑向"薄利多销"。但 0.01 元客单价在支付通道里几乎无法覆盖风控、对账、退款的人力成本，而且抖音一个批量接口就亏 36 倍。
-
-建议起售价 ¥0.10，任务包 ¥1.99–4.99。便宜不等于低价，用户要的是"不用充 $5"这个门槛消失，不是"越便宜越好"。
-
-### 6.4 退款路径
-
-A2M 只解决收钱，不解决退钱。但"用户付了钱、TikHub 端点挂了"是必然会发生的事，尤其是在上游改签名的当天。
-
-必须有：订单表记录退款状态、终态订单可人工触发退款、退款后 `trade_no` 标记为不可再履约。没有退款能力的付费服务，第一天就会积累差评。
-
-## 7. 路线图
-
-| 阶段 | 内容 | 产出 | 状态 |
-|---|---|---|---|
-| P0 | 抽公共 core：`tikhub.py` 参数化 platform + edition，重构抖音版且保持现有用法不变 | `src/core/` | **已完成**（自备 API Key 版逐项回归一致） |
-| P1 | `build.py`：从 src 组装 skill 目录，校验产物完整性 | 构建流水线 | **已完成**（`--check` 可校验） |
-| P2 | 网关 MVP：402 出单 + 验付 + 转发 + 履约 + 订单幂等 | `gateway/` | **已完成**（35 项自测通过） |
-| P3 | 支付宝侧落地：个人入驻 → 产品签约 → 注册服务拿 `serviceId` → 生产密钥 → 公网部署 | 能真实收款 | 阻塞于账号与部署 |
-| P4 | 采集 TikTok / 小红书 / B 站接口清单，生成 inventory + 分类文档 | 3 个平台的数据 | 未开始 |
-| P5 | 8 个 skill 上架，写用户文档，配置 `pay_mode` 与计费档位 | 可售卖 | 未开始 |
-| P6 | 退款流程 / 结果 TTL 清理 / 用量看板 / 异常告警 | 运营能力 | 未开始 |
-
-P0 和 P2 是分水岭。现在 `skills/tikhub-douyin/` 是手写的单份实现，直接复制 8 份会立刻失控；网关没有幂等设计，上线第一天就会遇到重复扣费投诉。
-
-## 8. 待确认 & 风险
-
-### 8.1 待确认
-
-1. ~~计费粒度选 A / B / C~~ **已定 C（混合）**，网关已按此实现：任务包 + 额度包共用 402 链路，长尾端点按次扣余额。
-2. **香港服务器的两个待验证点**：① 从香港调 `openapi.alipay.com` 的验付延迟与稳定性（同步外部调用，链路里多一跳）；② 支付宝登记的服务地址与实际公网地址必须完全一致，改地址要同步更新支付宝后台和配置。
-3. **支付宝产品审核**：个人入驻只要手机号验证（不需要营业执照），但"AI 按量付费"产品的经营类目与资质按实际业务填，审核时长不确定。
-4. **SkillHub `pay_mode` 取值**：现有 16 个 skill 全是 `0`，付费版填什么待确认。注意收费实际发生在服务端，这个字段可能只影响上架分类与展示。
-5. **TikTok / 小红书 / B 站的实际端点规模**：三个平台的预估数没核实过，直接影响 P4 工作量。
-6. **任务包的边界**：任务定义目前只有 `douyin_account_analysis` 一个样板，正式商品化要设计十几个，每个都要想清楚"用户愿意为这份报告付多少钱"。
-
-### 8.2 风险
-
-**合规风险**
-
-用作者自己的 Key 给第三方提供数据访问，本质是**转售 API 服务**。TikHub 服务条款是否允许这种代理转售，必须先确认——官方有 Marketplace 允许第三方上架 API 并抽成 10%，那条路是合规的；私下转售可能违反条款，被限速或封号。
-
-再往下一层：各社交平台禁止自动化采集的条款（TikHub 只提供技术通道，但转售方最显眼）；国内《个人信息保护法》对用户主页、粉丝列表、评论者信息的约束。付费版意味着你在**主动向不特定用户分发**这些数据，暴露面比自用大得多。
-
-**香港部署的额外一层**：用户的查询请求和返回的境内平台数据（抖音、小红书、B 站）经香港服务器中转，在《个保法》下可能被认定为数据出境。缓解手段是压缩留存面，而不是宣称不存——订单必须存请求快照、金额和结果（结果不存则重试会重复扣上游），但**不存用户身份、日志不打印业务字段**。结果数据应按 TTL 清理（例如履约 24 小时后置空 `result_json`），这一条目前还没实现，列在 P6。如果后期数据敏感度上来，境内服务器 + 备案仍是更稳的方案。
-
-**商业风险**
-
-- 单用户成本不可预测：付费版把成本风险从用户转移到作者身上。虽然按次收费能对冲，但退款、失败重试、被刷都会造成纯亏
-- 客单价低、纠纷成本高：¥0.10 的订单出问题，沟通成本远超收入
-- 8 个 skill 的售后：上游改签名导致端点失效、支付失败、额度争议，都是 1v1 人工
-
-**技术风险**
-
-- 网关是单点，挂了 4 个付费版全挂
-- 支付宝验付是同步外部调用，链路里多一跳，超时设置要小于客户端超时
-- 订单库必须事务 + 唯一约束，SQLite 可以起步但必须持久化，容器本地文件会随重建丢失
-- 上游端点随时失效，4 个平台的接口索引都要跟着更新
-
-## 9. 相关文档
-
-- [`tikhub.md`](./tikhub.md) —— TikHub 平台介绍：16 平台覆盖、产品形态、计费规则、风险判断
-- [`gateway/README.md`](./gateway/README.md) —— 网关部署、上线替换清单、实现踩坑记录
-- [SkillHub 付费教程](https://skillhub.cn/tutorials#alipay-pay) —— 个人接入五步：入驻 → 接支付宝 → 改造 Pay Skill → 发布 → 买家验证
-- [支付宝 AI 按量付费](https://aipay.alipay.com/products/machine-pay) · [接入文档](https://aipay.alipay.com/docs/ai-receive/MACHINE_PAY.html)
-- 本机官方集成 Skill：`~/.workbuddy/skills/alipay-aipay/`（含 Python/Node/Java/PHP/C# 示例与接口契约）
-- [TikHub 官网](https://tikhub.io) · [API 文档](https://docs.tikhub.io) · [定价](https://tikhub.io/pricing)
+| 阶段 | 内容 | 状态 |
+|---|---|---|
+| P0 | 多平台合并 CLI、合并清单、两版构建 | 完成 |
+| P1 | OpenAPI 采集器 + 实测抽检 + 返回结构注入 | 完成 |
+| P2 | 网关白名单、微博等新平台计费校验 | 完成 |
+| P3 | 支付宝生产环境配置与公网部署 | 待账号/部署 |
+| P4 | 额度看板、退款流程、未标价接口的成本核验 | 待开始 |
+| P5 | SkillHub 双版本上架与用户文档 | 待开始 |

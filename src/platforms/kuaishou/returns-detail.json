@@ -1,0 +1,23 @@
+{
+ "_note": "实测返回结构。tools/patch_returns.py 会写入 inventory.json 的 returns_detail 并注入分类 md；CLI 的 show 也会打印。",
+ "/api/v1/kuaishou/app/fetch_one_video": [
+  "`data` 是对象（3 个字段）：`result`, `photos`, `host-name`",
+  "`data.photos` 是数组（长度 1）；首元素字段：`longVideo`, `supportType`, `coronaVipInfo`, `enableCoronaViewLater`, `canShowQuickCommentGuide`, `showSpecialFollowIcon`, `danmakuInfo`, `inputPromptGuide`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ],
+ "/api/v1/kuaishou/web/fetch_kuaishou_hot_list_v1": [
+  "⚠️ 实测失败：HTTP 400（None）"
+ ],
+ "/api/v1/kuaishou/app/search_video_v2": [
+  "`data` 是对象（14 个字段）：`portalFlag`, `recoPcursor`, `host-name`, `jumpToSlideMode`, `ussid`, `mixFeeds`, `extParams`, `pcursor`, `recoInterestFlag`, `result`, `responseCode`, `llsid`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ],
+ "/api/v1/kuaishou/app/fetch_hot_board_categories": [
+  "`data` 是对象（4 个字段）：`result`, `boards`, `location`, `host-name`",
+  "`data.boards` 是数组（长度 5）；首元素字段：`type`, `boardId`, `boardName`, `bannerIconUrl`, `bannerLinkUrl`, `backgroundUrl`, `darkBackgroundUrl`, `shareTitle`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ]
+}

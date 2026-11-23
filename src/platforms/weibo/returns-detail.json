@@ -1,0 +1,24 @@
+{
+ "_note": "实测返回结构。tools/patch_returns.py 会写入 inventory.json 的 returns_detail 并注入分类 md；CLI 的 show 也会打印。",
+ "/api/v1/weibo/app/fetch_user_info": [
+  "`data` 是对象（7 个字段）：`channelInfo`, `config`, `header`, `headerBack`, `profileSkin`, `footer`, `navigationBar`",
+  "`data.channelInfo` 是对象（2 个字段）：`channelConfig`, `channels`",
+  "`data.header` 是对象（2 个字段）：`config`, `data`",
+  "`data.headerBack` 是对象（2 个字段）：`config`, `default`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ],
+ "/api/v1/weibo/web_v2/fetch_user_posts": [
+  "`data` 是对象（2 个字段）：`data`, `ok`",
+  "`data.data` 是对象（7 个字段）：`since_id`, `list`, `status_visible`, `bottom_tips_visible`, `bottom_tips_text`, `topicList`, `total`",
+  "`data.data.list` 是数组（长度 20）；首元素字段：`visible`, `created_at`, `id`, `idstr`, `mid`, `mblogid`, `user`, `can_edit`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ],
+ "/api/v1/weibo/web_v2/fetch_hot_search_summary": [
+  "`data` 是对象（2 个字段）：`total`, `data`",
+  "`data.data` 是数组（长度 51）；首元素字段：`rank`, `is_top`, `keyword`, `keyword_url`, `tag`, `heat`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ]
+}

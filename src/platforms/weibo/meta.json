@@ -1,0 +1,18 @@
+{
+  "platform": "weibo",
+  "platform_zh": "微博",
+  "platform_en": "Weibo",
+  "api_prefixes": ["/api/v1/weibo"],
+  "version": "2.0.0",
+  "scope": "用户信息与粉丝/关注、微博正文与评论/转发/点赞、用户微博时间线、热搜与文娱/生活/社会榜单、综合/视频/图片/话题/用户搜索",
+  "usage_zh": [
+    "拉取这个微博用户最近 30 条微博",
+    "今天微博热搜前 20 条是什么",
+    "这条微博的评论和转发数据"
+  ],
+  "usage_en": [
+    "Pull the latest 30 posts of this Weibo user",
+    "What are today's top 20 Weibo hot searches",
+    "Comments and reposts of this Weibo post"
+  ]
+}

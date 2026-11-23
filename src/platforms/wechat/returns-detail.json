@@ -1,0 +1,22 @@
+{
+ "_note": "实测返回结构。tools/patch_returns.py 会写入 inventory.json 的 returns_detail 并注入分类 md；CLI 的 show 也会打印。",
+ "/api/v1/wechat_channels/v2/fetch_channel_info": [
+  "`data` 是对象（6 个字段）：`baseResponse`, `pbRequestMsgInfo`, `pair`, `sections`, `debug_id`, `debug_info`",
+  "`data.baseResponse` 是对象（3 个字段）：`ret`, `errMsg`, `pbRequestMsgInfo`",
+  "`data.pair` 是数组（长度 0）",
+  "`data.sections` 是数组（长度 2）；首元素字段：`title`, `items`, `pbRequestMsgInfo`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ],
+ "/api/v1/wechat_search/v2/fetch_search": [
+  "`data` 是对象（12 个字段）：`keyword`, `business_type`, `continue_flag`, `offset`, `cursor`, `categories`, `no_more`, `total`, `count`, `items`, `debug_id`, `debug_info`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ],
+ "/api/v1/wechat_mp/v2/fetch_article_detail_h5": [
+  "`data` 是对象（6 个字段）：`url`, `bizUin`, `itemIdx`, `content`, `debug_id`, `debug_info`",
+  "`data.content` 是对象（206 个字段）：`title`, `nick_name`, `author`, `user_name`, `desc`, `content_noencode`, `content_text`, `create_time`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ]
+}

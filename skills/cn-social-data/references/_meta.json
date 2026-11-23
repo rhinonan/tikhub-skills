@@ -1,0 +1,48 @@
+{
+ "skill": "cn-social-data",
+ "version": "2.0.0",
+ "count": 630,
+ "priced_endpoints": 623,
+ "platforms": {
+  "douyin": {
+   "zh": "抖音",
+   "count": 330,
+   "spec_version": "V5.3.2"
+  },
+  "weibo": {
+   "zh": "微博",
+   "count": 56,
+   "spec_version": "V5.3.2"
+  },
+  "xiaohongshu": {
+   "zh": "小红书",
+   "count": 45,
+   "spec_version": "V5.3.2"
+  },
+  "bilibili": {
+   "zh": "B站",
+   "count": 88,
+   "spec_version": "V5.3.2"
+  },
+  "zhihu": {
+   "zh": "知乎",
+   "count": 41,
+   "spec_version": "V5.3.2"
+  },
+  "wechat": {
+   "zh": "微信",
+   "count": 25,
+   "spec_version": "V5.3.2"
+  },
+  "kuaishou": {
+   "zh": "快手",
+   "count": 38,
+   "spec_version": "V5.3.2"
+  },
+  "common": {
+   "zh": "通用",
+   "count": 7,
+   "spec_version": "V5.3.2"
+  }
+ }
+}

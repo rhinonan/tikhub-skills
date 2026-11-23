@@ -1,0 +1,18 @@
+{
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "platform_en": "Zhihu",
+  "api_prefixes": ["/api/v1/zhihu"],
+  "version": "2.0.0",
+  "scope": "问题与回答、专栏文章、想法（Pin）、用户资料与关注/粉丝/回答/文章、评论、文章/用户/话题/视频/专栏搜索、首页热榜与推荐",
+  "usage_zh": [
+    "这个问题下的回答列表",
+    "这个知乎用户最近回答了哪些问题",
+    "知乎热榜前 20"
+  ],
+  "usage_en": [
+    "Answers under this Zhihu question",
+    "Recent answers from this Zhihu user",
+    "Top 20 Zhihu hot list"
+  ]
+}

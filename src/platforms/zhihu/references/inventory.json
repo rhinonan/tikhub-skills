@@ -1,0 +1,1926 @@
+[
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎专栏文章列表/Get Zhihu Column Articles",
+  "name_zh": "获取知乎专栏文章列表",
+  "name_en": "Get Zhihu Column Articles",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_column_articles",
+  "purpose": "获取知乎专栏文章列表",
+  "returns": "知乎专栏文章列表",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "column_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "专栏ID/Column ID"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "10",
+    "example": "",
+    "desc": "每页文章数量/Number of articles per page"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   }
+  ],
+  "body_params": [],
+  "request_example": "column_id = \"zhangjiawei\"\nlimit = \"10\"\noffset = \"0\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv",
+  "returns_detail": [
+   "`data` 是对象（3 个字段）：`paging`, `data`, `need_force_login`",
+   "`data.paging` 是对象（5 个字段）：`is_end`, `totals`, `previous`, `is_start`, `next`",
+   "`data.data` 是数组（长度 10）；首元素字段：`updated`, `is_labeled`, `copyright_permission`, `settings`, `excerpt`, `admin_closed_comment`, `voting`, `article_type`",
+   "`data.data` 是数组（长度 10）；首元素字段：`updated`, `is_labeled`, `copyright_permission`, `settings`, `excerpt`, `admin_closed_comment`, `voting`, `article_type`, `reason`, `force_login_when_click_read_more`",
+   "响应消息：请求成功，本次请求将被计费。",
+   "实测时间：2026-11-23"
+  ]
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎专栏文章详情/Get Zhihu Column Article Detail",
+  "name_zh": "获取知乎专栏文章详情",
+  "name_en": "Get Zhihu Column Article Detail",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_column_article_detail",
+  "purpose": "获取知乎专栏文章详情",
+  "returns": "知乎专栏文章详情",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "article_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "文章ID/Article ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "article_id = \"669214677\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv",
+  "returns_detail": [
+   "`data` 是对象（70 个字段）：`id`, `title`, `type`, `article_type`, `excerpt_title`, `url`, `image_url`, `title_image`, `excerpt`, `created`, `updated`, `author`",
+   "响应消息：请求成功，本次请求将被计费。",
+   "实测时间：2026-11-23"
+  ]
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎相似专栏推荐/Get Zhihu Similar Column Recommend",
+  "name_zh": "获取知乎相似专栏推荐",
+  "name_en": "Get Zhihu Similar Column Recommend",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_column_recommend",
+  "purpose": "获取知乎相似专栏推荐",
+  "returns": "知乎相似专栏推荐",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "article_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "文章ID/Article ID"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "12",
+    "example": "",
+    "desc": "每页专栏数量/Number of columns per page"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   }
+  ],
+  "body_params": [],
+  "request_example": "article_id = \"669214677\"\nlimit = \"12\"\noffset = \"0\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎专栏文章互动关系/Get Zhihu Column Article Relationship",
+  "name_zh": "获取知乎专栏文章互动关系",
+  "name_en": "Get Zhihu Column Article Relationship",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_column_relationship",
+  "purpose": "获取知乎专栏文章互动关系",
+  "returns": "知乎专栏互动关系",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "article_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "文章ID/Article ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "article_id = \"669214677\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎专栏评论区配置/Get Zhihu Column Comment Config",
+  "name_zh": "获取知乎专栏评论区配置",
+  "name_en": "Get Zhihu Column Comment Config",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_column_comment_config",
+  "purpose": "获取知乎专栏评论区配置",
+  "returns": "知乎专栏评论区配置",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "article_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "文章ID/Article ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "article_id = \"669214677\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎首页推荐/Get Zhihu Hot Recommend",
+  "name_zh": "获取知乎首页推荐",
+  "name_en": "Get Zhihu Hot Recommend",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_hot_recommend",
+  "purpose": "获取知乎首页推荐",
+  "returns": "知乎首页推荐",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "page_number",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "1",
+    "example": "",
+    "desc": "页码/Page Number"
+   },
+   {
+    "name": "session_token",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "会话令牌/Session Token"
+   }
+  ],
+  "body_params": [],
+  "request_example": "offset = \"0\"\npage_number = \"1\"\nsession_token = \"\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎首页热榜/Get Zhihu Hot List",
+  "name_zh": "获取知乎首页热榜",
+  "name_en": "Get Zhihu Hot List",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_hot_list",
+  "purpose": "获取知乎首页热榜",
+  "returns": "知乎首页热榜",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "50",
+    "example": "",
+    "desc": "每页文章数量/Number of articles per page"
+   },
+   {
+    "name": "desktop",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "true",
+    "example": "",
+    "desc": "是否为桌面端/Is it a desktop"
+   }
+  ],
+  "body_params": [],
+  "request_example": "limit = \"50\"\ndesktop = \"true\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv",
+  "returns_detail": [
+   "`data` 是对象（10 个字段）：`data`, `paging`, `kanshan`, `fresh_text`, `display_num`, `display_first`, `fb_bill_main_rise`, `head_zone`, `head_zones`, `prefer_hot_topics_top_card`",
+   "`data.data` 是数组（长度 30）；首元素字段：`type`, `style_type`, `id`, `card_id`, `target`, `attached_info`, `detail_text`, `trend`",
+   "`data.paging` 是对象（5 个字段）：`is_end`, `is_start`, `next`, `previous`, `totals`",
+   "`data.kanshan` 是对象（3 个字段）：`image_url`, `guide_text`, `query`",
+   "`data.data` 是数组（长度 30）；首元素字段：`type`, `style_type`, `id`, `card_id`, `target`, `attached_info`, `detail_text`, `trend`, `debut`, `children`",
+   "响应消息：请求成功，本次请求将被计费。",
+   "实测时间：2026-11-23"
+  ]
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎首页视频榜/Get Zhihu Video List",
+  "name_zh": "获取知乎首页视频榜",
+  "name_en": "Get Zhihu Video List",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_video_list",
+  "purpose": "获取知乎首页视频榜",
+  "returns": "知乎首页视频榜",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "12",
+    "example": "",
+    "desc": "每页视频数量/Number of videos per page"
+   }
+  ],
+  "body_params": [],
+  "request_example": "offset = \"\"\nlimit = \"12\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎文章搜索V3/Get Zhihu Article Search V3",
+  "name_zh": "获取知乎文章搜索V3",
+  "name_en": "Get Zhihu Article Search V3",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_article_search_v3",
+  "purpose": "获取知乎文章搜索V3",
+  "returns": "知乎文章搜索V3",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索关键词/Search Keywords"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页文章数量/Number of articles per page"
+   },
+   {
+    "name": "show_all_topics",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": "",
+    "desc": "显示所有主题/Show all topics"
+   },
+   {
+    "name": "search_source",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "Normal",
+    "example": "",
+    "desc": "搜索来源/Search Source"
+   },
+   {
+    "name": "search_hash_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索哈希ID/Search Hash ID"
+   },
+   {
+    "name": "vertical",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "垂类/Vertical Type"
+   },
+   {
+    "name": "sort",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "排序/Sort"
+   },
+   {
+    "name": "time_interval",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "时间间隔/Time Interval"
+   },
+   {
+    "name": "vertical_info",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "垂类信息/Vertical Info"
+   }
+  ],
+  "body_params": [],
+  "request_example": "# 默认搜索，综合排序，不限时间\nkeyword = \"deepseek\"\noffset = \"0\"\nlimit = \"20\"\nshow_all_topics = 0\nsearch_source = \"Normal\"\nsearch_hash_id = \"\"\nvertical = \"\"\nsort = \"\"\ntime_interval = \"\"\nvertical_info = \"\"\n\n# 只看回答，最多赞同，三月内\nkeyword = \"deepseek\"\noffset = \"0\"\nlimit = \"20\"\nshow_all_topics = 0\nsearch_source = \"Filter\"\nsearch_hash_id = \"\"\nvertical = \"answer\"\nsort = \"upvoted_count\"\ntime_interval = \"three_months\"\nvertical_info = \"0,0,0,0,0,0,0,0,0,0,0,0\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎用户搜索V3/Get Zhihu User Search V3",
+  "name_zh": "获取知乎用户搜索V3",
+  "name_en": "Get Zhihu User Search V3",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_user_search_v3",
+  "purpose": "获取知乎用户搜索V3",
+  "returns": "知乎用户搜索V3",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索关键词/Search Keywords"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "25",
+    "example": "",
+    "desc": "每页用户数量/Number of users per page"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword = \"deepseek\"\noffset = \"0\"\nlimit = \"25\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎话题搜索V3/Get Zhihu Topic Search V3",
+  "name_zh": "获取知乎话题搜索V3",
+  "name_en": "Get Zhihu Topic Search V3",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_topic_search_v3",
+  "purpose": "获取知乎话题搜索V3",
+  "returns": "知乎话题搜索V3",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索关键词/Search Keywords"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "25",
+    "example": "",
+    "desc": "每页话题数量/Number of topics per page"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword = \"deepseek\"\noffset = \"0\"\nlimit = \"25\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎论文搜索V3/Get Zhihu Scholar Search V3",
+  "name_zh": "获取知乎论文搜索V3",
+  "name_en": "Get Zhihu Scholar Search V3",
+  "method": "POST",
+  "path": "/api/v1/zhihu/web/fetch_scholar_search_v3",
+  "purpose": "获取知乎论文搜索V3",
+  "returns": "知乎论文搜索V3",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索关键词/Search Keywords"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "25",
+    "example": "",
+    "desc": "每页论文数量/Number of papers per page"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword = \"人工智能\"\noffset = \"0\"\nlimit = \"25\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎视频搜索V3/Get Zhihu Video Search V3",
+  "name_zh": "获取知乎视频搜索V3",
+  "name_en": "Get Zhihu Video Search V3",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_video_search_v3",
+  "purpose": "获取知乎视频搜索V3",
+  "returns": "知乎视频搜索V3",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索关键词/Search Keywords"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页视频数量/Number of videos per page"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "search_hash_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索哈希ID/Search Hash ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword = \"deepseek\"\nlimit = \"20\"\noffset = \"0\"\nsearch_hash_id = \"\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎专栏搜索V3/Get Zhihu Column Search V3",
+  "name_zh": "获取知乎专栏搜索V3",
+  "name_en": "Get Zhihu Column Search V3",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_column_search_v3",
+  "purpose": "获取知乎专栏搜索V3",
+  "returns": "知乎专栏搜索V3",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索关键词/Search Keywords"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页专栏数量/Number of columns per page"
+   },
+   {
+    "name": "search_hash_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索哈希ID/Search Hash ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword = \"deepseek\"\nlimit = \"20\"\noffset = \"0\"\nsearch_hash_id = \"\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎盐选内容搜索V3/Get Zhihu Salt Search V3",
+  "name_zh": "获取知乎盐选内容搜索V3",
+  "name_en": "Get Zhihu Salt Search V3",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_salt_search_v3",
+  "purpose": "获取知乎盐选内容搜索V3",
+  "returns": "知乎盐选内容搜索V3",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索关键词/Search Keywords"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页内容数量/Number of contents per page"
+   },
+   {
+    "name": "search_hash_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索哈希ID/Search Hash ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword = \"deepseek\"\nlimit = \"20\"\noffset = \"0\"\nsearch_hash_id = \"\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎电子书搜索V3/Get Zhihu Ebook Search V3",
+  "name_zh": "获取知乎电子书搜索V3",
+  "name_en": "Get Zhihu Ebook Search V3",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_ebook_search_v3",
+  "purpose": "获取知乎电子书搜索V3",
+  "returns": "知乎电子书搜索V3",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索关键词/Search Keywords"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页电子书数量/Number of ebooks per page"
+   },
+   {
+    "name": "search_hash_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索哈希ID/Search Hash ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword = \"deepseek\"\nlimit = \"20\"\noffset = \"0\"\nsearch_hash_id = \"\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎搜索预设词/Get Zhihu Preset Search",
+  "name_zh": "获取知乎搜索预设词",
+  "name_en": "Get Zhihu Preset Search",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_preset_search",
+  "purpose": "获取知乎搜索预设词",
+  "returns": "知乎搜索预设词",
+  "notice": "",
+  "query_params": [],
+  "body_params": [],
+  "request_example": "",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎搜索发现/Get Zhihu Search Recommend",
+  "name_zh": "获取知乎搜索发现",
+  "name_en": "Get Zhihu Search Recommend",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_search_recommend",
+  "purpose": "获取知乎搜索发现",
+  "returns": "知乎搜索发现",
+  "notice": "",
+  "query_params": [],
+  "body_params": [],
+  "request_example": "",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "知乎搜索预测词/Get Zhihu Search Suggest",
+  "name_zh": "知乎搜索预测词",
+  "name_en": "Get Zhihu Search Suggest",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_search_suggest",
+  "purpose": "知乎搜索预测词",
+  "returns": "知乎搜索预测词",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索关键词/Search Keywords"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword = \"deepseek\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎评论区V5/Get Zhihu Comment V5",
+  "name_zh": "获取知乎评论区V5",
+  "name_en": "Get Zhihu Comment V5",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_comment_v5",
+  "purpose": "获取知乎评论区V5",
+  "returns": "知乎评论区V5",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "answer_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "回答ID/Answer ID"
+   },
+   {
+    "name": "order_by",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "score",
+    "example": "",
+    "desc": "排序/Sort"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页评论数量/Number of comments per page"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "偏移量/Offset"
+   }
+  ],
+  "body_params": [],
+  "request_example": "answer_id = \"89226347214\"\norder_by = \"score\"\nlimit = \"20\"\noffset = \"\" # 1739257701_11108372663_0",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎子评论区V5/Get Zhihu Sub Comment V5",
+  "name_zh": "获取知乎子评论区V5",
+  "name_en": "Get Zhihu Sub Comment V5",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_sub_comment_v5",
+  "purpose": "获取知乎子评论区V5",
+  "returns": "知乎子评论区V5",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "comment_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "评论ID/Comment ID"
+   },
+   {
+    "name": "order_by",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "score",
+    "example": "",
+    "desc": "排序/Sort"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页评论数量/Number of comments per page"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "偏移量/Offset"
+   }
+  ],
+  "body_params": [],
+  "request_example": "comment_id = \"11100789728\"\norder_by = \"score\"\nlimit = \"20\"\noffset = \"\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎用户信息/Get Zhihu User Info",
+  "name_zh": "获取知乎用户信息",
+  "name_en": "Get Zhihu User Info",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_user_info",
+  "purpose": "获取知乎用户信息",
+  "returns": "知乎用户信息",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_url_token",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "用户ID/User ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_url_token = \"ming-he-43-93\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎用户关注列表/Get Zhihu User Following",
+  "name_zh": "获取知乎用户关注列表",
+  "name_en": "Get Zhihu User Following",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_user_followees",
+  "purpose": "获取知乎用户关注列表",
+  "returns": "知乎用户关注列表",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_url_token",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "用户ID/User ID"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页用户数量/Number of users per page"
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_url_token = \"ming-he-43-93\"\noffset = \"0\"\nlimit = \"20\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎用户粉丝列表/Get Zhihu User Followers",
+  "name_zh": "获取知乎用户粉丝列表",
+  "name_en": "Get Zhihu User Followers",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_user_followers",
+  "purpose": "获取知乎用户粉丝列表",
+  "returns": "知乎用户粉丝列表",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_url_token",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "用户ID/User ID"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页用户数量/Number of users per page"
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_url_token = \"ming-he-43-93\"\noffset = \"0\"\nlimit = \"20\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎用户的文章列表/Get Zhihu User Articles",
+  "name_zh": "获取知乎用户的文章列表",
+  "name_en": "Get Zhihu User Articles",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_user_articles",
+  "purpose": "获取知乎用户的文章列表",
+  "returns": "知乎用户的文章列表",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_url_token",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "用户ID/User ID"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页文章数量/Number of articles per page"
+   },
+   {
+    "name": "sort_type",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "created",
+    "example": "",
+    "desc": "排序类型/Sort Type"
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_url_token = \"ming-he-43-93\"\noffset = \"0\"\nlimit = \"20\"\nsort_type = \"created\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎用户的被收录文章列表/Get Zhihu User Included Articles",
+  "name_zh": "获取知乎用户的被收录文章列表",
+  "name_en": "Get Zhihu User Included Articles",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_user_included_articles",
+  "purpose": "获取知乎用户的被收录文章列表",
+  "returns": "知乎用户的被收录文章列表",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_url_token",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "用户ID/User ID"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页文章数量/Number of articles per page"
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_url_token = \"jzwa\"\noffset = \"0\"\nlimit = \"20\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎用户订阅的专栏/Get Zhihu User Columns",
+  "name_zh": "获取知乎用户订阅的专栏",
+  "name_en": "Get Zhihu User Columns",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_user_follow_columns",
+  "purpose": "获取知乎用户订阅的专栏",
+  "returns": "知乎用户订阅的专栏",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_url_token",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "用户ID/User ID"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页专栏数量/Number of columns per page"
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_url_token = \"ming-he-43-93\"\noffset = \"0\"\nlimit = \"20\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎用户关注的问题/Get Zhihu User Follow Questions",
+  "name_zh": "获取知乎用户关注的问题",
+  "name_en": "Get Zhihu User Follow Questions",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_user_follow_questions",
+  "purpose": "获取知乎用户关注的问题",
+  "returns": "知乎用户关注的问题",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_url_token",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "用户ID/User ID"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页问题数量/Number of questions per page"
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_url_token = \"ming-he-43-93\"\noffset = \"0\"\nlimit = \"20\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎用户关注的收藏/Get Zhihu User Follow Collections",
+  "name_zh": "获取知乎用户关注的收藏",
+  "name_en": "Get Zhihu User Follow Collections",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_user_follow_collections",
+  "purpose": "获取知乎用户关注的收藏",
+  "returns": "知乎用户关注的收藏",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_url_token",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "用户ID/User ID"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页收藏数量/Number of collections per page"
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_url_token = \"ming-he-43-93\"\noffset = \"0\"\nlimit = \"20\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎用户关注的话题/Get Zhihu User Follow Topics",
+  "name_zh": "获取知乎用户关注的话题",
+  "name_en": "Get Zhihu User Follow Topics",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_user_follow_topics",
+  "purpose": "获取知乎用户关注的话题",
+  "returns": "知乎用户关注的话题",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_url_token",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "用户ID/User ID"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页话题数量/Number of topics per page"
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_url_token = \"ming-he-43-93\"\noffset = \"0\"\nlimit = \"20\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎推荐关注列表/Get Zhihu Recommend Followees",
+  "name_zh": "获取知乎推荐关注列表",
+  "name_en": "Get Zhihu Recommend Followees",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_recommend_followees",
+  "purpose": "获取知乎推荐关注列表",
+  "returns": "知乎推荐关注列表",
+  "notice": "",
+  "query_params": [],
+  "body_params": [],
+  "request_example": "",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎问题回答列表/Get Zhihu Question Answers",
+  "name_zh": "获取知乎问题回答列表",
+  "name_en": "Get Zhihu Question Answers",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_question_answers",
+  "purpose": "获取知乎问题的回答列表",
+  "returns": "知乎问题回答列表数据。分页会话绑定首次成功请求的账号，由服务自动保持；机构号可用性取决于当前权限和限频状态；`data.paging.is_end=true` 或 next 缺失时停止。解析 next 的 cursor、offset、session_id、limit、order 原样传回；offset 不要自行加 limit。切换问题或排序时从首页重新开始。分页状态在成功获取后续游标时续期 15 分钟；会话过期或账号不可用需重新请求首页，暂时繁忙可使用相同游标重试",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "question_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "问题ID/Question ID"
+   },
+   {
+    "name": "cursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "从 data.paging.next URL 提取/Pagination cursor from data.paging.next URL"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 5,
+    "example": "",
+    "desc": "每页回答数量/Number of answers per page"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": "",
+    "desc": "从 data.paging.next 原样提取，勿自行加 limit/Use next URL offset unchanged"
+   },
+   {
+    "name": "order",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "default",
+    "example": "",
+    "desc": "排序方式：default=默认排序，updated=按时间排序/Sort order: default=default sort, updated=sort by time"
+   },
+   {
+    "name": "session_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "从 data.paging.next URL 提取/Session ID from data.paging.next URL"
+   }
+  ],
+  "body_params": [],
+  "request_example": "question_id = \"37811449\"\ncursor = \"\"\nlimit = 5\noffset = 0\norder = \"default\"  # 或 \"updated\" 按时间排序\nsession_id = \"\"\n\n# 获取下一页 (Get next page):\n# 从本次响应 data.paging.next URL 提取参数，不复用文档中的固定游标\n# Extract the next URL parameters from this response; never reuse a static cursor.\n\n# 按时间排序 (Sort by time):\norder = \"updated\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎问题详情/Get Zhihu Question Detail",
+  "name_zh": "获取知乎问题详情",
+  "name_en": "Get Zhihu Question Detail",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_question_detail",
+  "purpose": "获取知乎问题详情 (标题/描述/统计/话题等)",
+  "returns": "知乎问题详情",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "question_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "问题ID/Question ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "question_id = \"37811449\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎回答详情/Get Zhihu Answer Detail",
+  "name_zh": "获取知乎回答详情",
+  "name_en": "Get Zhihu Answer Detail",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_answer_detail",
+  "purpose": "获取知乎单个回答的详情 (正文/统计/作者/所属问题等)",
+  "returns": "知乎回答详情",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "answer_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "回答ID/Answer ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "answer_id = \"2054145988235880002\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎用户的回答列表/Get Zhihu User Answers",
+  "name_zh": "获取知乎用户的回答列表",
+  "name_en": "Get Zhihu User Answers",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_user_answers",
+  "purpose": "获取知乎用户的回答列表",
+  "returns": "知乎用户的回答列表",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_url_token",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "用户ID/User ID"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页回答数量/Number of answers per page"
+   },
+   {
+    "name": "sort_type",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "created",
+    "example": "",
+    "desc": "排序类型/Sort Type"
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_url_token = \"ming-he-43-93\"\noffset = \"0\"\nlimit = \"20\"\nsort_type = \"created\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎用户创建的收藏夹列表/Get Zhihu User Created Collections",
+  "name_zh": "获取知乎用户创建的收藏夹列表",
+  "name_en": "Get Zhihu User Created Collections",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_user_collections",
+  "purpose": "获取知乎用户**创建**的收藏夹列表 (区别于\"关注的收藏夹\")",
+  "returns": "知乎用户创建的收藏夹列表",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_url_token",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "用户ID/User ID"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页收藏夹数量/Number of collections per page"
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_url_token = \"ming-he-43-93\"\noffset = \"0\"\nlimit = \"20\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎用户的划线列表/Get Zhihu User Segments",
+  "name_zh": "获取知乎用户的划线列表",
+  "name_en": "Get Zhihu User Segments",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_user_segments",
+  "purpose": "获取知乎用户的划线列表 (lineComments)",
+  "returns": "知乎用户的划线列表",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_url_token",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "用户 member hash id (非 url_token)/User member hash id (not url_token)"
+   },
+   {
+    "name": "content_type",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "all",
+    "example": "",
+    "desc": "内容类型/Content type"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页数量/Number per page"
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_url_token = \"c72367b43730a490687966ceb87e9305\"\ncontent_type = \"all\"\noffset = \"0\"\nlimit = \"20\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎用户的想法列表/Get Zhihu User Pins",
+  "name_zh": "获取知乎用户的想法列表",
+  "name_en": "Get Zhihu User Pins",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_user_pins",
+  "purpose": "获取知乎用户的想法 (pins / moments) 列表",
+  "returns": "知乎用户的想法列表",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_url_token",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "用户ID/User ID"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "0",
+    "example": "",
+    "desc": "偏移量/Offset"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页想法数量/Number of pins per page"
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_url_token = \"persistence-66-66\"\noffset = \"0\"\nlimit = \"20\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎想法详情/Get Zhihu Pin Detail",
+  "name_zh": "获取知乎想法详情",
+  "name_en": "Get Zhihu Pin Detail",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_pin_detail",
+  "purpose": "获取单条知乎想法 (pin) 的详情",
+  "returns": "知乎想法详情",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "pin_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "想法ID/Pin ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "pin_id = \"2050290260991534603\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎想法评论区/Get Zhihu Pin Comments",
+  "name_zh": "获取知乎想法评论区",
+  "name_en": "Get Zhihu Pin Comments",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_pin_comments",
+  "purpose": "获取知乎想法 (pin) 的评论区列表",
+  "returns": "知乎想法评论列表",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "pin_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "想法ID/Pin ID"
+   },
+   {
+    "name": "order_by",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "score",
+    "example": "",
+    "desc": "排序方式：score=默认，ts=最新/Sort: score=default, ts=newest"
+   },
+   {
+    "name": "limit",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "20",
+    "example": "",
+    "desc": "每页评论数量/Number of comments per page"
+   },
+   {
+    "name": "offset",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "偏移量，翻页用返回里的游标/Offset from response cursor"
+   }
+  ],
+  "body_params": [],
+  "request_example": "pin_id = \"2050290260991534603\"\norder_by = \"score\"\nlimit = \"20\"\noffset = \"\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.001,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "zhihu",
+  "platform_zh": "知乎",
+  "folder": "Zhihu-Web-API",
+  "name": "获取知乎AI搜索(新版)/Get Zhihu AI Search (v2)",
+  "name_zh": "获取知乎AI搜索(新版)",
+  "name_en": "Get Zhihu AI Search (v2)",
+  "method": "GET",
+  "path": "/api/v1/zhihu/web/fetch_ai_search_stream",
+  "purpose": "获取知乎 AI 搜索结果 (新版接口)",
+  "returns": "知乎 AI 搜索结果, 数据为事件列表 {\"events\": [...]}",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "message_content",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索内容/Search Content"
+   },
+   {
+    "name": "chat_mode",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "FAST",
+    "example": "",
+    "desc": "对话模式/Chat mode"
+   },
+   {
+    "name": "session_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "会话ID/Session ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "message_content = \"deepseek\"\nchat_mode = \"FAST\"\nsession_id = \"\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.005,
+  "cost_source": "csv"
+ }
+]

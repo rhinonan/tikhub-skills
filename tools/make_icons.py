@@ -5,6 +5,11 @@
         -> src/platforms/<platform>/_icon.png      512x512 自备 API Key 版
         -> src/platforms/<platform>/_icon_pro.png  512x512 付费版（右下金色 PRO 徽章）
 
+合并后的产品图标走 `--product`：
+    assets/icon-src/cn-social-data.png
+        -> src/assets/_icon.png      512x512 免费版
+        -> src/assets/_icon_pro.png  512x512 付费版（带 PRO 角标）
+
 母版是手绘/生成的成品图，本脚本只做等比缩放与角标合成，不改图形本身。
 build.py 在打包时会按版本挑选对应文件，见 build_one()。
 
@@ -12,6 +17,7 @@ build.py 在打包时会按版本挑选对应文件，见 build_one()。
 
     python tools/make_icons.py                # 全部平台
     python tools/make_icons.py douyin         # 单个平台
+    python tools/make_icons.py --product      # 合并产品图标
 """
 
 import os
@@ -156,8 +162,38 @@ def export(platform):
     print(f"[icon] {platform:12s} -> _icon.png / _icon_pro.png  ({OUT_SIZE}px)")
 
 
+def export_product():
+    """合并产品图标：母版路径取 src/product.json 的 icon 字段。"""
+    product_path = os.path.join(ROOT, "src", "product.json")
+    try:
+        import json
+        with open(product_path, encoding="utf-8") as f:
+            product = json.load(f)
+        rel = product.get("icon") or "assets/icon-src/cn-social-data.png"
+    except Exception:
+        rel = "assets/icon-src/cn-social-data.png"
+    master_path = os.path.join(ROOT, rel)
+    if not os.path.exists(master_path):
+        raise SystemExit(f"缺产品图标母版：{os.path.relpath(master_path, ROOT)}\n"
+                         "先运行 python tools/make_engine_icon.py")
+
+    target_dir = os.path.join(ROOT, "src", "assets")
+    os.makedirs(target_dir, exist_ok=True)
+    master = apply_rounded(Image.open(master_path).convert("RGBA"))
+    master.resize((OUT_SIZE, OUT_SIZE), Image.LANCZOS).save(
+        os.path.join(target_dir, "_icon.png"), optimize=True)
+    pro = add_pro_badge(master)
+    pro.resize((OUT_SIZE, OUT_SIZE), Image.LANCZOS).save(
+        os.path.join(target_dir, "_icon_pro.png"), optimize=True)
+    print(f"[icon] product     -> src/assets/_icon.png / _icon_pro.png  ({OUT_SIZE}px)")
+
+
 def main():
-    only = sys.argv[1:] or [
+    args = [a for a in sys.argv[1:] if not a.startswith("-")]
+    if "--product" in sys.argv[1:]:
+        export_product()
+        return
+    only = args or [
         os.path.splitext(f)[0]
         for f in sorted(os.listdir(SRC_DIR))
         if f.endswith(".png")

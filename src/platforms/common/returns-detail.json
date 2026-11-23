@@ -1,0 +1,17 @@
+{
+ "_note": "实测返回结构。tools/patch_returns.py 会写入 inventory.json 的 returns_detail 并注入分类 md；CLI 的 show 也会打印。",
+ "/api/v1/demo/douyin/web/fetch_one_video": [
+  "`data` 是对象（3 个字段）：`aweme_detail`, `log_pb`, `status_code`",
+  "`data.aweme_detail` 是对象（155 个字段）：`activity_video_type`, `anchors`, `authentication_token`, `author`, `author_mask_tag`, `author_user_id`, `aweme_control`, `aweme_id`",
+  "`data.log_pb` 是对象（1 个字段）：`impr_id`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ],
+ "/api/v1/hybrid/video_data": [
+  "`data` 是对象（191 个字段）：`xigua_task`, `packed_clips`, `component_control`, `can_be_oc_cover`, `anchors`, `chapter_list`, `boost_status`, `image_album_music_info`, `author_mask_tag`, `is_ads`, `is_karaoke`, `relation_labels`",
+  "`data.xigua_task` 是对象（1 个字段）：`is_xigua_task`",
+  "`data.component_control` 是对象（0 个字段）：",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ]
+}

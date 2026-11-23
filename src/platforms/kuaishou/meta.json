@@ -1,0 +1,18 @@
+{
+  "platform": "kuaishou",
+  "platform_zh": "快手",
+  "platform_en": "Kuaishou",
+  "api_prefixes": ["/api/v1/kuaishou"],
+  "version": "2.0.0",
+  "scope": "作品详情与分享链接解析、一级/二级评论、用户资料与作品/收藏、综合/视频/用户/直播/音乐/标签搜索、热榜与直播/购物/品牌/音乐榜单",
+  "usage_zh": [
+    "这个快手作品的详情和评论",
+    "搜索快手「美食」相关视频",
+    "快手热榜前 20"
+  ],
+  "usage_en": [
+    "Details and comments of this Kuaishou video",
+    "Search Kuaishou videos about food",
+    "Top 20 Kuaishou hot list"
+  ]
+}

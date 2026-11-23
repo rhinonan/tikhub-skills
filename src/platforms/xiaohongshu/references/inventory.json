@@ -1,0 +1,2421 @@
+[
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-Web-V3-API",
+  "name": "获取笔记详情/Fetch note detail",
+  "name_zh": "获取笔记详情",
+  "name_en": "Fetch note detail",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/web_v3/fetch_note_detail",
+  "purpose": "获取笔记详情（图文/视频通用）",
+  "returns": "笔记详情数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "note_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "6a2f423d000000001003cb36",
+    "desc": "笔记ID/Note ID"
+   },
+   {
+    "name": "xsec_token",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "ABtexB6bX5HgLD42SFrK1scGUmSO8YV5_isaLrDy9sLxQ=",
+    "desc": "安全令牌，可以从小红书的分享链接中获取/Security token, can be obtained from the sharing link of Xiaohongshu"
+   }
+  ],
+  "body_params": [],
+  "request_example": "note_id = \"6a2f423d000000001003cb36\"\nxsec_token = \"ABtexB6bX5HgLD42SFrK1scGUmSO8YV5_isaLrDy9sLxQ=\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-Web-V3-API",
+  "name": "获取搜索联想词/Fetch search suggestions",
+  "name_zh": "获取搜索联想词",
+  "name_en": "Fetch search suggestions",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/web_v3/fetch_search_suggest",
+  "purpose": "获取搜索联想词，keyword 为空时返回热门推荐",
+  "returns": "联想词列表",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "口红",
+    "desc": "关键词 (可为空)/Keyword (optional)"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword = \"口红\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-Web-V3-API",
+  "name": "获取首页推荐/Fetch homepage feed",
+  "name_zh": "获取首页推荐",
+  "name_en": "Fetch homepage feed",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/web_v3/fetch_homefeed",
+  "purpose": "获取首页推荐笔记列表",
+  "returns": "推荐笔记列表",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "num",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 20,
+    "example": 20,
+    "desc": "返回数量，最大40/Number of results, max 40"
+   },
+   {
+    "name": "cursor_score",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "翻页游标/Pagination cursor"
+   },
+   {
+    "name": "category",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "homefeed_recommend",
+    "example": "homefeed_recommend",
+    "desc": "分类频道ID/Category channel ID"
+   },
+   {
+    "name": "need_filter_image",
+    "in": "query",
+    "required": false,
+    "type": "boolean",
+    "default": false,
+    "example": "",
+    "desc": "仅图文/Image notes only"
+   }
+  ],
+  "body_params": [],
+  "request_example": "num = 20\ncategory = \"homefeed_recommend\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-Web-V3-API",
+  "name": "获取首页分类列表/Fetch homepage categories",
+  "name_zh": "获取首页分类列表",
+  "name_en": "Fetch homepage categories",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/web_v3/fetch_homefeed_categories",
+  "purpose": "获取首页频道分类列表",
+  "returns": "分类列表",
+  "notice": "",
+  "query_params": [],
+  "body_params": [],
+  "request_example": "",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-Web-V3-API",
+  "name": "获取用户信息/Fetch user info",
+  "name_zh": "获取用户信息",
+  "name_en": "Fetch user info",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/web_v3/fetch_user_info",
+  "purpose": "获取用户公开资料",
+  "returns": "用户信息",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "5e3a8ee700000000010070c6",
+    "desc": "用户ID/User ID"
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_id = \"5e3a8ee700000000010070c6\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv",
+  "returns_detail": [
+   "`data` 是对象（6 个字段）：`ok`, `status`, `code`, `success`, `msg`, `data`",
+   "`data.data` 是对象（9 个字段）：`liked`, `result`, `basic_info`, `interactions`, `collected`, `tags`, `tab_public`, `extra_info`, `posted`",
+   "响应消息：请求成功，本次请求将被计费。",
+   "实测时间：2026-11-23"
+  ]
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "获取图文笔记详情/Get image note detail",
+  "name_zh": "获取图文笔记详情",
+  "name_en": "Get image note detail",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/get_image_note_detail",
+  "purpose": "获取图文笔记的完整详情数据",
+  "returns": "图文笔记详情数据，包含笔记内容、图片列表、作者信息、互动数据等；视频笔记仅返回封面图等基础数据，不包含视频播放链接",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "note_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "697c0eee000000000a03c308",
+    "desc": "笔记ID/Note ID"
+   },
+   {
+    "name": "share_text",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "http://xhslink.com/o/8GqargIxrko",
+    "desc": "分享链接，支持xiaohongshu.com/xhslink.com/xhslink.cn/Share link, supports xiaohongshu.com, xhslink.com, xhslink.cn"
+   }
+  ],
+  "body_params": [],
+  "request_example": "note_id=\"697c0eee000000000a03c308\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "获取视频笔记详情/Get video note detail",
+  "name_zh": "获取视频笔记详情",
+  "name_en": "Get video note detail",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/get_video_note_detail",
+  "purpose": "获取视频笔记的完整详情数据",
+  "returns": "视频笔记详情数据，包含视频播放地址、封面图、作者信息、互动数据等",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "note_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "697c0eee000000000a03c308",
+    "desc": "笔记ID/Note ID"
+   },
+   {
+    "name": "share_text",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "http://xhslink.com/o/8GqargIxrko",
+    "desc": "分享链接，支持xiaohongshu.com/xhslink.com/xhslink.cn/Share link, supports xiaohongshu.com, xhslink.com, xhslink.cn"
+   }
+  ],
+  "body_params": [],
+  "request_example": "note_id=\"697c0eee000000000a03c308\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "获取笔记评论列表/Get note comments",
+  "name_zh": "获取笔记评论列表",
+  "name_en": "Get note comments",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/get_note_comments",
+  "purpose": "获取指定笔记的评论列表，支持分页和多种排序方式",
+  "returns": "评论数据对象，包含评论列表、分页游标等",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "note_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "697c0eee000000000a03c308",
+    "desc": "笔记ID/Note ID"
+   },
+   {
+    "name": "share_text",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "http://xhslink.com/o/8GqargIxrko",
+    "desc": "分享链接，支持xiaohongshu.com/xhslink.com/xhslink.cn/Share link, supports xiaohongshu.com, xhslink.com, xhslink.cn"
+   },
+   {
+    "name": "cursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "分页游标，首次请求留空/Pagination cursor, leave empty for first request"
+   },
+   {
+    "name": "index",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": 0,
+    "desc": "评论索引，首次请求传0/Comment index, pass 0 for first request"
+   },
+   {
+    "name": "pageArea",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "UNFOLDED",
+    "example": "UNFOLDED",
+    "desc": "折叠状态: UNFOLDED(默认-展开), FOLDED(折叠)"
+   },
+   {
+    "name": "sort_strategy",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "latest_v2",
+    "example": "latest_v2",
+    "desc": "排序策略/Sort strategy: default, latest_v2, like_count"
+   }
+  ],
+  "body_params": [],
+  "request_example": "note_id=\"697c0eee000000000a03c308\"\nsort_strategy=\"latest_v2\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "获取笔记二级评论列表/Get note sub comments",
+  "name_zh": "获取笔记二级评论列表",
+  "name_en": "Get note sub comments",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/get_note_sub_comments",
+  "purpose": "获取指定笔记某条评论下的子评论（回复）列表，使用游标分页",
+  "returns": "子评论数据对象，包含子评论列表、分页游标等",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "note_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "699916e6000000001d0253da",
+    "desc": "笔记ID/Note ID"
+   },
+   {
+    "name": "share_text",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "http://xhslink.com/o/8GqargIxrko",
+    "desc": "分享链接，支持xiaohongshu.com/xhslink.com/xhslink.cn/Share link, supports xiaohongshu.com, xhslink.com, xhslink.cn"
+   },
+   {
+    "name": "comment_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "699fb9930000000008030db6",
+    "desc": "父评论ID/Parent comment ID"
+   },
+   {
+    "name": "cursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "分页游标，首次留空，翻页时从$.data.data.cursor中提取cursor值/Pagination cursor, leave empty for first request, extract cursor from $.data.data.cursor for next page"
+   },
+   {
+    "name": "index",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "分页索引，首次传1，翻页时从$.data.data.cursor中提取index值/Pagination index, pass 1 for first request, extract index from $.data.data.cursor for next page"
+   }
+  ],
+  "body_params": [],
+  "request_example": "note_id=\"699916e6000000001d0253da\"\ncomment_id=\"699fb9930000000008030db6\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "获取用户信息/Get user info",
+  "name_zh": "获取用户信息",
+  "name_en": "Get user info",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/get_user_info",
+  "purpose": "获取指定用户的详细信息",
+  "returns": "用户详细信息，包含昵称、头像、简介、粉丝数、关注数、笔记数等",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "61b46d790000000010008153",
+    "desc": "用户ID/User ID"
+   },
+   {
+    "name": "share_text",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "https://xhslink.com/m/3ZSCJZAMz0a",
+    "desc": "分享链接，支持xiaohongshu.com/xhslink.com/xhslink.cn/Share link, supports xiaohongshu.com, xhslink.com, xhslink.cn"
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_id=\"61b46d790000000010008153\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "获取用户笔记列表/Get user posted notes",
+  "name_zh": "获取用户笔记列表",
+  "name_en": "Get user posted notes",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/get_user_posted_notes",
+  "purpose": "获取指定用户已发布的笔记列表，使用游标分页",
+  "returns": "用户笔记列表数据，包含笔记基本信息和分页信息",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "61b46d790000000010008153",
+    "desc": "用户ID/User ID"
+   },
+   {
+    "name": "share_text",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "http://xhslink.com/o/8GqargIxrko",
+    "desc": "分享链接，支持xiaohongshu.com/xhslink.com/xhslink.cn/Share link, supports xiaohongshu.com, xhslink.com, xhslink.cn"
+   },
+   {
+    "name": "cursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "分页游标，首次请求留空/Pagination cursor, leave empty for first request"
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_id=\"61b46d790000000010008153\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv",
+  "returns_detail": [
+   "`data` 是对象（6 个字段）：`code`, `success`, `data`, `msg`, `debug_id`, `debug_info`",
+   "`data.data` 是对象（3 个字段）：`notes`, `tags`, `has_more`",
+   "`data.data.notes` 是数组（长度 22）；首元素字段：`has_music`, `time_desc`, `sticky`, `title`, `likes`, `create_time`, `display_title`, `guide_context`",
+   "响应消息：请求成功，本次请求将被计费。",
+   "实测时间：2026-11-23"
+  ]
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "获取用户收藏笔记列表/Get user faved notes",
+  "name_zh": "获取用户收藏笔记列表",
+  "name_en": "Get user faved notes",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/get_user_faved_notes",
+  "purpose": "获取指定用户公开收藏的笔记列表，使用游标分页",
+  "returns": "用户收藏笔记列表数据，包含笔记基本信息和分页信息",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "user_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "5a8cf39111be10466d285d6b",
+    "desc": "用户ID/User ID"
+   },
+   {
+    "name": "share_text",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "https://xhslink.com/a/EZ4M9TwMA6c3",
+    "desc": "分享链接，支持xiaohongshu.com/xhslink.com/xhslink.cn/Share link, supports xiaohongshu.com, xhslink.com, xhslink.cn"
+   },
+   {
+    "name": "cursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "分页游标，首次请求留空，翻页时传入上一页最后一条笔记的note_id/Pagination cursor, leave empty for first request, pass last note_id from previous page for next page"
+   }
+  ],
+  "body_params": [],
+  "request_example": "user_id=\"5a8cf39111be10466d285d6b\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "搜索笔记/Search notes",
+  "name_zh": "搜索笔记",
+  "name_en": "Search notes",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/search_notes",
+  "purpose": "根据关键词搜索小红书笔记，支持多种排序方式、笔记类型筛选和发布时间筛选",
+  "returns": "搜索结果数据，包含笔记列表和分页信息",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "美食推荐",
+    "desc": "搜索关键词/Search keyword"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页码，从1开始/Page number, start from 1"
+   },
+   {
+    "name": "sort_type",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "general",
+    "example": "general",
+    "desc": "排序方式/Sort type"
+   },
+   {
+    "name": "note_type",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "不限",
+    "example": "不限",
+    "desc": "笔记类型/Note type: 不限, 视频笔记, 普通笔记, 直播笔记"
+   },
+   {
+    "name": "time_filter",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "不限",
+    "example": "不限",
+    "desc": "发布时间筛选/Time filter: 不限, 一天内, 一周内, 半年内"
+   },
+   {
+    "name": "search_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索ID，翻页时传入首次搜索返回的值/Search ID for pagination"
+   },
+   {
+    "name": "search_session_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索会话ID，翻页时传入首次搜索返回的值/Search session ID for pagination"
+   },
+   {
+    "name": "source",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "explore_feed",
+    "example": "explore_feed",
+    "desc": "来源/Source"
+   },
+   {
+    "name": "ai_mode",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": 0,
+    "desc": "AI模式：0=关闭, 1=开启/AI mode: 0=off, 1=on"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword=\"美食推荐\"\npage=1\nsort_type=\"general\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv",
+  "returns_detail": [
+   "`data` 是对象（10 个字段）：`code`, `success`, `data`, `msg`, `search_id`, `search_session_id`, `page`, `next_page`, `debug_id`, `debug_info`",
+   "`data.data` 是对象（20 个字段）：`request_dqa_instant`, `ai_mode_enable`, `items`, `search_dqa_new_page_exp`, `can_cut`, `strategy_info`, `cur_cut_number`, `request_dqa`",
+   "`data.data` 是对象（20 个字段）：`request_dqa_instant`, `ai_mode_enable`, `items`, `search_dqa_new_page_exp`, `can_cut`, `strategy_info`, `cur_cut_number`, `request_dqa`, `query_type`, `taxonomy1`",
+   "`data.data.items` 是数组（长度 20）；首元素字段：`mix_track_id`, `new_help_style`, `model_type`, `note`",
+   "响应消息：请求成功，本次请求将被计费。",
+   "实测时间：2026-11-23"
+  ]
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "搜索用户/Search users",
+  "name_zh": "搜索用户",
+  "name_en": "Search users",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/search_users",
+  "purpose": "根据关键词搜索小红书用户，每页返回 20 条结果，支持分页",
+  "returns": "搜索结果数据，包含用户列表和分页信息",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "美食博主",
+    "desc": "搜索关键词/Search keyword"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页码，从1开始/Page number, start from 1"
+   },
+   {
+    "name": "search_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索ID，翻页时传入首次搜索返回的值/Search ID for pagination"
+   },
+   {
+    "name": "source",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "explore_feed",
+    "example": "explore_feed",
+    "desc": "来源/Source"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword=\"美食博主\"\npage=1",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "搜索图片/Search images",
+  "name_zh": "搜索图片",
+  "name_en": "Search images",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/search_images",
+  "purpose": "根据关键词搜索小红书图片，每页返回 20 条结果，支持分页",
+  "returns": "搜索结果数据，包含图片列表和分页信息",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "壁纸",
+    "desc": "搜索关键词/Search keyword"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页码，从1开始/Page number, start from 1"
+   },
+   {
+    "name": "search_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索ID，翻页时传入首次搜索返回的值/Search ID for pagination"
+   },
+   {
+    "name": "search_session_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索会话ID，翻页时传入首次搜索返回的值/Search session ID for pagination"
+   },
+   {
+    "name": "word_request_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "词请求ID，翻页时传入首次搜索返回的值/Word request ID for pagination"
+   },
+   {
+    "name": "source",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "explore_feed",
+    "example": "explore_feed",
+    "desc": "来源/Source"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword=\"壁纸\"\npage=1",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "搜索商品/Search products",
+  "name_zh": "搜索商品",
+  "name_en": "Search products",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/search_products",
+  "purpose": "根据关键词搜索小红书商品，每页返回 20 条结果，支持分页",
+  "returns": "搜索结果数据，包含商品列表和分页信息",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "手机壳",
+    "desc": "搜索关键词/Search keyword"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": 1,
+    "desc": "页码，从1开始/Page number, start from 1"
+   },
+   {
+    "name": "search_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索ID，翻页时传入首次搜索返回的值/Search ID for pagination"
+   },
+   {
+    "name": "source",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "explore_feed",
+    "example": "explore_feed",
+    "desc": "来源/Source"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword=\"手机壳\"\npage=1",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "搜索群聊/Search groups",
+  "name_zh": "搜索群聊",
+  "name_en": "Search groups",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/search_groups",
+  "purpose": "根据关键词搜索小红书群聊列表，支持分页",
+  "returns": "搜索结果数据，包含群聊列表和分页信息",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "keyword",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "上海",
+    "desc": "搜索关键词/Search keyword"
+   },
+   {
+    "name": "page_no",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": 0,
+    "desc": "页码，从0开始/Page number, start from 0"
+   },
+   {
+    "name": "search_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索ID，翻页时传入首次搜索返回的值/Search ID for pagination"
+   },
+   {
+    "name": "source",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "unifiedSearchGroup",
+    "example": "unifiedSearchGroup",
+    "desc": "来源/Source"
+   },
+   {
+    "name": "is_recommend",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": 0,
+    "desc": "是否推荐：0=否, 1=是/Is recommend: 0=no, 1=yes"
+   }
+  ],
+  "body_params": [],
+  "request_example": "keyword=\"上海\"\npage_no=0",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "获取商品详情/Get product detail",
+  "name_zh": "获取商品详情",
+  "name_en": "Get product detail",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/get_product_detail",
+  "purpose": "通过 SKU ID 获取商品的详细信息，包括价格、规格、库存、商品描述等",
+  "returns": "商品详情数据，包含价格、规格、库存、商品描述等",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "sku_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "669ddd44e05f3700011067ed",
+    "desc": "商品SKU ID/Product SKU ID"
+   },
+   {
+    "name": "source",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "mall_search",
+    "example": "mall_search",
+    "desc": "来源/Source"
+   },
+   {
+    "name": "pre_page",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "mall_search",
+    "example": "mall_search",
+    "desc": "前置页面/Previous page"
+   }
+  ],
+  "body_params": [],
+  "request_example": "sku_id=\"669ddd44e05f3700011067ed\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "获取商品评论总览/Get product review overview",
+  "name_zh": "获取商品评论总览",
+  "name_en": "Get product review overview",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/get_product_review_overview",
+  "purpose": "获取商品的评论统计信息，包括评分分布、好评率、评论标签等",
+  "returns": "商品评论总览数据，包含评分分布、好评率、评论标签等",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "sku_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "669ddd44e05f3700011067ed",
+    "desc": "商品SKU ID/Product SKU ID"
+   },
+   {
+    "name": "tab",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 2,
+    "example": 2,
+    "desc": "标签类型/Tab type"
+   }
+  ],
+  "body_params": [],
+  "request_example": "sku_id=\"669ddd44e05f3700011067ed\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "获取商品评论列表/Get product reviews",
+  "name_zh": "获取商品评论列表",
+  "name_en": "Get product reviews",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/get_product_reviews",
+  "purpose": "获取商品的用户评论列表，支持分页、排序和筛选有图评论",
+  "returns": "商品评论列表数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "sku_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "669ddd44e05f3700011067ed",
+    "desc": "商品SKU ID/Product SKU ID"
+   },
+   {
+    "name": "page",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": 0,
+    "desc": "页码，从0开始/Page number, start from 0"
+   },
+   {
+    "name": "sort_strategy_type",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": 0,
+    "desc": "排序策略：0=综合排序, 1=最新排序/Sort strategy: 0=general, 1=latest"
+   },
+   {
+    "name": "share_pics_only",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": 0,
+    "desc": "仅看有图评论：0=否, 1=是/Show reviews with images only: 0=no, 1=yes"
+   },
+   {
+    "name": "from_page",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "score_page",
+    "example": "score_page",
+    "desc": "来源页面/From page"
+   }
+  ],
+  "body_params": [],
+  "request_example": "sku_id=\"669ddd44e05f3700011067ed\"\npage=0",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "获取商品推荐列表/Get product recommendations",
+  "name_zh": "获取商品推荐列表",
+  "name_en": "Get product recommendations",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/get_product_recommendations",
+  "purpose": "根据商品 SKU ID 获取相关推荐商品列表，使用游标分页",
+  "returns": "推荐商品列表数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "sku_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "669ddd44e05f3700011067ed",
+    "desc": "商品SKU ID/Product SKU ID"
+   },
+   {
+    "name": "cursor_score",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "分页游标，首次请求留空/Pagination cursor, leave empty for first request"
+   },
+   {
+    "name": "region",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "US",
+    "example": "US",
+    "desc": "地区/Region"
+   }
+  ],
+  "body_params": [],
+  "request_example": "sku_id=\"669ddd44e05f3700011067ed\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "获取话题详情/Get topic info",
+  "name_zh": "获取话题详情",
+  "name_en": "Get topic info",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/get_topic_info",
+  "purpose": "获取指定话题的详细信息，包括话题名称、浏览量、讨论数、分享信息等",
+  "returns": "话题详情数据，包含 page_info（名称/浏览量/讨论数）、tabs、share_info 等",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "page_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "5c1cc866febed9000184b7c1",
+    "desc": "话题页面ID/Topic page ID"
+   },
+   {
+    "name": "source",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "normal",
+    "example": "normal",
+    "desc": "来源/Source"
+   },
+   {
+    "name": "note_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "来源笔记ID，从笔记跳转到话题时传入/Source note ID, pass when jumping from note to topic"
+   }
+  ],
+  "body_params": [],
+  "request_example": "page_id=\"5c1cc866febed9000184b7c1\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "获取话题笔记列表/Get topic feed",
+  "name_zh": "获取话题笔记列表",
+  "name_en": "Get topic feed",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/get_topic_feed",
+  "purpose": "获取指定话题下的笔记列表，支持按最热或最新排序，使用游标分页",
+  "returns": "话题笔记列表数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "page_id",
+    "in": "query",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "5c1cc866febed9000184b7c1",
+    "desc": "话题页面ID/Topic page ID"
+   },
+   {
+    "name": "sort",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "trend",
+    "example": "trend",
+    "desc": "排序方式/Sort: trend(最热), time(最新)"
+   },
+   {
+    "name": "cursor_score",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "分页游标分数，翻页时传入/Pagination cursor score for next page"
+   },
+   {
+    "name": "last_note_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "上一页最后一条笔记ID，翻页时传入/Last note ID from previous page"
+   },
+   {
+    "name": "last_note_ct",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "上一页最后一条笔记创建时间，翻页时传入/Last note create time from previous page"
+   },
+   {
+    "name": "session_id",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "会话ID，翻页时保持一致/Session ID, keep consistent for pagination"
+   },
+   {
+    "name": "first_load_time",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "首次加载时间戳，翻页时保持一致/First load timestamp, keep consistent for pagination"
+   },
+   {
+    "name": "source",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "normal",
+    "example": "normal",
+    "desc": "来源/Source"
+   }
+  ],
+  "body_params": [],
+  "request_example": "page_id=\"5c1cc866febed9000184b7c1\"\nsort=\"trend\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "获取创作者推荐灵感列表/Get creator inspiration feed",
+  "name_zh": "获取创作者推荐灵感列表",
+  "name_en": "Get creator inspiration feed",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/get_creator_inspiration_feed",
+  "purpose": "获取创作者中心的推荐创作灵感流，使用游标分页",
+  "returns": "推荐灵感列表数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "cursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "分页游标，首次请求留空/Pagination cursor, leave empty for first request"
+   },
+   {
+    "name": "tab",
+    "in": "query",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": 0,
+    "desc": "标签类型/Tab type"
+   },
+   {
+    "name": "source",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "creator_center",
+    "example": "creator_center",
+    "desc": "来源/Source"
+   }
+  ],
+  "body_params": [],
+  "request_example": "cursor=\"\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-App-V2-API",
+  "name": "获取创作者热点灵感列表/Get creator hot inspiration feed",
+  "name_zh": "获取创作者热点灵感列表",
+  "name_en": "Get creator hot inspiration feed",
+  "method": "GET",
+  "path": "/api/v1/xiaohongshu/app_v2/get_creator_hot_inspiration_feed",
+  "purpose": "获取创作者中心的热点创作灵感流，使用游标分页",
+  "returns": "热点灵感列表数据",
+  "notice": "",
+  "query_params": [
+   {
+    "name": "cursor",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "分页游标，首次请求留空/Pagination cursor, leave empty for first request"
+   }
+  ],
+  "body_params": [],
+  "request_example": "cursor=\"\"",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "获取蒲公英笔记详情/Get PGY note detail",
+  "name_zh": "获取蒲公英笔记详情",
+  "name_en": "Get PGY note detail",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_note_detail",
+  "purpose": "获取单篇蒲公英笔记的详情数据",
+  "returns": "笔记详情数据，主要字段:",
+  "notice": "",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "note_id",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "笔记ID/Note ID"
+   }
+  ],
+  "request_example": "```json\n{\"note_id\": \"6a20edfa0000000021020951\"}\n```\n\n`note_id` 从 `/get_blogger_notes` 的 `list[].noteId`、`/get_blogger_notes_v2` 的\n`noteList[].noteInfo.noteId`，或 `/get_content_square` 的榜单结果里取。\n\nGet `note_id` from `/get_blogger_notes`, `/get_blogger_notes_v2` or `/get_content_square` results.",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.02,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "获取蒲公英笔记精选评论/Get PGY note featured comments",
+  "name_zh": "获取蒲公英笔记精选评论",
+  "name_en": "Get PGY note featured comments",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_note_comments",
+  "purpose": "获取单篇笔记的精选评论，含博主本人的回复；对应蒲公英笔记详情弹窗里的「精选评论」区块",
+  "returns": "`data.data` 是**数组**（不是对象），每项为一条评论线程:",
+  "notice": "",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "note_id",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "笔记ID/Note ID"
+   }
+  ],
+  "request_example": "```json\n{\"note_id\": \"6a85646a0000000006005aea\"}\n```\n\n**没有翻页参数**：上游固定返回精选 5 条，传 pageIndex / pageSize 也没用。\n昵称和头像要用 `userIdStr` 去 `userMap` 里 join —— 评论对象本身只有 ID、没有昵称。\n\n**No paging**: upstream always returns the same top-5 picked comments.\nJoin nicknames via `userMap[userIdStr]` — comment objects carry IDs only.",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.01,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "获取蒲公英笔记组件/Get PGY note components",
+  "name_zh": "获取蒲公英笔记组件",
+  "name_en": "Get PGY note components",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_note_components",
+  "purpose": "获取单篇笔记挂载的组件配置（正文搜索组件 / 评论区组件 / 底部组件）；对应笔记详情弹窗里标题下方的那几个组件标签",
+  "returns": "`data.data` 下三个组件位，**没挂该组件时为 null**:",
+  "notice": "",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "note_id",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "笔记ID/Note ID"
+   }
+  ],
+  "request_example": "```json\n{\"note_id\": \"6a85646a0000000006005aea\"}\n```\n\n典型用法：先用 `/get_content_square` 找一批商业笔记，再逐条调本接口，\n看它们分别挂了什么转化组件、导向哪个品牌或搜索词。\n没挂该组件的位置返回 `null`，不是报错。\n\nTypical flow: find sponsored notes via `/get_content_square`, then call this per note\nto see which conversion component is attached. Absent slots return `null`, not an error.",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.0,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "获取蒲公英博主详情/Get PGY blogger detail",
+  "name_zh": "获取蒲公英博主详情",
+  "name_en": "Get PGY blogger detail",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_blogger_detail",
+  "purpose": "获取单个博主的详细资料，对应蒲公英博主主页顶部资料区；结果已内嵌大量指标，通常不必再逐个调其它博主数据接口",
+  "returns": "博主资料: userId / name / redId(小红书号) / headPhoto / location(地区) / personalTags(标签)；商业信息: 图文与视频报价、合作状态、所属机构(MCN)；标签: contentTags(内容类目) / featureTags(内容特征)；数据: 粉丝数、各项中位数、近 30 天曝光等",
+  "notice": "",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "user_id",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "博主用户ID/Blogger user ID"
+   }
+  ],
+  "request_example": "```json\n{\"user_id\": \"5c668b3e0000000012021605\"}\n```\n\n`user_id` 从 `/get_blogger_list` 结果的 `kols[].userId` 取，或从蒲公英博主主页 URL 里截。\n想要更细的数据分别用：`/get_blogger_data_summary`（成本与报价预估）、\n`/get_blogger_notes_rate`（笔记表现）、`/get_blogger_fans_profile`（粉丝画像）。\n\nGet `user_id` from `/get_blogger_list` → `kols[].userId`, or from the blogger's PGY page URL.",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.02,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "获取蒲公英博主笔记案例/Get PGY blogger note cases",
+  "name_zh": "获取蒲公英博主笔记案例",
+  "name_en": "Get PGY blogger note cases",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_blogger_notes",
+  "purpose": "分页获取博主的笔记明细，对应博主主页「笔记数据 → 笔记案例」；想看「这个博主接过哪些商单」，把 note_type 设为 3(合作笔记)；**本接口只覆盖原生笔记，少数博主（笔记以跨平台/跨域内容为主）会返回空列表",
+  "returns": "list[]: 笔记数组，每条含 noteId / title / imgUrl(封面) / date(发布日期) / isVideo(是否视频)；数据: readNum(阅读) / likeNum(点赞) / collectNum(收藏) / thirdReadUserNum(站外阅读人数)；合作: isAdvertise(是否商业合作) / brandName(合作品牌)；total: 命中总数（随筛选变化，可据此算总页数）；拿到 noteId 后可调 /get_note_detail 查正文、图片/视频与完整互动数据；**注意**: 本接口的封面字段是 `imgUrl`，`/get_blogger_notes_v2` 是 `imageUrl`，一字之差",
+  "notice": "This endpoint only covers native notes; a few bloggers (whose notes are mostly",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "user_id",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "博主用户ID/Blogger user ID"
+   },
+   {
+    "name": "page_number",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": "",
+    "desc": "页码，从 1 开始/Page number, from 1"
+   },
+   {
+    "name": "page_size",
+    "required": false,
+    "type": "integer",
+    "default": 8,
+    "example": "",
+    "desc": "每页数量，1-8（蒲公英网页固定 8）/Page size, 1-8 (fixed at 8 on PGY web)"
+   },
+   {
+    "name": "note_type",
+    "required": false,
+    "type": "integer",
+    "default": 4,
+    "example": "",
+    "desc": "笔记类型 4=全部类型(默认) 3=合作笔记 1=图文 2=视频/Note type"
+   },
+   {
+    "name": "order_type",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": "",
+    "desc": "排序 1=最新发布(默认) 2=阅读最多 3=互动最多/Sort"
+   },
+   {
+    "name": "advertise_switch",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": "",
+    "desc": "流量类型 1=全部(含商业合作) 0=仅自然流量/Traffic type"
+   },
+   {
+    "name": "feature_tag",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "按内容特征筛选，如 韩系；取值见博主详情的 featureTags/Filter by feature tag"
+   },
+   {
+    "name": "content_tag",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "按内容类目筛选，如 美妆；取值见博主详情的 contentTags/Filter by content tag"
+   },
+   {
+    "name": "is_third_platform",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": "",
+    "desc": "1=只看跨域合作笔记 0=不限(默认)/Cross-platform notes only"
+   }
+  ],
+  "request_example": "```json\n// ① 最近发布的全部笔记\n{\"user_id\": \"5c668b3e0000000012021605\", \"page_number\": 1, \"page_size\": 8}\n\n// ② 只看合作笔记（商单）\n{\"user_id\": \"5c668b3e0000000012021605\", \"page_number\": 1, \"page_size\": 8, \"note_type\": 3}\n\n// ③ 只看视频、按互动排序\n{\"user_id\": \"5c668b3e0000000012021605\", \"page_number\": 1, \"page_size\": 8, \"note_type\": 2, \"order_type\": 2}\n\n// ④ 只看广告投放过的笔记\n{\"user_id\": \"5c668b3e0000000012021605\", \"page_number\": 1, \"page_size\": 8, \"advertise_switch\": 1}\n\n// ⑤ 按类目过滤\n{\"user_id\": \"5c668b3e0000000012021605\", \"page_number\": 1, \"page_size\": 8, \"content_tag\": \"美妆\"}\n```\n\n**返空时改用 `/get_blogger_notes_v2`**：本接口走原生 KOL 链路，对跨域博主可能返回空列表。\n两个接口的返回结构不同（v2 在 `noteList[].noteInfo` 下），解析代码不能混用。\n\nIf this returns an empty list for a cross-domain blogger, switch to `/get_blogger_notes_v2`.\nTheir response shapes differ — do not reuse the same parser.",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.02,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "获取蒲公英博主笔记案例 v2（覆盖跨域）/Get PGY blogger note cases v2 (cross-platform)",
+  "name_zh": "获取蒲公英博主笔记案例 v2（覆盖跨域）",
+  "name_en": "Get PGY blogger note cases v2 (cross-platform)",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_blogger_notes_v2",
+  "purpose": "分页获取博主的笔记案例（v2）。与 `/get_blogger_notes` 是**两套独立接口**：",
+  "returns": "noteList[]: 笔记数组，每条含 noteInfo（noteId / title / imageUrl / notePublishTime /",
+  "notice": "",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "user_id",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "博主用户ID/Blogger user ID"
+   },
+   {
+    "name": "page_number",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": "",
+    "desc": "页码，从 1 开始/Page number, from 1"
+   },
+   {
+    "name": "page_size",
+    "required": false,
+    "type": "integer",
+    "default": 8,
+    "example": "",
+    "desc": "每页数量，1-8（蒲公英网页固定 8）/Page size, 1-8 (fixed at 8 on PGY web)"
+   },
+   {
+    "name": "note_type",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": "",
+    "desc": "笔记类型 0=全部类型(默认) 1=图文 2=视频/Note type"
+   },
+   {
+    "name": "order_type",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": "",
+    "desc": "排序 1=最新发布(默认) 2=阅读最多 3=互动最多/Sort"
+   }
+  ],
+  "request_example": "```json\n// ① 第一页\n{\"user_id\": \"592b6f7c5e87e74d3669f3ba\", \"page_number\": 1, \"page_size\": 8}\n\n// ② 只看视频笔记\n{\"user_id\": \"592b6f7c5e87e74d3669f3ba\", \"page_number\": 1, \"page_size\": 8, \"note_type\": 2}\n\n// ③ 换排序\n{\"user_id\": \"592b6f7c5e87e74d3669f3ba\", \"page_number\": 1, \"page_size\": 8, \"order_type\": 2}\n```\n\n**什么时候用这个**：`/get_blogger_notes` 对跨域博主返空时。\n返回结构与那个接口不同（本接口在 `noteList[].noteInfo` 下），解析代码不要混用。\n\nUse this when `/get_blogger_notes` returns empty for a cross-domain blogger.",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.02,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "获取蒲公英博主数据表现/Get PGY blogger performance metrics",
+  "name_zh": "获取蒲公英博主数据表现",
+  "name_en": "Get PGY blogger performance metrics",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_blogger_notes_rate",
+  "purpose": "获取博主笔记的整体数据表现，用于评估内容质量与稳定性；对应博主主页「数据概览 → 笔记数据」与「笔记数据 → 数据表现」",
+  "returns": "各项中位数: impMedian(曝光) / readMedian(阅读) / interactionMedian(互动)；比率: 互动率、完播率、百赞/千赞笔记比例；超越同行的百分位(如 impMedianBeyondRate)",
+  "notice": "",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "user_id",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "博主用户ID/Blogger user ID"
+   },
+   {
+    "name": "business",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": "",
+    "desc": "笔记口径 0=日常笔记(默认) 1=合作笔记/Note scope: 0=organic, 1=sponsored"
+   },
+   {
+    "name": "note_type",
+    "required": false,
+    "type": "integer",
+    "default": 3,
+    "example": "",
+    "desc": "笔记类型 3=图文+视频(默认) 1=图文 2=视频/Note type"
+   },
+   {
+    "name": "date_type",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": "",
+    "desc": "时间范围 1=近30日(默认) 2=近90日/Date range: 1=last 30d, 2=last 90d"
+   },
+   {
+    "name": "advertise_switch",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": "",
+    "desc": "流量类型 1=全部(含合作) 0=仅自然流量/Traffic type"
+   }
+  ],
+  "request_example": "```json\n// 日常笔记表现\n{\"user_id\": \"5c668b3e0000000012021605\"}\n\n// 合作笔记（商单）表现，近 90 日\n{\"user_id\": \"5c668b3e0000000012021605\", \"business\": 1, \"date_type\": 2}\n```",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.02,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "获取蒲公英博主核心数据/Get PGY blogger core data trend",
+  "name_zh": "获取蒲公英博主核心数据",
+  "name_en": "Get PGY blogger core data trend",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_blogger_core_data",
+  "purpose": "获取博主的逐日趋势与区间汇总，用于绘制表现趋势图；对应博主主页「笔记数据 → 数据表现 → 核心指标趋势」",
+  "returns": "dailyData[]: 逐日趋势数据点；sumData: 区间汇总（曝光/阅读/互动/CPM/CPE 等）",
+  "notice": "",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "user_id",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "博主用户ID/Blogger user ID"
+   },
+   {
+    "name": "business",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": "",
+    "desc": "笔记口径 0=日常笔记(默认) 1=合作笔记/Note scope"
+   },
+   {
+    "name": "note_type",
+    "required": false,
+    "type": "integer",
+    "default": 3,
+    "example": "",
+    "desc": "笔记类型 3=图文+视频(默认) 1=图文 2=视频/Note type"
+   },
+   {
+    "name": "date_type",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": "",
+    "desc": "时间范围 1=近30日(默认) 2=近90日/Date range"
+   },
+   {
+    "name": "advertise_switch",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": "",
+    "desc": "流量类型 1=全部(含合作) 0=仅自然流量/Traffic type"
+   }
+  ],
+  "request_example": "```json\n// ① 默认：日常笔记 · 近 30 日趋势\n{\"user_id\": \"5c668b3e0000000012021605\"}\n\n// ② 近 90 日\n{\"user_id\": \"5c668b3e0000000012021605\", \"date_type\": 2}\n\n// ③ 合作笔记口径 · 仅自然流量\n{\"user_id\": \"5c668b3e0000000012021605\", \"business\": 1, \"advertise_switch\": 0}\n\n// ④ 只看视频 · 近 90 日 · 合作笔记\n{\"user_id\": \"5c668b3e0000000012021605\", \"business\": 1, \"note_type\": 2, \"date_type\": 2}\n```\n\n`dailyData[]` 可直接画趋势图，`sumData` 是同区间的汇总值。\n逐日点数随 `date_type` 变化（近 30 日约 30 个点）。",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.02,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "获取蒲公英博主数据概览/Get PGY blogger data summary",
+  "name_zh": "获取蒲公英博主数据概览",
+  "name_en": "Get PGY blogger data summary",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_blogger_data_summary",
+  "purpose": "获取博主账号维度的数据概览汇总",
+  "returns": "成本/报价预估: estimatePictureCpm / estimateVideoCpm / pictureReadCost 等；服务表现: 近 7 天活跃天数、邀约 48 小时回复率；成长表现: 粉丝量变化幅度及其同行百分位",
+  "notice": "",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "user_id",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "博主用户ID/Blogger user ID"
+   },
+   {
+    "name": "business",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": "",
+    "desc": "笔记口径 0=日常笔记(默认) 1=合作笔记/Note scope"
+   }
+  ],
+  "request_example": "```json\n// ① 日常笔记口径\n{\"user_id\": \"5c668b3e0000000012021605\"}\n\n// ② 合作笔记口径（按商单价格评估性价比时用这个）\n{\"user_id\": \"5c668b3e0000000012021605\", \"business\": 1}\n```\n\n**两种口径的成本类指标不同** —— 实测同一博主日常图文 CPM ≈11、合作口径 ≈19。\n想评估「按商单价格算的性价比」请传 `business=1`。\n\nThe two modes yield different cost metrics; pass `business=1` to evaluate sponsored-price ROI.",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.02,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "获取蒲公英博主粉丝概览/Get PGY blogger fans summary",
+  "name_zh": "获取蒲公英博主粉丝概览",
+  "name_en": "Get PGY blogger fans summary",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_blogger_fans_summary",
+  "purpose": "获取博主粉丝的核心指标概览，对应博主主页「粉丝分析 → 核心指标」",
+  "returns": "fansNum(粉丝数) / fansIncreaseNum(增量) / fansGrowthRate(增长率)；activeFansRate(活跃粉丝占比) / 阅读粉丝占比 / 互动粉丝占比；各项的同行百分位（如 activeFansBeyondRate）",
+  "notice": "",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "user_id",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "博主用户ID/Blogger user ID"
+   }
+  ],
+  "request_example": "```json\n{\"user_id\": \"5c668b3e0000000012021605\"}\n```\n\n配合 `/get_blogger_fans_profile`（画像）与 `/get_blogger_fans_history`（趋势）一起看，\n三个接口分别回答「粉丝有多少」「粉丝是谁」「粉丝怎么变的」。\n\nUse together with `/get_blogger_fans_profile` and `/get_blogger_fans_history`.",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.02,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "获取蒲公英博主粉丝画像/Get PGY blogger fans profile",
+  "name_zh": "获取蒲公英博主粉丝画像",
+  "name_en": "Get PGY blogger fans profile",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_blogger_fans_profile",
+  "purpose": "获取博主粉丝的分布画像，用于判断受众与品牌目标人群是否吻合",
+  "returns": "ages[]: 年龄分布；gender: 性别分布（male / female）；provinces[] / cities[]: 地域分布（省 / 市）；devices[]: 设备分布；interests[]: 兴趣分布",
+  "notice": "",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "user_id",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "博主用户ID/Blogger user ID"
+   }
+  ],
+  "request_example": "```json\n{\"user_id\": \"5c668b3e0000000012021605\"}\n```\n\n选号时最常用的两个字段是 `gender`（性别构成）与 `cities[]`（城市分布）——\n投地域性强的产品时先看这两个再决定要不要谈。\n\nThe two most-used fields when shortlisting: `gender` and `cities[]`.",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.02,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "获取蒲公英博主粉丝增长历史/Get PGY blogger fans growth history",
+  "name_zh": "获取蒲公英博主粉丝增长历史",
+  "name_en": "Get PGY blogger fans growth history",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_blogger_fans_history",
+  "purpose": "获取博主粉丝随时间的变化曲线，对应博主主页「粉丝分析 → 粉丝趋势」",
+  "returns": "list[]: 逐日数据点（当日值与日期）；fansNumInc: 区间净增；fansNumIncRate: 区间增长率",
+  "notice": "",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "user_id",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "博主用户ID/Blogger user ID"
+   },
+   {
+    "name": "increase_type",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": "",
+    "desc": "曲线口径 1=粉丝总量(默认，累计) 2=粉丝增量(每日新增)/Curve: 1=total, 2=daily increment"
+   },
+   {
+    "name": "date_type",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": "",
+    "desc": "时间范围 1=近30日(默认) 2=近60日/Date range: 1=last 30d, 2=last 60d"
+   }
+  ],
+  "request_example": "```json\n// ① 累计粉丝数曲线（默认，近 30 日）\n{\"user_id\": \"5c668b3e0000000012021605\"}\n\n// ② 每日新增曲线，近 60 日\n{\"user_id\": \"5c668b3e0000000012021605\", \"increase_type\": 2, \"date_type\": 2}\n\n// ③ 累计曲线拉到近 60 日\n{\"user_id\": \"5c668b3e0000000012021605\", \"date_type\": 2}\n```\n\n`increase_type=2` 的曲线出现孤立尖峰，通常意味着买量或蹭到热点，\n选号时值得再看一眼那几天的笔记。\n\nIsolated spikes in the daily-increase curve usually mean bought traffic or a viral hit.",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.02,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "获取蒲公英相似博主推荐/Get PGY similar bloggers",
+  "name_zh": "获取蒲公英相似博主推荐",
+  "name_en": "Get PGY similar bloggers",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_blogger_similar",
+  "purpose": "给定一个博主，返回平台判定与其相似的其它博主，对应博主主页下方「相似博主推荐」；典型用法：先选出一个满意的标杆博主，再用本接口按相似度扩量选号",
+  "returns": "结构与「笔记博主广场」完全一致 —— 同样的 kols[] + total，可直接复用解析代码；相似博主总数通常只有个位数到几十，total 即为上限",
+  "notice": "",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "user_id",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "目标博主用户ID/Target blogger user ID"
+   },
+   {
+    "name": "page_num",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": "",
+    "desc": "页码，从 1 开始/Page"
+   },
+   {
+    "name": "page_size",
+    "required": false,
+    "type": "integer",
+    "default": 4,
+    "example": "",
+    "desc": "每页数量，1-4（网页固定 4）/Page size, 1-4"
+   }
+  ],
+  "request_example": "```json\n// ① 第一页（每页最多 4 个，这是蒲公英网页的固定值）\n{\"user_id\": \"5c668b3e0000000012021605\", \"page_num\": 1, \"page_size\": 4}\n\n// ② 翻页：只改 page_num\n{\"user_id\": \"5c668b3e0000000012021605\", \"page_num\": 2, \"page_size\": 4}\n```\n\n**想「找相似 + 再按粉丝量/报价筛一遍」**，用 `/get_blogger_list` 的 `similar_user_id`\n参数 —— 那条链路支持叠加全部筛选；本接口只按相似度返回、不支持筛选。\n\nTo combine similarity with other filters, use `similar_user_id` on `/get_blogger_list` instead.",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.02,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "蒲公英笔记博主广场（找博主/选号）/PGY note blogger square",
+  "name_zh": "蒲公英笔记博主广场（找博主/选号）",
+  "name_en": "PGY note blogger square",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_blogger_list",
+  "purpose": "复刻蒲公英网页「找博主 → 笔记博主广场」的搜索与筛选，约 60 个筛选条件按 7 组传入；每条结果内嵌约 140 个字段（报价、阅读/互动中位数、直播场次等），通常不必再逐个调博主详情类接口",
+  "returns": "",
+  "notice": "",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "page_num",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": "",
+    "desc": "页码，1-250（上游只放出前 5000 条）/Page, 1-250"
+   },
+   {
+    "name": "page_size",
+    "required": false,
+    "type": "integer",
+    "default": 20,
+    "example": "",
+    "desc": "每页数量，1-20（网页固定 20，建议保持 20）/Page size, 1-20"
+   },
+   {
+    "name": "keyword",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "搜索词；空=只筛选不搜索/Keyword"
+   },
+   {
+    "name": "search_type",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": "",
+    "desc": "1=按笔记关键词找博主(默认) 0=按昵称搜/Search mode"
+   },
+   {
+    "name": "column",
+    "required": false,
+    "type": "string",
+    "default": "comprehensiverank",
+    "example": "",
+    "desc": "排序字段，共 34 个，见接口说明的排序字段表/Sort column, 34 options, see endpoint docs"
+   },
+   {
+    "name": "sort",
+    "required": false,
+    "type": "string",
+    "default": "desc",
+    "example": "",
+    "desc": "排序方向 desc/asc"
+   },
+   {
+    "name": "brand_user_id",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "品牌方/广告主用户ID，可不填/Brand user ID, optional"
+   },
+   {
+    "name": "similar_user_id",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "找相似博主：填一个博主的 userId，返回与他相似的博主，**并且可以叠加下面所有筛选**（这是它与 /get_blogger_similar 的关键区别）/Find similar bloggers; unlike /get_blogger_similar it can be combined with all filters below"
+   },
+   {
+    "name": "similar_word",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "配合 similar_user_id 的博主昵称，仅用于回显、不影响结果/Nickname echo for similar_user_id; does not affect results"
+   },
+   {
+    "name": "goal",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "合作目标筛选/Cooperation goal filters"
+   },
+   {
+    "name": "blogger",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "博主属性筛选/Blogger attribute filters"
+   },
+   {
+    "name": "fans",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "粉丝画像筛选/Fans profile filters"
+   },
+   {
+    "name": "note",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "日常笔记数据筛选/Organic note metric filters"
+   },
+   {
+    "name": "coop",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "合作笔记数据筛选/Sponsored note metric filters"
+   },
+   {
+    "name": "live",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "直播数据筛选/Live metric filters"
+   },
+   {
+    "name": "flags",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "开关类筛选/Boolean flag filters"
+   }
+  ],
+  "request_example": "```json\n// ① 关键词找博主：搜「咖啡」相关笔记的博主，按粉丝数降序；带品牌方 ID 做个性化推荐并剔除已合作过的\n{\"page_num\": 1, \"page_size\": 20, \"keyword\": \"咖啡\", \"search_type\": 1,\n \"column\": \"fansCount\", \"sort\": \"desc\",\n \"brand_user_id\": \"5dcfa5370000000001006030\",\n \"flags\": {\"exclude_cooperated\": true}}\n\n// ② 按昵称找号：search_type=0 时 keyword 匹配的是博主昵称而不是笔记内容\n{\"page_num\": 1, \"page_size\": 20, \"keyword\": \"小鹿\", \"search_type\": 0}\n\n// ③ 最基础的类目 + 粉丝量筛选：粉丝 1 万-5 万的美妆博主，按互动中位数降序\n{\"page_num\": 1, \"page_size\": 20, \"column\": \"mEngagementNum\",\n \"fans\": {\"count\": {\"min\": 10000, \"max\": 50000}},\n \"blogger\": {\"content_tag\": [\"美妆\"]}}\n\n// ④ 按画像选号：1 万-5 万粉、粉丝以 25-34 岁女性为主的美妆「妈妈」博主\n{\"page_num\": 1, \"page_size\": 20,\n \"blogger\": {\"content_tag\": [\"美妆\"], \"personal_tags\": [\"妈妈\"]},\n \"fans\": {\"count\": {\"min\": 10000, \"max\": 50000}, \"gender\": 2, \"age\": 3}}\n\n// ⑤ 按预算与响应速度选号：图文报价 1 万-5 万、48h 邀约回复率 ≥80%\n{\"page_num\": 1, \"page_size\": 20,\n \"coop\": {\"pic_price\": {\"min\": 10000, \"max\": 50000},\n          \"reply_48h_ratio\": {\"min\": 80}}}\n\n// ⑥ 按性价比选号：图文报价 ≤5000、阅读中位数 ≥3000 的视频博主，只看优质号并剔除低活\n{\"page_num\": 1, \"page_size\": 20,\n \"note\": {\"read_median\": {\"min\": 3000}, \"note_type\": 2},\n \"coop\": {\"pic_price\": {\"max\": 5000}},\n \"flags\": {\"high_quality\": true, \"exclude_low_active\": true}}\n\n// ⑦ 找会直播带货的博主：近 30 天开播 1-5 场、场均销售额 ≥1 万，且笔记+直播均可合作\n{\"page_num\": 1, \"page_size\": 20,\n \"live\": {\"live_count\": {\"min\": 1, \"max\": 5}, \"avg_gmv\": {\"min\": 10000}},\n \"flags\": {\"note_and_live\": true}}\n\n// ⑧ 多维组合：7 个筛选组同时生效（字段名写错会直接 422，不会被静默忽略）\n{\"page_num\": 1, \"page_size\": 20, \"column\": \"comprehensiverank\", \"sort\": \"desc\",\n \"goal\":    {\"market_target\": \"mAccumImpNum\"},\n \"blogger\": {\"content_tag\": [\"美妆\"], \"gender\": \"女\", \"signed\": 0},\n \"fans\":    {\"count\": {\"min\": 10000}, \"age\": 3, \"device_brand\": [\"苹果\"]},\n \"note\":    {\"inter_median\": {\"min\": 500}, \"thousand_like_percent\": {\"min\": 20}},\n \"coop\":    {\"industry\": \"美妆个护\", \"video_price\": {\"max\": 8000}},\n \"live\":    {\"avg_viewer\": {\"min\": 5000}},\n \"flags\":   {\"exclude_cooperated\": true}}\n\n\n// ⑨ 找相似博主：给一个满意的标杆博主，扩一批相似的，**并叠加自己的筛选**\n//    （/get_blogger_similar 只按相似度返回、不支持筛选，需要叠加筛选就用这里）\n{\"page_num\": 1, \"page_size\": 20,\n \"similar_user_id\": \"5a8cf39111be10466d285d6b\",\n \"fans\": {\"count\": {\"min\": 50000}},\n \"coop\": {\"pic_price\": {\"max\": 20000}}}\n\n// ⑩ 预算优先：按「图文预估阅读单价」从低到高排，先看最便宜的\n{\"page_num\": 1, \"page_size\": 20,\n \"column\": \"pictureReadCost\", \"sort\": \"asc\",\n \"coop\": {\"pic_price\": {\"min\": 1000, \"max\": 10000}}}\n\n// ⑪ 涨粉快的新秀：按近 30 天粉丝增长率降序，并剔除掉粉的\n{\"page_num\": 1, \"page_size\": 20,\n \"column\": \"fans30GrowthRate\", \"sort\": \"desc\",\n \"fans\": {\"count\": {\"min\": 5000, \"max\": 100000}},\n \"flags\": {\"exclude_fans_down\": true}}\n\n// ⑫ 爆款率优先：按百赞笔记占比降序（看重内容稳定性而非粉丝量时用）\n{\"page_num\": 1, \"page_size\": 20,\n \"column\": \"hundredLikePercent30\", \"sort\": \"desc\",\n \"note\": {\"thousand_like_percent\": {\"min\": 10}}}\n\n// ⑬ 地域投放：找上海本地的探店博主\n//    blogger.location 直接填地名即可，不要填「上海市-上海市-黄浦区」这种全路径\n{\"page_num\": 1, \"page_size\": 20,\n \"blogger\": {\"location\": [\"上海\"], \"content_tag\": [\"美食\"]}}\n\n// ⑭ 按粉丝所在地投放（和 ⑬ 是两个不同维度：⑬ 是博主在哪，⑭ 是粉丝在哪）\n{\"page_num\": 1, \"page_size\": 20,\n \"fans\": {\"location\": [\"广东\"], \"count\": {\"min\": 20000}}}\n\n// ⑮ 直播带货 + 90 天口径：场均观播 ≥5000、场均销售额 ≥1 万\n//    注意 avg_viewer / avg_gmv 是近 90 天，而 live_count 是近 30 天\n{\"page_num\": 1, \"page_size\": 20,\n \"live\": {\"live_count\": {\"min\": 1}, \"avg_viewer\": {\"min\": 5000}, \"avg_gmv\": {\"min\": 10000}}}\n```\n\n### 常见错误写法 / Common mistakes\n\n分两类。**第二类才是真正的坑** —— 它们不会报错，只会安静返回 0 条。\n\n#### A. 会直接 422 的写法（好在会立刻报错）\n\n```json\n// ✗ 区间写成了数字 —— 区间型字段必须是对象\n{\"fans\": {\"count\": 10000}}\n// ✓\n{\"fans\": {\"count\": {\"min\": 10000}}}\n\n// ✗ 字段名拼错（驼峰）—— 本接口 extra=\"forbid\"，写错直接 422，不会被静默忽略\n{\"blogger\": {\"contentTag\": [\"美妆\"]}}\n// ✓\n{\"blogger\": {\"content_tag\": [\"美妆\"]}}\n\n// ✗ 排序列填了未放行的值\n{\"column\": \"forecastReadUv\"}\n// ✓ 见第 1 节的 34 个排序字段\n{\"column\": \"avgAgmv90d\"}\n\n// ✗ page_size 超上限（1-20）\n{\"page_size\": 100}\n// ✓\n{\"page_size\": 20}\n\n// ✗ 百分比量纲错了 —— 千赞比例填 200 或 9500（按万分比/原始条数填）\n{\"note\": {\"thousand_like_percent\": {\"min\": 200}}}\n// ✓ 想表达「20%」就填 20\n{\"note\": {\"thousand_like_percent\": {\"min\": 20}}}\n```\n\n#### B. 不会报错、但查不到数据的写法（最难排查）\n\n下面这些**全都能通过校验**，返回 200，结果却是 0 条 —— 因为值本身合法、只是没有匹配项。\n\n```json\n// ✗ 地域填了带分隔符的全路径\n{\"blogger\": {\"location\": [\"上海市-上海市-黄浦区\"]}}\n// ✓ 直接填地名\n{\"blogger\": {\"location\": [\"上海\"]}}\n\n// ✗ 百分比填了小数（0.2 是合法的 0.2%，不是 20%）\n{\"note\": {\"thousand_like_percent\": {\"min\": 0.2}}}\n// ✓ 想表达「20%」\n{\"note\": {\"thousand_like_percent\": {\"min\": 20}}}\n\n// ✗ 类目值是自己编的\n{\"blogger\": {\"content_tag\": [\"美妆护肤\"]}}\n// ✓ 用 /get_blogger_filter_options 的 contentTags 里真实存在的值\n{\"blogger\": {\"content_tag\": [\"美妆\"]}}\n\n// ✗ 开关型填 false —— 等于没筛，不是「反向筛」\n{\"flags\": {\"exclude_cooperated\": false}}\n// ✓ 想生效就填 true\n{\"flags\": {\"exclude_cooperated\": true}}\n\n// ✗ 把「行业」当成「博主类目」用（两个是不同的筛选）\n{\"flags\": {\"industry_first\": \"美妆\"}}\n// ✓ 博主类目用 blogger.content_tag\n{\"blogger\": {\"content_tag\": [\"美妆\"]}}\n```\n\n**搜不到结果时的排查顺序**：先把筛选一个个去掉，定位是哪个条件卡住的；\n需要查字典的筛选（类目 / 场景 / 消费行为 / 地域）优先怀疑值写错了。",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.02,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "获取蒲公英找博主筛选项字典/Get PGY blogger filter options",
+  "name_zh": "获取蒲公英找博主筛选项字典",
+  "name_en": "Get PGY blogger filter options",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_blogger_filter_options",
+  "purpose": "获取 `/get_blogger_list` 里那些**树形筛选**的可选值，是找博主的配套字典接口；这些选项由平台维护、会随运营变动，**不要写死在代码里**；结果基本不变，建议客户端缓存后复用",
+  "returns": "`industryTags` → 网页「**行业**」（`taxonomy1Tag` 一级 + `taxonomy2Tags` 二级），",
+  "notice": "",
+  "query_params": [],
+  "body_params": [],
+  "request_example": "```json\n// 取全部字典（首次接入时跑一次，把结果缓存起来）\n{}\n```\n\n字典变化很慢，**建议本地缓存复用**，不必每次筛选前都调。\n\n需要先查本接口才能填的筛选：博主类目（`contentTags`，含二级如 美妆 → 唇妆/眼妆）、\n笔记场景（`contentScenes`）、预估消费行为（`consumerBehavior`）、\n博主地域（`areas`，到区县）、粉丝地域（`fansAreas`，只到市）。\n其余多数筛选是固定枚举，照 `/get_blogger_list` 的文档直接填即可。\n\nCache the result — it rarely changes. Dictionary-backed filters: blogger category,\nnote scene, consumption behavior, blogger/fans location.",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.02,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "蒲公英直播博主广场（直播带货选号）/PGY live blogger square",
+  "name_zh": "蒲公英直播博主广场（直播带货选号）",
+  "name_en": "PGY live blogger square",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_live_blogger_list",
+  "purpose": "复刻蒲公英网页「找博主 → 直播博主广场」，按电商转化力/直播表现/粉丝购买力等筛选带货博主",
+  "returns": "",
+  "notice": "",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "page_num",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": "",
+    "desc": "页码，1-250（上游只放出前 5000 条）/Page, 1-250"
+   },
+   {
+    "name": "page_size",
+    "required": false,
+    "type": "integer",
+    "default": 20,
+    "example": "",
+    "desc": "每页数量，1-20（网页固定 20）/Page size, 1-20"
+   },
+   {
+    "name": "seed",
+    "required": false,
+    "type": "integer",
+    "default": 0,
+    "example": "",
+    "desc": "翻页种子：首页传 0，之后回传上一页返回的 seed/Paging seed, echo back from previous page"
+   },
+   {
+    "name": "nick_name",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "按博主昵称搜索/Search by nickname"
+   },
+   {
+    "name": "category",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "合作品类/Category filters"
+   },
+   {
+    "name": "buyer",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "买手天团 + 内容人设/Buyer group & persona filters"
+   },
+   {
+    "name": "ecom",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "电商转化力/E-commerce conversion filters"
+   },
+   {
+    "name": "live",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "直播投入度 + 表现力/Live activity & performance filters"
+   },
+   {
+    "name": "fans",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "粉丝购买力/Fans purchasing power filters"
+   },
+   {
+    "name": "flags",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "平台推荐开关/Platform recommendation flags"
+   }
+  ],
+  "request_example": "```json\n// ① 快速开始：主营女装、场均销售额 ≥10 万的买手\n{\"page_num\": 1, \"page_size\": 20,\n \"category\": {\"first\": [\"女装/女士精品\"]},\n \"ecom\": {\"avg_gmv\": {\"min\": 100000}}}\n\n// ② 有直播计划、观播人数高、且能看到联系方式的买手\n{\"page_num\": 1, \"page_size\": 20,\n \"live\": {\"has_plan\": true, \"avg_viewer\": {\"min\": 10000}},\n \"flags\": {\"contact_visible\": true, \"actively_seeking\": true}}\n\n// ③ 按粉丝购买力选号（女性粉丝占比高 + 高消费人群占比高）\n{\"page_num\": 1, \"page_size\": 20,\n \"fans\": {\"count\": {\"min\": 10000, \"max\": 100000}, \"gender\": 2, \"consumption\": [\"high\"]}}\n\n// ④ 高客单价 + 买手天团/内容人设标签（atv 按档位匹配，与区间有重叠的档位都会命中）\n{\"page_num\": 1, \"page_size\": 20,\n \"ecom\": {\"atv\": {\"min\": 200, \"max\": 500}, \"brand_avg_gmv\": {\"min\": 50000}},\n \"buyer\": {\"group_tag\": [\"气质简约\"], \"persona_tag\": [\"模特\"]}}\n\n// ⑤ 按昵称搜索 + 合作品类下钻到二级，只看邀约回复率高的\n{\"page_num\": 1, \"page_size\": 20, \"nick_name\": \"李\",\n \"category\": {\"first\": [\"女装/女士精品\"], \"second\": [\"连衣裙\"]},\n \"flags\": {\"high_reply_rate\": true}}\n\n// ⑥ 指定日期有排播的日播买手（plan_days 为 YYYYMMDD，需配合 has_plan 使用）\n{\"page_num\": 1, \"page_size\": 20,\n \"live\": {\"has_plan\": true, \"plan_days\": [\"20260901\", \"20260902\"], \"max_online\": {\"min\": 5000}},\n \"fans\": {\"age\": 3, \"consumption\": [\"high\", \"middle\"]},\n \"flags\": {\"daily_buyer\": true, \"live_potential_high\": true}}\n\n// ⑦ 翻页第 1 页：seed 传 0（或省略），从响应里取回本次结果集的 seed\n{\"page_num\": 1, \"page_size\": 20, \"seed\": 0}\n\n// ⑧ 翻页第 2 页：把上一页返回的 seed 原样带上，其余筛选必须保持不变\n{\"page_num\": 2, \"page_size\": 20, \"seed\": 1787045123}\n\n// 取数：buyers = resp[\"data\"][\"data\"][\"distributor_info_list\"]；下一页要回传的 seed = resp[\"data\"][\"data\"][\"seed\"]\n```",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.02,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "蒲公英内容广场（热门内容榜单）/PGY content square leaderboards",
+  "name_zh": "蒲公英内容广场（热门内容榜单）",
+  "name_en": "PGY content square leaderboards",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_content_square",
+  "purpose": "复刻蒲公英「学内容 → 创意灵感 → 内容广场」：**不需要任何 ID**，直接查「现在什么内容在火」；与其它接口方向相反 —— 其余接口都要先有博主/笔记 ID，本接口是入口式的，",
+  "returns": "",
+  "notice": "",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "biz_type",
+    "required": true,
+    "type": "integer",
+    "default": "",
+    "example": "",
+    "desc": "榜单 1=小红书热门 2=产品种草 3=电商推广 4=蒲公英合作 5=客资收集 6=电商热门 7=种草直达 8=应用推广/Leaderboard"
+   },
+   {
+    "name": "page_num",
+    "required": false,
+    "type": "integer",
+    "default": 1,
+    "example": "",
+    "desc": "页码；每个榜固定只有 100 条/Page; each board has only 100 items"
+   },
+   {
+    "name": "page_size",
+    "required": false,
+    "type": "integer",
+    "default": 34,
+    "example": "",
+    "desc": "每页数量，1-34（网页固定 34）/Page size, 1-34"
+   },
+   {
+    "name": "search_word",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "关键词，留空=看整榜；支持英文逗号分隔批量搜/Keyword, comma-separated for batch"
+   },
+   {
+    "name": "order_by",
+    "required": false,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "排序字段，留空=用该榜默认排序/Sort field, empty=board default"
+   },
+   {
+    "name": "date_range",
+    "required": false,
+    "type": "integer",
+    "default": 7,
+    "example": "",
+    "desc": "统计窗口：近 3/7/14/30 日/Date window in days"
+   },
+   {
+    "name": "sub_biz_type",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "【仅榜 8】1=应用下载 2=小程序推广 3=应用唤起(默认)/Board 8 only"
+   },
+   {
+    "name": "category",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "【仅榜 1】类目，格式「一级#二级」，如 \"内容类目#美妆\"/Board 1 only"
+   },
+   {
+    "name": "industry",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "【榜 2/3/4/5/6/7/8】所属行业名，取值集因榜而异/Industry, values differ per board"
+   },
+   {
+    "name": "note_type",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "内容类型 1=图文 2=视频/Content type"
+   },
+   {
+    "name": "content_type",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "内容来源 1=博主合作 2=明星合作 3=员工 5=买手 6=专业号 11=主理人 -1=用户/Content source"
+   },
+   {
+    "name": "theme",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "【榜 2/4/5/7/8】题材名/Theme"
+   },
+   {
+    "name": "author_type",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "【仅榜 4】1=蒲公英博主 2=明星/Board 4 only"
+   },
+   {
+    "name": "placement",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "【榜 2/3/5/7/8】流量场域 1=发现 2=搜索 3=视频内流/Traffic placement"
+   },
+   {
+    "name": "marketing_target",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "【仅榜 3】3=商品推广 8=直播推广/Board 3 only"
+   },
+   {
+    "name": "price",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "【仅榜 4】创作者报价/Creator price, board 4 only"
+   },
+   {
+    "name": "fans",
+    "required": false,
+    "type": "",
+    "default": "",
+    "example": "",
+    "desc": "【仅榜 4】创作者粉丝量区间/Creator fans range, board 4 only"
+   }
+  ],
+  "request_example": "```json\n// ① 近 7 日全平台最热的美妆视频（榜 1 用 category，不是 industry）\n{\"biz_type\": 1, \"category\": \"内容类目#美妆\", \"note_type\": 2}\n\n// ② 母婴行业近 30 日互动率最高的蒲公英合作笔记，博主图文报价 1~5 万\n{\"biz_type\": 4, \"industry\": \"母婴\", \"date_range\": 30,\n \"order_by\": \"premium_engage_rate\",\n \"price\": {\"kind\": 1, \"range\": {\"min\": 10000, \"max\": 50000}}}\n\n// ③ 电商推广榜按笔记支付金额排序，只看搜索场域\n{\"biz_type\": 3, \"order_by\": \"premium_ecm_dgmv\", \"placement\": 2}\n\n// ④ 带关键词看榜\n{\"biz_type\": 1, \"search_word\": \"面膜\"}\n\n// ⑤ 批量关键词（英文逗号分隔）+ 只看博主合作笔记\n{\"biz_type\": 1, \"search_word\": \"面膜,精华\", \"content_type\": 1}\n\n// ⑥ 翻页：只改 page_num，其余参数原样不动（改了口径两页会重复/遗漏）；每榜只有 100 条，34/页翻到第 3 页到底\n{\"biz_type\": 1, \"page_num\": 1, \"page_size\": 34, \"category\": \"内容类目#美妆\"}\n{\"biz_type\": 1, \"page_num\": 2, \"page_size\": 34, \"category\": \"内容类目#美妆\"}\n\n// ⑦ 蒲公英合作榜（仅榜 4 支持站外指标）：按小红星站外转化率排，限蒲公英博主、10~50 万粉的视频\n{\"biz_type\": 4, \"order_by\": \"taobao_third_active_pgy_user_ratio\", \"author_type\": 1,\n \"note_type\": 2, \"fans\": {\"min\": 100000, \"max\": 500000}}\n\n// ⑧ 产品种草榜近 3 日：美妆个护行业、测评题材、发现页场域的图文（留空 order_by = 用该榜默认排序）\n{\"biz_type\": 2, \"industry\": \"美妆个护\", \"theme\": \"测评类\", \"placement\": 1,\n \"note_type\": 1, \"date_range\": 3}\n\n// ⑨ 电商推广榜只看直播推广（marketing_target 仅榜 3 可用），按支付订单数排\n{\"biz_type\": 3, \"marketing_target\": 8, \"order_by\": \"premium_ecm_order_pv\", \"note_type\": 2}\n\n// ⑩ 电商热门榜近 14 日：industry 这里是电商商品类目（与榜 2/4/5/7/8 的行业名不是一套），看买手笔记的支付转化率\n{\"biz_type\": 6, \"industry\": \"厨房电器\", \"order_by\": \"premium_ecm_order_rate\",\n \"content_type\": 5, \"date_range\": 14}\n\n// ⑪ 应用推广榜（sub_biz_type 仅榜 8 可用）：应用下载口径、互联网行业、发现页的知识科普题材\n{\"biz_type\": 8, \"sub_biz_type\": 1, \"industry\": \"互联网\", \"placement\": 1, \"theme\": \"知识科普\"}\n\n// 取数：notes = resp[\"data\"][\"data\"][\"noteList\"]\n```",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.02,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "蒲公英关键词概览（搜索指数+博主画像）/PGY keyword overview",
+  "name_zh": "蒲公英关键词概览（搜索指数+博主画像）",
+  "name_en": "PGY keyword overview",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_keyword_stat",
+  "purpose": "给定一个关键词，返回它在小红书全站的热度概览，以及发这个词的博主长什么样；对应蒲公英内容广场搜索后的「全站数据」+「合作博主画像」两张卡片",
+  "returns": "",
+  "notice": "",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "search_word",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "关键词，如 面膜/Keyword"
+   }
+  ],
+  "request_example": "```json\n{\"search_word\": \"面膜\"}\n```\n\n**选题流程**：`/get_keyword_related` 扩出一批词 → 逐个调本接口比 `searchScore`\n与 `noteNum` → 挑「搜索量不低但笔记数少」的词，即竞争小的机会词。\n\n同一个关键词还可以调 `/get_keyword_daily` 看逐日走势。三个接口互相独立，按需调用。\n\nWorkflow: expand words via `/get_keyword_related`, compare `searchScore` vs `noteNum` here,\npick high-search / low-supply keywords.",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.02,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "蒲公英关键词逐日搜索指数/PGY keyword daily trend",
+  "name_zh": "蒲公英关键词逐日搜索指数",
+  "name_en": "PGY keyword daily trend",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_keyword_daily",
+  "purpose": "关键词的搜索热度逐日走势，用来判断一个词是在涨还是在退、有没有季节性；对应内容广场搜索后「全站数据 → 查看详情」里的趋势图",
+  "returns": "`dailyData[]`: 每天一条，含 `dateKey` 日期、`searchScore` 搜索指数、",
+  "notice": "",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "search_word",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "关键词，如 面膜/Keyword"
+   }
+  ],
+  "request_example": "```json\n{\"search_word\": \"面膜\"}\n```\n\n用来判断一个词是在涨还是在退、有没有季节性。\n时间范围由平台决定（实测约近三个月），**没有可调的时间参数**。\n要汇总值与环比请用 `/get_keyword_stat`。\n\nTime range is decided upstream (~3 months) and is not adjustable.",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.02,
+  "cost_source": "csv"
+ },
+ {
+  "platform": "xiaohongshu",
+  "platform_zh": "小红书",
+  "folder": "Xiaohongshu-PGY-API",
+  "name": "蒲公英关键词关联词（选题扩词）/PGY related keywords",
+  "name_zh": "蒲公英关键词关联词（选题扩词）",
+  "name_en": "PGY related keywords",
+  "method": "POST",
+  "path": "/api/v1/xiaohongshu/pgy/get_keyword_related",
+  "purpose": "返回用户搜这个词**之前**和**之后**还会搜什么，对应内容广场的「相关灵感」卡片；典型用法是选题扩词：拿一个核心词跑出一批关联词，再用 `/get_keyword_stat` 逐个比热度，",
+  "returns": "`upSearchWords[]`（上游词）与 `downSearchWords[]`（下游词）；每个词自带 `searchScore` 搜索指数、`readTotalCount` 阅读总量、`noteNum` 笔记数、",
+  "notice": "",
+  "query_params": [],
+  "body_params": [
+   {
+    "name": "search_word",
+    "required": true,
+    "type": "string",
+    "default": "",
+    "example": "",
+    "desc": "关键词，如 面膜/Keyword"
+   }
+  ],
+  "request_example": "```json\n{\"search_word\": \"面膜\"}\n```\n\n返回的 `upSearchWords[]`（上游词）与 `downSearchWords[]`（下游词）就是扩词的种子，\n拿去逐个跑 `/get_keyword_stat` 比热度，挑竞争小的。\n\n`upSearchWords[]` / `downSearchWords[]` are your expansion seeds — score them with\n`/get_keyword_stat`.",
+  "doc": "",
+  "deprecated": false,
+  "unit_cost_usd": 0.02,
+  "cost_source": "csv"
+ }
+]

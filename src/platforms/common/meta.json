@@ -1,0 +1,16 @@
+{
+  "platform": "common",
+  "platform_zh": "通用",
+  "platform_en": "Common",
+  "api_prefixes": ["/api/v1/demo", "/api/v1/hybrid"],
+  "version": "2.0.0",
+  "scope": "固定数据的免费演示接口（用于验证链路与字段结构）、多平台短视频混合解析",
+  "usage_zh": [
+    "先用演示接口验证链路是否通",
+    "解析一个抖音分享链接拿到视频数据"
+  ],
+  "usage_en": [
+    "Verify connectivity with the free demo endpoints",
+    "Parse a shared video link across platforms"
+  ]
+}

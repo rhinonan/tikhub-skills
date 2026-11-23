@@ -1,61 +1,72 @@
 {
-  "_note": "实测返回结构（2026-11-17 真实调用核对）。tools/patch_returns.py 会把它写进 inventory.json 的 returns_detail 并注入各分类 md；CLI 的 show 也会打印。",
-  "/api/v1/douyin/web/fetch_one_video_v2": [
-    "`data.aweme_detail` — 作品主体（obj，另有 `log_pb`/`status_code`）",
-    "`aweme_detail.aweme_id` — 作品ID（str）",
-    "`aweme_detail.desc` — 文案，`#话题` 原样保留（str）",
-    "`aweme_detail.create_time` — 发布时间的**秒级**时间戳（int）",
-    "`aweme_detail.duration` — 时长，单位**毫秒**（int，8010 ≈ 8.01s）",
-    "`aweme_detail.aweme_type` — 0=视频，68=图集（int，图片在 `images[]`）",
-    "`aweme_detail.share_url` — 分享链接（iesdouyin.com 短链）",
-    "`aweme_detail.statistics.{digg_count,comment_count,share_count,collect_count,recommend_count}` — 互动数（int）",
-    "`aweme_detail.author.{uid,sec_uid,unique_id,nickname,follower_count,total_favorited,signature,ip_location}` — 作者，`sec_uid` 可直接喂给资料/主页接口",
-    "`aweme_detail.video.{play_addr.url_list[],bit_rate[],cover.url_list[],ratio,width,height,has_watermark}` — 播放地址；`bit_rate` 有 13 档可选码率",
-    "`aweme_detail.music.{title,author,duration}`、`text_extra[].{hashtag_name,hashtag_id}` — 音乐与话题",
-    "⚠️ web 版 **`statistics.play_count` 实测恒为 0**（312789 赞但播放量为 0），播放量要走创作者中心/数据统计接口"
-  ],
-  "/api/v1/douyin/web/fetch_video_comments": [
-    "`comments[]` — 一级评论（`cid`/`text`（含 @ 与表情）/`create_time`(秒)/`digg_count`/`reply_comment_total`/`ip_label`）",
-    "`comments[].user.{uid,sec_uid,nickname,avatar_thumb.url_list[]}` — 评论者",
-    "`comments[].reply_comment[]` — 内嵌的少量回复（完整回复用 `fetch_video_comment_replies`）",
-    "`total` — 评论总数（实测 4070，与 `comments` 条数无关）",
-    "`cursor` / `has_more` — 下页游标（本页条数偏移）与是否还有下一页（1/0）",
-    "⚠️ 一级评论约 20 条/页（`count` 上限 ~20），回复接口要吃的是 `item_id`+`comment_id`，不是 `aweme_id`"
-  ],
-  "/api/v1/douyin/web/handler_user_profile": [
-    "`user.{uid,sec_uid,unique_id,short_id,nickname,signature}` — 四种 ID 与昵称签名",
-    "`user.{follower_count,following_count,total_favorited,aweme_count,favoriting_count}` — 粉丝/关注/获赞/作品数/喜欢数（int）",
-    "`user.ip_location` — 形如 `IP属地：浙江`，**带前缀**，取值需截断",
-    "`user.avatar_{thumb,168x168,300x300,larger}.url_list[]` — 多尺寸头像",
-    "`user.{city,country,custom_verify,commerce_user_level}` — 地域/认证/商业等级",
-    "⚠️ 只有静态快照，没有粉丝增量；要做增量就自己按时间落盘对比"
-  ],
-  "/api/v1/douyin/web/fetch_user_post_videos": [
-    "`aweme_list[]` — 作品列表，单条结构基本同 `fetch_one_video_v2` 的 `aweme_detail`（字段有裁剪）",
-    "`max_cursor` — 下一页游标，**实测是毫秒时间戳**（如 1794557654000），不是 0 起算的序号",
-    "`has_more`（1/0）、`min_cursor`、`time_list[]` — 翻页控制与时间轴",
-    "⚠️ `count` 只是建议值：传 `count=2` 实测返回 4 条，**按 `aweme_list` 长度判断**，别按 count 算页数"
-  ],
-  "/api/v1/douyin/web/fetch_hot_search_result": [
-    "`data.word_list[]` — 热搜词（51 条），字段 `word`/`hot_value`/`sentence_id`/`label`/`word_type`",
-    "`data.word_list[].{view_count,discuss_video_count}` — 曝光量与投稿量（部分条目才填）",
-    "`data.trending_list` / `data.trending_desc` / `data.active_time` — 趋势区与榜单时间",
-    "⚠️ 实测部分条目 `hot_value=0`（如置顶的政策类词条），排序要用 `view_count`/`discuss_video_count` 兜底"
-  ],
-  "/api/v1/douyin/web/fetch_video_high_quality_play_url": [
-    "顶层即结果，无 `data` 包装：`video_id`/`original_video_url`/`file_size`/`file_size_in_mb`/`content_type`",
-    "`original_video_url` — 无水印 mp4 直链（带时效签名，落盘后尽快下载）",
-    "`file_size` 是**字符串**字节数，`file_size_in_mb` 是 float——别把前者当数字直接算"
-  ],
-  "/api/v1/douyin/search/fetch_general_search_v2": [
-    "⚠️ **`data` 为 `null`**，真实内容在顶层 `business_data[]`（实测 18 类卡片）",
-    "`business_data[i].type` — 卡片类型，视频/用户/直播的字段各不相同，先判类型再解析",
-    "`global_config` / `business_config` / `log_pb` — 透传配置与日志，一般不用",
-    "入口建议：先按 `type` 过滤出视频卡片，再取内部的 `aweme_info`（结构与 `aweme_detail` 同源）"
-  ],
-  "/api/v1/douyin/search/fetch_video_search_v5": [
-    "⚠️ 2026-11-17 实测：参数按文档传（`keyword`/`offset`/`page`/`search_id`/`backtrace`）连续两次返回 **HTTP 400**（官方提示 Please retry，未计费）",
-    "当前可用替代：`search/fetch_general_search_v2`（综合搜索，能用）或 `app/v3` 的视频搜索",
-    "恢复后返回结构为 `data.items[]`（10 条/页，视频在 `items[].aweme_info`）+ `data.pagination`（`search_id`/`offset`/`cursor`/`backtrace`/`has_more`）"
-  ]
+ "_note": "实测返回结构（2026-11-17 真实调用核对）。tools/patch_returns.py 会把它写进 inventory.json 的 returns_detail 并注入各分类 md；CLI 的 show 也会打印。",
+ "/api/v1/douyin/web/fetch_one_video_v2": [
+  "`data.aweme_detail` — 作品主体（obj，另有 `log_pb`/`status_code`）",
+  "`aweme_detail.aweme_id` — 作品ID（str）",
+  "`aweme_detail.desc` — 文案，`#话题` 原样保留（str）",
+  "`aweme_detail.create_time` — 发布时间的**秒级**时间戳（int）",
+  "`aweme_detail.duration` — 时长，单位**毫秒**（int，8010 ≈ 8.01s）",
+  "`aweme_detail.aweme_type` — 0=视频，68=图集（int，图片在 `images[]`）",
+  "`aweme_detail.share_url` — 分享链接（iesdouyin.com 短链）",
+  "`aweme_detail.statistics.{digg_count,comment_count,share_count,collect_count,recommend_count}` — 互动数（int）",
+  "`aweme_detail.author.{uid,sec_uid,unique_id,nickname,follower_count,total_favorited,signature,ip_location}` — 作者，`sec_uid` 可直接喂给资料/主页接口",
+  "`aweme_detail.video.{play_addr.url_list[],bit_rate[],cover.url_list[],ratio,width,height,has_watermark}` — 播放地址；`bit_rate` 有 13 档可选码率",
+  "`aweme_detail.music.{title,author,duration}`、`text_extra[].{hashtag_name,hashtag_id}` — 音乐与话题",
+  "⚠️ web 版 **`statistics.play_count` 实测恒为 0**（312789 赞但播放量为 0），播放量要走创作者中心/数据统计接口"
+ ],
+ "/api/v1/douyin/web/fetch_video_comments": [
+  "`data` 是对象（17 个字段）：`status_code`, `comments`, `cursor`, `has_more`, `reply_style`, `total`, `extra`, `log_pb`, `hotsoon_filtered_count`, `user_commented`, `fast_response_comment`, `comment_config`",
+  "`data.comments` 是数组（长度 5）；首元素字段：`cid`, `text`, `aweme_id`, `create_time`, `digg_count`, `status`, `user`, `reply_id`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ],
+ "/api/v1/douyin/web/handler_user_profile": [
+  "`user.{uid,sec_uid,unique_id,short_id,nickname,signature}` — 四种 ID 与昵称签名",
+  "`user.{follower_count,following_count,total_favorited,aweme_count,favoriting_count}` — 粉丝/关注/获赞/作品数/喜欢数（int）",
+  "`user.ip_location` — 形如 `IP属地：浙江`，**带前缀**，取值需截断",
+  "`user.avatar_{thumb,168x168,300x300,larger}.url_list[]` — 多尺寸头像",
+  "`user.{city,country,custom_verify,commerce_user_level}` — 地域/认证/商业等级",
+  "⚠️ 只有静态快照，没有粉丝增量；要做增量就自己按时间落盘对比"
+ ],
+ "/api/v1/douyin/web/fetch_user_post_videos": [
+  "`aweme_list[]` — 作品列表，单条结构基本同 `fetch_one_video_v2` 的 `aweme_detail`（字段有裁剪）",
+  "`max_cursor` — 下一页游标，**实测是毫秒时间戳**（如 1794557654000），不是 0 起算的序号",
+  "`has_more`（1/0）、`min_cursor`、`time_list[]` — 翻页控制与时间轴",
+  "⚠️ `count` 只是建议值：传 `count=2` 实测返回 4 条，**按 `aweme_list` 长度判断**，别按 count 算页数"
+ ],
+ "/api/v1/douyin/web/fetch_hot_search_result": [
+  "`data` 是对象（6 个字段）：`banner_dark`, `banner_light`, `data`, `extra`, `log_pb`, `status_code`",
+  "`data.banner_dark` 是对象（2 个字段）：`uri`, `url_list`",
+  "`data.banner_light` 是对象（2 个字段）：`uri`, `url_list`",
+  "`data.data` 是对象（7 个字段）：`active_time`, `banner_display`, `display_style`, `share_info`, `trending_desc`, `trending_list`, `word_list`",
+  "`data.extra` 是对象（3 个字段）：`logid`, `now`, `time_cost`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ],
+ "/api/v1/douyin/web/fetch_video_high_quality_play_url": [
+  "顶层即结果，无 `data` 包装：`video_id`/`original_video_url`/`file_size`/`file_size_in_mb`/`content_type`",
+  "`original_video_url` — 无水印 mp4 直链（带时效签名，落盘后尽快下载）",
+  "`file_size` 是**字符串**字节数，`file_size_in_mb` 是 float——别把前者当数字直接算"
+ ],
+ "/api/v1/douyin/search/fetch_general_search_v2": [
+  "⚠️ **`data` 为 `null`**，真实内容在顶层 `business_data[]`（实测 18 类卡片）",
+  "`business_data[i].type` — 卡片类型，视频/用户/直播的字段各不相同，先判类型再解析",
+  "`global_config` / `business_config` / `log_pb` — 透传配置与日志，一般不用",
+  "入口建议：先按 `type` 过滤出视频卡片，再取内部的 `aweme_info`（结构与 `aweme_detail` 同源）"
+ ],
+ "/api/v1/douyin/search/fetch_video_search_v5": [
+  "⚠️ 2026-11-17 实测：参数按文档传（`keyword`/`offset`/`page`/`search_id`/`backtrace`）连续两次返回 **HTTP 400**（官方提示 Please retry，未计费）",
+  "当前可用替代：`search/fetch_general_search_v2`（综合搜索，能用）或 `app/v3` 的视频搜索",
+  "恢复后返回结构为 `data.items[]`（10 条/页，视频在 `items[].aweme_info`）+ `data.pagination`（`search_id`/`offset`/`cursor`/`backtrace`/`has_more`）"
+ ],
+ "/api/v1/douyin/web/fetch_one_video": [
+  "`data` 是对象（3 个字段）：`aweme_detail`, `log_pb`, `status_code`",
+  "`data.aweme_detail` 是对象（147 个字段）：`activity_video_type`, `anchors`, `authentication_token`, `author`, `author_mask_tag`, `author_user_id`, `aweme_control`, `aweme_id`",
+  "`data.log_pb` 是对象（1 个字段）：`impr_id`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ],
+ "/api/v1/douyin/billboard/fetch_hot_total_list": [
+  "⚠️ 实测失败：HTTP 422（None）"
+ ]
 }

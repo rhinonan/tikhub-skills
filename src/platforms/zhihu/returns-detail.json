@@ -1,0 +1,25 @@
+{
+ "_note": "实测返回结构。tools/patch_returns.py 会写入 inventory.json 的 returns_detail 并注入分类 md；CLI 的 show 也会打印。",
+ "/api/v1/zhihu/web/fetch_column_articles": [
+  "`data` 是对象（3 个字段）：`paging`, `data`, `need_force_login`",
+  "`data.paging` 是对象（5 个字段）：`is_end`, `totals`, `previous`, `is_start`, `next`",
+  "`data.data` 是数组（长度 10）；首元素字段：`updated`, `is_labeled`, `copyright_permission`, `settings`, `excerpt`, `admin_closed_comment`, `voting`, `article_type`",
+  "`data.data` 是数组（长度 10）；首元素字段：`updated`, `is_labeled`, `copyright_permission`, `settings`, `excerpt`, `admin_closed_comment`, `voting`, `article_type`, `reason`, `force_login_when_click_read_more`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ],
+ "/api/v1/zhihu/web/fetch_hot_list": [
+  "`data` 是对象（10 个字段）：`data`, `paging`, `kanshan`, `fresh_text`, `display_num`, `display_first`, `fb_bill_main_rise`, `head_zone`, `head_zones`, `prefer_hot_topics_top_card`",
+  "`data.data` 是数组（长度 30）；首元素字段：`type`, `style_type`, `id`, `card_id`, `target`, `attached_info`, `detail_text`, `trend`",
+  "`data.paging` 是对象（5 个字段）：`is_end`, `is_start`, `next`, `previous`, `totals`",
+  "`data.kanshan` 是对象（3 个字段）：`image_url`, `guide_text`, `query`",
+  "`data.data` 是数组（长度 30）；首元素字段：`type`, `style_type`, `id`, `card_id`, `target`, `attached_info`, `detail_text`, `trend`, `debut`, `children`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ],
+ "/api/v1/zhihu/web/fetch_column_article_detail": [
+  "`data` 是对象（70 个字段）：`id`, `title`, `type`, `article_type`, `excerpt_title`, `url`, `image_url`, `title_image`, `excerpt`, `created`, `updated`, `author`",
+  "响应消息：请求成功，本次请求将被计费。",
+  "实测时间：2026-11-23"
+ ]
+}

@@ -1,8 +1,0 @@
-{
-  "platform": "douyin",
-  "platform_zh": "抖音",
-  "edition": "pro",
-  "base_url": "https://api.tikhub.io",
-  "gateway_url": "https://tikhub.tdance.cc",
-  "api_prefix": "/api/v1/douyin"
-}

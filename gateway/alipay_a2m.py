@@ -120,9 +120,9 @@ def service_id_of(env_name: str) -> str:
 # 支付宝按「服务」登记单价，一个 serviceId 只能对应一个价。
 # 所以映射键必须是金额，不能是档位名——任务包和额度包的价钱各不相同。
 SERVICE_ENV_BY_AMOUNT = {
-    "0.10": "SERVICE_ID_STANDARD",   # 普通查询
-    "0.50": "SERVICE_ID_PREMIUM",    # 指数/星图
-    "2.00": "SERVICE_ID_BATCH",      # 批量
+    "0.10": "SERVICE_ID_STANDARD",   # 普通查询（唯一按次收款的档位）
+    "0.50": "SERVICE_ID_PREMIUM",    # 历史档位；高价值现在只走额度包，不再出这个价
+    "2.00": "SERVICE_ID_BATCH",      # 历史档位；批量现在只走额度包，不再出这个价
     "1.99": "SERVICE_ID_TASK",       # 任务包
     "9.90": "SERVICE_ID_PACK",       # 额度包
 }

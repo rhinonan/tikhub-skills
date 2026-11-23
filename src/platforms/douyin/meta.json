@@ -2,17 +2,17 @@
   "platform": "douyin",
   "platform_zh": "抖音",
   "platform_en": "Douyin",
-  "api_prefix": "/api/v1/douyin",
-  "version": "1.2.0",
+  "api_prefixes": ["/api/v1/douyin"],
+  "version": "2.0.0",
   "scope": "作品详情与分享链接解析、批量作品、无水印播放地址、弹幕、评论与回复、用户资料与主页作品、喜欢/收藏/关注/粉丝、话题与音乐、综合/视频/用户/直播搜索、热榜（热点/上升/同城/垂类/低粉爆款）、星图达人画像与商业榜、巨量算数指数、创作者中心投稿分析、DOU+ 投放、直播流",
   "usage_zh": [
-    "帮我用 tikhub 拉取这个抖音号的最近 30 条作品数据",
+    "拉取这个抖音号最近 30 条作品数据",
     "看看今天抖音热榜前 20 条，按热度排序",
-    "抖音有没有按关键词搜索视频的接口？参数怎么传？"
+    "抖音按关键词搜索视频用哪个接口？参数怎么传？"
   ],
   "usage_en": [
     "Pull the last 30 videos of this Douyin account",
     "Show today's Douyin hot list, sorted by heat",
-    "Is there a Douyin keyword video search endpoint? What parameters does it take?"
+    "Which Douyin endpoint searches videos by keyword?"
   ]
 }

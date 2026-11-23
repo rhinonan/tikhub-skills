@@ -152,26 +152,88 @@ batch_body = {"platform": "douyin",
               "path": "/api/v1/douyin/web/fetch_multi_video", "body": {}}
 _, _, payload = request("/v1/call", batch_body, {"Authorization": f"Bearer {token}"})
 meta = (payload or {}).get("meta") or {}
-check("批量端点扣 20 额度", meta.get("unit_cost") == 20, str(meta))
-check("余额变为 179", meta.get("credits_left") == 179, str(meta))
+check("批量端点扣 30 额度", meta.get("unit_cost") == 30, str(meta))
+check("余额变为 169", meta.get("credits_left") == 169, str(meta))
 
 premium_body = {"platform": "douyin",
                 "path": "/api/v1/douyin/index/fetch_index_data"}
 _, _, payload = request("/v1/call", premium_body, {"Authorization": f"Bearer {token}"})
 meta = (payload or {}).get("meta") or {}
-check("指数端点扣 5 额度", meta.get("unit_cost") == 5, str(meta))
-check("余额变为 174", meta.get("credits_left") == 174, str(meta))
+check("指数端点扣 6 额度", meta.get("unit_cost") == 6, str(meta))
+check("余额变为 163", meta.get("credits_left") == 163, str(meta))
+
+weibo_body = {"platform": "weibo", "path": "/api/v1/weibo/app/fetch_user_info",
+              "query": {"uid": "1"}}
+_, _, payload = request("/v1/call", weibo_body, {"Authorization": f"Bearer {token}"})
+meta = (payload or {}).get("meta") or {}
+check("微博端点通过白名单并扣 1 额度", meta.get("unit_cost") == 1, str(meta))
+check("余额变为 162", meta.get("credits_left") == 162, str(meta))
+
+# 成本优先定价：路径里带 xingtu/multi_ 但上游很便宜的接口不能再按高价档收
+cheap_xingtu = {"platform": "douyin", "path": "/api/v1/douyin/xingtu/get_sign_image"}
+_, _, payload = request("/v1/call", cheap_xingtu, {"Authorization": f"Bearer {token}"})
+meta = (payload or {}).get("meta") or {}
+check("$0.001 的 xingtu 接口按标准档扣 1", meta.get("unit_cost") == 1, str(meta))
+check("余额变为 161", meta.get("credits_left") == 161, str(meta))
+
+cheap_multi = {"platform": "douyin",
+               "path": "/api/v1/douyin/xingtu_v2/multi_get_author_info"}
+_, _, payload = request("/v1/call", cheap_multi, {"Authorization": f"Bearer {token}"})
+meta = (payload or {}).get("meta") or {}
+check("$0.002 的 multi_ 接口不再按批量档扣 30", meta.get("unit_cost") == 1, str(meta))
+check("余额变为 160", meta.get("credits_left") == 160, str(meta))
+
+costly_xingtu = {"platform": "douyin", "path": "/api/v1/douyin/xingtu/kol_base_info_v1"}
+_, _, payload = request("/v1/call", costly_xingtu, {"Authorization": f"Bearer {token}"})
+meta = (payload or {}).get("meta") or {}
+check("$0.02 的 xingtu 接口按高价值档扣 6", meta.get("unit_cost") == 6, str(meta))
+check("余额变为 154", meta.get("credits_left") == 154, str(meta))
+
+tiktok_body = {"platform": "tiktok", "path": "/api/v1/tiktok/web/fetch_one_video"}
+st, _, payload = request("/v1/call", tiktok_body, {"Authorization": f"Bearer {token}"})
+check("TikTok 路径被网关拒绝", st == 400, f"实际 {st}")
+check("拒绝码为 UNSUPPORTED_PLATFORM",
+      (payload or {}).get("code") == "UNSUPPORTED_PLATFORM", str(payload)[:140])
+
+# 官方价格清单是权威来源：描述里曾把 register_device 写成 $1，CSV 里实际是 $0.001
+register_body = {"path": "/api/v1/douyin/app/v3/register_device"}
+_, _, payload = request("/v1/call", register_body,
+                        {"Authorization": f"Bearer {token}"})
+meta = (payload or {}).get("meta") or {}
+check("CSV 价格覆盖描述：register_device 按标准档扣 1",
+      meta.get("unit_cost") == 1, str(meta))
+check("余额变为 153", meta.get("credits_left") == 153, str(meta))
 
 # ---------------------------------------------------------------- 4. 边界
 print("\n[4] 边界：余额耗尽与无效凭证")
-# 纯走接口把余额烧干：批量端点一次扣 20，比一次扣 1 快得多
+# 纯走接口把余额烧干：批量端点一次扣 30，比一次扣 1 快得多
 drain_body = {"platform": "douyin", "path": "/api/v1/douyin/web/fetch_multi_video", "body": {}}
-st = 200
+st, hdrs, payload = 200, {}, {}
 for _ in range(20):
-    st, _, _ = request("/v1/call", drain_body, {"Authorization": f"Bearer {token}"})
+    st, hdrs, payload = request("/v1/call", drain_body,
+                                {"Authorization": f"Bearer {token}"})
     if st != 200:
         break
-check("余额耗尽后回到 402", st == 402, f"实际 {st}")
+check("批量额度不足后返回 402", st == 402, f"实际 {st}")
+check("批量额度不足返回 CREDITS_REQUIRED",
+      (payload or {}).get("code") == "CREDITS_REQUIRED", str(payload)[:160])
+check("批量不按次出账单（无 Payment-Needed）",
+      not any(k.lower() == "payment-needed" for k in hdrs), str(list(hdrs)))
+
+# 剩余额度用标准接口清零，再验证标准档仍可单次付款
+for _ in range(10):
+    st, _, _ = request("/v1/call", call_body, {"Authorization": f"Bearer {token}"})
+    if st != 200:
+        break
+st, hdrs, payload = request("/v1/call", call_body,
+                            {"Authorization": f"Bearer {token}"})
+check("标准档无额度时仍返回 402", st == 402, f"实际 {st}")
+check("标准档 402 带 Payment-Needed 账单",
+      any(k.lower() == "payment-needed" for k in hdrs), str(list(hdrs)))
+bill_std = decode_bill(hdrs)
+check("标准档按次账单金额 = 0.10",
+      str((bill_std or {}).get("protocol", {}).get("amount")) == "0.10",
+      str((bill_std or {}).get("protocol")))
 
 st, _, _ = request("/v1/task", body, {"Payment-Proof": "eyJwcm90b2NvbCI6e30sIm1ldGhvZCI6e319"})
 check("无效凭证仍返回 402", st == 402, f"实际 {st}")
@@ -189,6 +251,15 @@ if proof and proof_r:
     check("任务包凭证不能拿去换额度包", st == 402, f"实际 {st}")
     st, _, payload = request("/v1/task", body, {"Payment-Proof": proof_r})
     check("额度包凭证不能拿去换任务数据", st == 402, f"实际 {st}")
+
+# ---------------------------------------------------------------- 6. 账户合并
+print("\n[6] 账户：已有 token 充值并入原账户")
+_, st, payload, _ = pay_and_retry("/v1/recharge", {"pack": "starter"},
+                                  {"Authorization": f"Bearer {token}"})
+data = (payload or {}).get("data") or {}
+check("已有账户充值返回 200", st == 200, f"实际 {st} {payload}")
+check("充值并入原 token", data.get("token") == token, str(data)[:160])
+check("并入后余额为 200", data.get("credits") == 200, str(data)[:160])
 
 # ---------------------------------------------------------------- 汇总
 print(f"\n== 结果：{len(passed)} 通过 / {len(failed)} 失败 ==")

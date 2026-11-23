@@ -1,0 +1,10 @@
+{
+ "spec_version": "V5.3.2",
+ "generated_at": "2026-11-23",
+ "platform": "kuaishou",
+ "count": 38,
+ "folders": {
+  "Kuaishou-Web-API": 12,
+  "Kuaishou-App-API": 26
+ }
+}

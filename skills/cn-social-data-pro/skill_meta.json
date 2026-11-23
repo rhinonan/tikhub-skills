@@ -1,0 +1,95 @@
+{
+  "skill": "cn-social-data",
+  "name_zh": "中文社媒数据引擎",
+  "edition": "pro",
+  "base_url": "https://api.tikhub.io",
+  "gateway_url": "https://tikhub.tdance.cc",
+  "pricing": {
+    "tiers": {
+      "standard": {
+        "credits": 1,
+        "amount": "0.10",
+        "per_call": true
+      },
+      "premium": {
+        "credits": 6,
+        "amount": "0.50",
+        "per_call": false
+      },
+      "batch": {
+        "credits": 30,
+        "amount": "2.00",
+        "per_call": false
+      }
+    },
+    "cost_thresholds": {
+      "standard_max": 0.0105,
+      "premium_max": 0.05
+    },
+    "pack": {
+      "credits": 200,
+      "amount": "9.90"
+    }
+  },
+  "platforms": [
+    {
+      "platform": "douyin",
+      "platform_zh": "抖音",
+      "api_prefixes": [
+        "/api/v1/douyin"
+      ]
+    },
+    {
+      "platform": "weibo",
+      "platform_zh": "微博",
+      "api_prefixes": [
+        "/api/v1/weibo"
+      ]
+    },
+    {
+      "platform": "xiaohongshu",
+      "platform_zh": "小红书",
+      "api_prefixes": [
+        "/api/v1/xiaohongshu"
+      ]
+    },
+    {
+      "platform": "bilibili",
+      "platform_zh": "B站",
+      "api_prefixes": [
+        "/api/v1/bilibili"
+      ]
+    },
+    {
+      "platform": "zhihu",
+      "platform_zh": "知乎",
+      "api_prefixes": [
+        "/api/v1/zhihu"
+      ]
+    },
+    {
+      "platform": "wechat",
+      "platform_zh": "微信",
+      "api_prefixes": [
+        "/api/v1/wechat_channels",
+        "/api/v1/wechat_mp",
+        "/api/v1/wechat_search"
+      ]
+    },
+    {
+      "platform": "kuaishou",
+      "platform_zh": "快手",
+      "api_prefixes": [
+        "/api/v1/kuaishou"
+      ]
+    },
+    {
+      "platform": "common",
+      "platform_zh": "通用",
+      "api_prefixes": [
+        "/api/v1/demo",
+        "/api/v1/hybrid"
+      ]
+    }
+  ]
+}

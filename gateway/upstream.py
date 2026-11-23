@@ -57,7 +57,7 @@ def call(path: str, method: str = "GET", query: dict = None, body: dict = None) 
     headers = {
         "Accept": "application/json",
         "Authorization": f"Bearer {cfg.TIKHUB_API_KEY}",
-        "User-Agent": "tikhub-skills-gateway/0.1",
+        "User-Agent": "cn-social-data-gateway/2.0",
     }
     if body is not None:
         data = json.dumps(body, ensure_ascii=False).encode()

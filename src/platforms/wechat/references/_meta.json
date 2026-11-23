@@ -1,0 +1,11 @@
+{
+ "spec_version": "V5.3.2",
+ "generated_at": "2026-11-23",
+ "platform": "wechat",
+ "count": 25,
+ "folders": {
+  "WeChat-Channels-V2-API": 12,
+  "WeChat-Media-Platform-V2-API": 11,
+  "WeChat-Search-V2-API": 2
+ }
+}

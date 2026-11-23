@@ -1,0 +1,22 @@
+{
+  "name": "中文社媒数据引擎（付费版）",
+  "version": "2.0.0",
+  "pay_mode": 1,
+  "description_zh": "中文社媒数据引擎（付费版）：下载无水印视频、解析分享链接、批量导出评论、查账号与作品数据、追热搜热榜、找达人。含 630 个接口与 CLI，覆盖抖音、微博、小红书、B站、知乎、微信、快手。标准 ¥0.10/次；高价值/批量走额度包（6/30 点每次，¥9.90/200 点）。",
+  "description_en": "Chinese Social Media Data Engine (paid): download watermark-free videos, parse share links, export comments, inspect accounts and trends, find creators. 630 endpoints and a CLI covering 7 Chinese social platforms. Standard CNY 0.10 per call; premium/batch via credits (6/30 credits per call, CNY 9.90 for 200 credits).",
+  "examples_zh": [
+    "下载这个抖音视频的无水印版本",
+    "把这个抖音号最近 30 条作品和评论导出",
+    "看看今天微博热搜和抖音热榜前 20",
+    "这个小红书博主的粉丝数和笔记数据怎么样",
+    "导出这篇公众号文章的正文和阅读量",
+    "找几个 B 站美食区的达人",
+    "拉取这个抖音号最近 30 条作品数据",
+    "看看今天抖音热榜前 20 条，按热度排序",
+    "抖音按关键词搜索视频用哪个接口？参数怎么传？",
+    "拉取这个微博用户最近 30 条微博",
+    "今天微博热搜前 20 条是什么",
+    "这条微博的评论和转发数据"
+  ],
+  "iconSource": "letter:auto"
+}

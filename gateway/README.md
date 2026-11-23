@@ -33,17 +33,22 @@
 
 ## 计费档位
 
-TikHub 端点成本差 10 倍以上，不能一个价。网关按路径归类：
+TikHub 端点成本差 10 倍以上，不能一个价。网关**优先按上游真实成本**归档，没标价的接口再退回路径正则：
 
-| 档位 | 命中规则 | 售价 | 扣额度 |
+| 档位 | 定价规则 | 计费 | 扣额度 |
 |---|---|---|---|
-| standard | 默认 | ¥0.10 | 1 |
-| premium | `/index/`、`_index`、`/xingtu`、`billboard` | ¥0.50 | 5 |
-| batch | `multi_`、`/batch`、`_batch`、`bulk` | ¥2.00 | 20 |
+| standard | 成本 ≤ $0.01，或未标价且不命中下方规则 | ¥0.10/次（可单次付款） | 1 |
+| premium | $0.01 < 成本 < $0.05，或未标价且路径含 `/index/`、`_index`、`/xingtu`、`billboard`、`huahuo`、`/pgy/`、热榜/榜单词 | 只走额度包（约 ¥0.30） | 6 |
+| batch | 成本 ≥ $0.05，或未标价且路径含 `multi_`、`/batch`、`_batch`、`bulk` | 只走额度包（约 ¥1.49） | 30 |
 
-一个档位对应一个支付宝 `serviceId`。规则和任务定义都在 `pricing.py`，改价改那里。
+- 标准档额度不足时返回 402 单次账单（¥0.10）；高价值/批量额度不足时返回 402 `CREDITS_REQUIRED`，CLI 会自动购买额度包（¥9.90 / 200 点）后重试，不按次收款。
+- 一个额度包 200 点：标准 200 次、高价值 33 次、批量 6 次。
 
-**注意：支付宝是一个 serviceId 一个登记价**，所以「任务包 ¥1.99」和「额度包 ¥9.90」不能复用 ¥0.10 的那个服务。网关按**金额**反查 serviceId（`alipay_a2m.SERVICE_ENV_BY_AMOUNT`），注册服务时要覆盖全部 5 个价：0.10 / 0.50 / 2.00 / 1.99 / 9.90。改价时这两处必须同步改。
+- 成本数据来自 `endpoint_costs.json`：`tools/collect_inventory.py` 以 `pricing/tikhub_pricing_2026-11-23.csv` 为准写入，当前 623 条（7 个平台 630 个接口中仅 7 个无标价）。
+- 成本高于 $0.25 的接口现有档位覆盖不了，网关直接返回 503 `ENDPOINT_NOT_AVAILABLE`，避免卖一次亏一次（当前清单里没有这种接口，保留为保护）。
+- 一个档位对应一个支付宝 `serviceId`。规则和任务定义都在 `pricing.py`，改价改那里。
+
+**注意：支付宝是一个 serviceId 一个登记价**，所以「任务包 ¥1.99」和「额度包 ¥9.90」不能复用 ¥0.10 的那个服务。网关按**金额**反查 serviceId（`alipay_a2m.SERVICE_ENV_BY_AMOUNT`）。现在实际只会出 3 种账单：0.10（标准按次）/ 1.99（任务包）/ 9.90（额度包）；0.50 / 2.00 作为历史档位保留在映射里，但高价值/批量已改为只走额度包。
 
 ## 本地联调
 
@@ -54,7 +59,7 @@ MOCK_UPSTREAM=1 python tests/mock_server.py
 python smoke_test.py
 ```
 
-全绿输出应该是 `35 通过 / 0 失败`。覆盖了：402 出单、付款后交付、同凭证幂等重试、充值建户、三档扣费、余额耗尽回到 402、凭证不能跨资源重放。假验付只存在于 `tests/mock_server.py`，生产 `server.py` 没有 mock 分支。
+全绿输出应该是 `55 通过 / 0 失败`。覆盖了：402 出单、付款后交付、同凭证幂等重试、充值建户与已有账户合并、额度/按次计费（标准 1 点、高价值 6 点、批量 30 点）、成本优先定价（含 CSV 覆盖描述里的错误价格）、高价值/批量不按次出账单、平台白名单（微博放行 / TikTok 拒绝）、余额耗尽回到 402、凭证不能跨资源重放。假验付只存在于 `tests/mock_server.py`，生产 `server.py` 没有 mock 分支。
 
 想手动走一遍：
 
@@ -88,7 +93,7 @@ curl -X POST localhost:3006/v1/task \
 镜像名：`ghcr.io/<owner>/<repo>-gateway`。首次推送后，在 GitHub 仓库的 Packages 里把包设为 Public，否则部署机需要先 `docker login ghcr.io`。
 
 ```bash
-docker run -d --name tikhub-skills-gateway \
+docker run -d --name cn-social-data-gateway \
   -p 3006:3006 \
   -v gateway-data:/data \
   --env-file gateway/.env \

@@ -262,14 +262,18 @@ def run_paid_resource(kind: str, resource_id: str, amount: str, goods_name: str,
 
 # ---------------------------------------------------------------- 业务
 
-def do_recharge(pack_name: str, proof_header: str) -> Reply:
+def do_recharge(pack_name: str, proof_header: str, request_token: str = "") -> Reply:
     pack = pricing.CREDIT_PACKS.get(pack_name)
     if pack is None:
         return Reply(400, {"code": "BAD_PACK", "message": f"未知套餐: {pack_name}"})
 
     def producer_factory(payload):
         def produce():
-            # 账户与入账都由订单履约驱动，重复执行也只会有一个账户
+            # 已有账户（请求带了有效 token）就并入原账户，避免充值后旧额度被新 token 顶掉
+            if request_token and store.account_exists(request_token):
+                store.add_credits(request_token, pack["credits"], ref=uuid.uuid4().hex)
+                return {"token": request_token, "credits": store.get_credits(request_token),
+                        "added": pack["credits"], "merged": True}
             return {"token": store.issue_account(pack["credits"], ref=uuid.uuid4().hex),
                     "credits": pack["credits"]}
         return produce
@@ -321,25 +325,38 @@ def do_call(token: str, body: dict, proof_header: str = "") -> Reply:
     path = str(body.get("path", "")).strip()
     if not path.startswith("/api/"):
         return Reply(400, {"code": "BAD_PATH", "message": "path 必须以 /api/ 开头"})
+    if not pricing.is_supported(path):
+        return Reply(400, {
+            "code": "UNSUPPORTED_PLATFORM",
+            "message": "本服务只支持抖音/微博/小红书/B站/知乎/微信/快手；"
+                       f"不支持的路径：{path}",
+        })
+    if pricing.is_uncovered(path):
+        return Reply(503, {
+            "code": "ENDPOINT_NOT_AVAILABLE",
+            "message": "该接口上游成本过高，当前价档无法覆盖，付费版暂不开放；"
+                       "如需使用请改用免费版自带 Key。",
+        })
 
     tier = pricing.tier_of(path)
+    platform = pricing.platform_of(path)
 
     # 已有余额：保持扣额度路径
     if token and store.get_credits(token) >= tier["credits"]:
         ref = f"call:{uuid.uuid4().hex}"
         if not store.take_credits(token, tier["credits"], ref):
-            return do_recharge("starter", "")
+            return do_recharge("starter", "", token)
         try:
             data = upstream.call(path, body.get("method", "GET"),
                                  body.get("query") or {}, body.get("body"))
         except upstream.UpstreamError as exc:
             # 上游失败不该让用户承担成本
             store.add_credits(token, tier["credits"], ref, reason=METER_REFUND_REASON)
-            store.log_call(token, body.get("platform", ""), path, tier["credits"], "upstream_error")
+            store.log_call(token, platform, path, tier["credits"], "upstream_error")
             return Reply(502, {"code": "UPSTREAM_FAILED", "message": str(exc),
                                "retryable": exc.retryable, "credits_refunded": True})
 
-        store.log_call(token, body.get("platform", ""), path, tier["credits"], "ok")
+        store.log_call(token, platform, path, tier["credits"], "ok")
         return Reply(200, {
             "code": 0,
             "data": data,
@@ -347,9 +364,20 @@ def do_call(token: str, body: dict, proof_header: str = "") -> Reply:
                      "credits_left": store.get_credits(token)},
         })
 
-    # 无余额：按次直接 402 收款，金额取当前档位登记价。
-    # 生产环境只有已登记 serviceId 的档位可售；未登记的档位明确拒绝，
-    # 不回落 api_mock_service_id，也不拿别的价档顶替。
+    # 高价值/批量只支持额度包：额度不足时不按次出账单，直接要求充值
+    if not tier.get("pay_per_call", True):
+        return Reply(402, {
+            "code": "CREDITS_REQUIRED",
+            "message": "高价值/批量接口只支持额度包（¥9.90 / 200 点）；"
+                       "请先充值再调用。",
+            "tier": tier["name"],
+            "credits_required": tier["credits"],
+            "credits_left": store.get_credits(token) if token else 0,
+            "purchase": {"pack": "starter", "amount": "9.90", "credits": 200},
+        })
+
+    # 标准档无余额：按次直接 402 收款，金额取当前档位登记价。
+    # 标准档按次收款；生产环境只有登记了 serviceId 的档位可售。
     if not cfg.SANDBOX_MODE and not cfg.MOCK_UPSTREAM \
             and not alipay.configured_service_id_for(tier["amount"]):
         return Reply(503, {"code": "TIER_NOT_AVAILABLE",
@@ -383,7 +411,7 @@ def do_call(token: str, body: dict, proof_header: str = "") -> Reply:
 # ---------------------------------------------------------------- HTTP
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "tikhub-skills-gateway/0.1"
+    server_version = "cn-social-data-gateway/2.0"
 
     def _send(self, reply: Reply) -> None:
         raw = json_bytes(reply.body)
@@ -433,7 +461,8 @@ class Handler(BaseHTTPRequestHandler):
                 except ValueError:
                     limit = 20
                 limit = max(1, min(limit, 100))
-                tier_name = {1: "standard", 5: "premium", 20: "batch"}
+                tier_name = {1: "standard", 5: "premium", 6: "premium",
+                             20: "batch", 30: "batch"}
                 calls = store.list_calls(token, limit)
                 for c in calls:
                     c["tier"] = tier_name.get(c["unit_cost"], "custom")
@@ -447,7 +476,9 @@ class Handler(BaseHTTPRequestHandler):
             body = self._read_json()
             proof = self.headers.get("Payment-Proof", "")
             if self.path.startswith("/v1/recharge"):
-                self._send(do_recharge(body.get("pack") or "starter", proof))
+                auth = self.headers.get("Authorization", "")
+                token = auth[7:].strip() if auth.lower().startswith("bearer ") else ""
+                self._send(do_recharge(body.get("pack") or "starter", proof, token))
                 return
             if self.path.startswith("/v1/task"):
                 self._send(do_task(body.get("task", ""), body.get("params") or {}, proof))

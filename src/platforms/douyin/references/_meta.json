@@ -1,0 +1,18 @@
+{
+ "spec_version": "V5.3.2",
+ "generated_at": "2026-11-23",
+ "platform": "douyin",
+ "count": 330,
+ "folders": {
+  "Douyin-Web-API": 57,
+  "Douyin-App-V3-API": 38,
+  "Douyin-Creator-API": 17,
+  "Douyin-Creator-V2-API": 14,
+  "Douyin-Index-API": 51,
+  "Douyin-Search-API": 23,
+  "Douyin-Billboard-API": 31,
+  "Douyin-Xingtu-API": 32,
+  "Douyin-Xingtu-V2-API": 50,
+  "Douyin-DouPlus-API": 17
+ }
+}

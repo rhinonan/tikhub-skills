@@ -3,139 +3,149 @@ name: {{name}}
 description: {{description}}
 version: {{version}}
 category: data-acquisition
-author: 接口索引整理；接口文档与 API 版权归 TikHub.io 所有
-license: 脚本与文档结构可自由使用；接口文档内容版权归 TikHub.io
+author: rhinonan
+license: MIT
 agent_created: true
 ---
 
-# {{platform_zh}}数据接口（TikHub · 付费版）
+# 中文社媒数据引擎（付费版）
 
-接口来自 TikHub.io，只保留**{{platform_zh}}相关**（{{count}} 个）。清单已固化在 `references/`，不用每次翻文档。
+下载抖音无水印视频、解析分享链接、批量导出评论、查账号与作品数据、追热搜热榜、找达人——用一套 CLI 查接口、调接口，覆盖抖音、微博、小红书、B站、知乎、微信、快手，收录 {{count}} 个接口。只读数据，不含登录、发布、点赞等写操作。
 
-> 本版本是**付费版**：**不需要注册 TikHub，也不需要充 $5**。按次付费：标准档 **¥0.10/次**、高价值档 **¥0.50/次**、批量档 **¥2.00/次**；任务包 ¥1.99，额度包 ¥9.90。调用时脚本会自动处理 402 付款，付款完成后自动重试并返回数据。
+> **付费版 = 按次付费。** 不需要注册或充值上游，每次调用经作者网关走支付宝 AI 按量付费（A2M）。
+> 已有上游账号、用量稳定？用免费版 `cn-social-data` 自带 Key 直连。
 
-## 何时使用
+## 能帮你做什么
 
-- 要拿{{platform_zh}}的{{scope}}，但不想为一次调用去注册 TikHub 并充值。
-- 想确认"某个{{platform_zh}}数据有没有现成接口、参数怎么传、是 GET 还是 POST"。
+| 用户这样说 | 对应能力 | 第一步 |
+|---|---|---|
+| 下载抖音/快手/B站无水印视频、解析分享链接 | 无水印播放地址、链接解析 | `search 无水印` / `search 分享链接` |
+| 导出某账号最近作品和评论 | 主页作品、一级/二级评论 | `search 评论 --platform douyin` |
+| 看看这个博主/UP主/公众号的数据 | 用户资料、粉丝数、作品/文章列表 | `search 用户信息 --platform <平台>` |
+| 今天微博热搜、抖音热榜是什么 | 热榜、热搜榜单 | `search 热榜` |
+| 找某领域的达人，看粉丝画像 | 星图/蒲公英/花火、粉丝画像 | `search 达人` / `search 粉丝画像` |
+| 导出公众号或微博文章正文 | 文章详情、互动数据 | `search 文章详情 --platform 微信` |
+| 搜某个关键词在各平台的内容 | 综合/视频/用户搜索 | `search 搜索 --platform <平台>` |
 
-**不适用**：其他平台（本 skill 只收{{platform_zh}}）；发内容、点赞、登录等写操作（TikHub 不提供）。
+绝大多数需求都走这三步：`search 关键词` → `show <候选路径>` → `call <路径> -q ...`。
 
-## 0. 先自检（30 秒，强烈建议）
+## 0. 先自检
 
 ```bash
-python3 scripts/tikhub.py doctor          # 环境/清单/文档/凭证一次看完
-python3 scripts/tikhub.py doctor --net    # 连网络（网关连通性）一起测
+python3 scripts/social.py doctor
+python3 scripts/social.py doctor --net
 ```
 
-看到 `[OK] 环境、清单、文档都齐` 再往下做；有 `[FAIL]` 按提示修（多数是包没解压全）。
+约定：
 
-**运行环境三条约定**：
+- 命令都在 **skill 根目录**下执行；在别的目录时用绝对路径 `python3 <skill目录>/scripts/social.py ...`。
+- 解释器 `python3` 优先，老环境用 `python`。
+- 所有命令都不写入业务系统，只读数据。
 
-1. **解释器**：优先 `python3`，老环境用 `python`（脚本兼容 3.8+）。
-2. **工作目录**：脚本用自身路径定位清单，任意目录都能跑；不确定 cwd 时用**绝对路径**调用，
-   如 `python3 /path/to/{{name}}/scripts/tikhub.py search 评论`。
-3. **清单坏了也能干活**：`references/inventory.json` 缺失/损坏时，`search`/`show` 自动降级扫
-   `references/*.md`；`call` 给完整 path 仍可调用。
+## 覆盖平台
+
+{{platform_table}}
 
 ## 一次性准备：支付依赖
 
+按次付款由支付宝买家侧 CLI 完成，需要 Node ≥ 18：
+
 ```bash
-python3 scripts/tikhub.py ping                # 验证网关连通
+npx -y @alipay/agent-payment@latest install
 ```
 
-- 不需要注册 TikHub，也不需要预充值；每次调用单独付款（标准 ¥0.10 / 高价值 ¥0.50 / 批量 ¥2.00）。也可以购买额度包：`python3 scripts/tikhub.py recharge`（¥9.90 / 200 credits，按接口档位约 10–200 次）。
-- 买家侧需要支付依赖（`alipay-bot`，由 `npx -y @alipay/agent-payment@latest install` 安装，需要 Node.js ≥ 18）。缺了支付依赖会明确报错，不会静默失败。
-- 付款由脚本自动编排：首次调用返回 402，脚本唤起支付宝付款，拿到 `Payment-Proof` 后自动重试同一请求。
+装好后 `alipay-bot` 才可用；`doctor` 会提示缺失。
 
 ## 查询额度
 
 ```bash
-python3 scripts/tikhub.py balance              # 剩余 credits、累计购买/消耗/退款
-python3 scripts/tikhub.py usage --limit 20     # 最近调用明细（档位、扣减、状态、路径）
+python3 scripts/social.py balance     # 剩余 / 已购 / 已消耗
+python3 scripts/social.py usage       # 最近调用与扣费
+python3 scripts/social.py recharge --yes    # 购买额度包（¥9.90 / 200 点；不加 --yes 会先确认）
 ```
 
-- 两个命令都是只读，不产生费用。
-- 只有购买过额度包并保存了账户 token 后才能查询。
+## 付费前必须确认
+
+任何会花钱的调用，先展示预估清单给用户，确认后再执行：
+
+```bash
+# 单接口预估
+python3 scripts/social.py estimate douyin/web/fetch_one_video
+
+# 多接口任务预估（计划文件）
+python3 scripts/social.py estimate --file plan.json
+```
+
+清单包含：**预计请求多少个接口、每个接口的档位、扣多少点、当前额度、需要补多少、推荐套餐**。
+
+- `call` 默认也会先打印这份清单。
+- 终端交互会提示输入 `y` 确认；非交互环境（agent 调用）必须加 `--yes` 才会真正发出请求，否则只打印清单并退出。
+- 计划文件格式：
+
+```json
+{"title": "抖音账号分析", "endpoints": [
+  {"path": "douyin/web/handler_user_profile", "repeat": 1},
+  {"path": "douyin/web/fetch_user_post_videos", "repeat": 3},
+  {"path": "douyin/web/fetch_video_comments", "repeat": 3}
+]}
+```
+
+多接口任务的推荐流程：`estimate` → 把清单给用户确认 → 逐条 `call <path> --yes`；额度不足时 CLI 会自动购买额度包（`--no-auto-recharge` 可关闭）。单独 `recharge` 也会先打印商品与价格，输入 `y` 或加 `--yes` 才发起支付。
 
 ## 三步工作流
 
 ```bash
-# ① 找接口：中文名/英文名/路径/用途 模糊搜索（本地检索，不花钱）
-python3 scripts/tikhub.py search 评论 回复
+# 1) 搜
+python3 scripts/social.py search 评论 --platform weibo
 
-# ② 看参数：完整 path 或唯一关键词（本地查询，不花钱）
-python3 scripts/tikhub.py show {{api_prefix}}/web/fetch_video_comments
+# 2) 看
+python3 scripts/social.py show weibo/web_v2/fetch_post_comments
 
-# ③ 调接口（GET 用 -q，POST 用 -b）—— 这一步按次付费
-python3 scripts/tikhub.py call {{api_prefix}}/web/fetch_video_comments \
-  -q aweme_id=7372484719365098803 -q cursor=0 -q count=20 --out out/comments.json
+# 3) 调（先打印付费清单；用户确认后加 --yes 执行）
+python3 scripts/social.py call weibo/web_v2/fetch_post_comments \
+  -q id=5283919831764022 --out out/comments.json --yes
 ```
 
-首次调用会提示付款，支付宝付款完成后脚本自动重试并返回数据：
-
-```
-需要按次付款：社媒数据查询（标准）  ¥0.10
-（付款完成后自动重试，无需再次执行）
-```
-
-- `search` / `show` / `list` 都是本地索引，**不产生费用**，可以放心多查。
-- 大响应必须加 `--out 路径`（目录不存在会自动创建），只把必要字段读进上下文。
-- 分类浏览：`python3 scripts/tikhub.py list --folder {{folder_example}}`。
-
-**省钱三件套**（付费版尤其重要）：
-
-| 开关 | 作用 |
-|---|---|
-| `--dry-run` | 打印最终请求（URL/headers/body），**不发送、不扣费**——付款前先核一遍参数 |
-| `--retry N` | 网络错误 / 429 / 5xx 自动退避重试（默认 2，`0` 关闭） |
-| `--force` | 必填参数缺失时仍然发送（默认本地拦截，避免花钱买 422） |
-
-分页类参数（`cursor`/`page`/`count`/`page_size`/`offset`）没传时会自动补默认值并打印 `[autofill]`。
+标准接口每次 ¥0.10（有额度时扣 1 点）；高价值/批量扣 6/30 点，不做单次收款。上游失败不计费。
 
 ## 计费规则
 
-| 档位 | 每次价格 | 当前状态 |
+| 档位 | 计费 | 适用 |
 |---|---|---|
-| 标准档（详情/用户/搜索等普通查询） | ¥0.10 | 已开放 |
-| 高价值端点（算数指数/星图/榜单） | ¥0.50 | 已开放 |
-| 批量端点 | ¥2.00 | 已开放 |
-| 任务包（账号数据分析） | ¥1.99 | 已开放 |
-| 额度包（10–200 次） | ¥9.90 | 已开放 |
+| 标准 | ¥0.10 / 次，可单次付款 | 常规详情、评论、用户、搜索 |
+| 高价值 | 6 点 / 次（约 ¥0.30） | 指数、星图/花火/蒲公英、榜单类 |
+| 批量 | 30 点 / 次（约 ¥1.49） | 批量作品、批量查询 |
+| 额度包 | ¥9.90 / 200 点 | 高价值与批量只能走额度；标准也可用 |
+| 任务包 | ¥1.99 起 | 组合任务（如账号分析） |
 
-- 每次调用单独付款，无订阅、无最低充值门槛。
-- **上游失败不产生费用**：网关返回 502 时未完成履约，可直接重试。
-- 付款后带 `Payment-Proof` 重试同一请求不会重复扣费。
+**高价值与批量接口不支持单次付款**：额度不足时 CLI 会提示并自动购买额度包，然后重试本次调用；不想自动付款可加 `--no-auto-recharge`，先手动 `recharge`。标准接口在没有额度时才会单次收款。
 
-{{platform_body}}
+## 平台速查
 
-## 分类索引
+{{platform_bodies}}
 
-共 {{count}} 个接口。按分类查 → 打开对应参考文件；不确定用什么接口 → `python3 scripts/tikhub.py search <关键词>`。
+## 分类导航
 
-{{index_table}}
+完整的分类清单在 `references/index.md`（约 {{count}} 个接口分成若干类，每个平台一组）。**不要一次把所有分类文档读进上下文**：
 
-导航：`references/index.md`；单行速查表：`references/api-index.md`；机器可读：`references/inventory.json`。
-清单校准至 2026-11-10（接口数 {{count}}）；若与线上文档有出入，以 `show` 的参数表和实际返回为准。
+- 用 `search` / `list` / `show` 按需定位；
+- 机器可读清单是 `references/inventory.json`；
+- 每个分类的详细参数在 `references/<分类>.md`，只在确认要用某一类时打开。
 
-## 错误处理
+## 常见问题
 
-| 现象 | 含义 | 处理 |
-|---|---|---|
-| `python: command not found` | 环境只有 python3 | 换成 `python3 scripts/tikhub.py` |
-| `scripts/tikhub.py: No such file` | cwd 不对 | 用绝对路径调用，或先 `cd` 到 skill 根目录 |
-| 清单/目录读不到 | 包不完整 | 跑 `doctor` 看缺什么；`search/show` 可降级扫 md，`call` 用完整 path 仍可用 |
-| 402 | 需要付款 | 脚本会自动唤起支付宝付款并重试；中断时可用 `--proof` 手动重试 |
-| 403 | 接口未开放 | 联系提供方 |
-| 404 | 路径错 | CLI 会自动给相近 path；用 `show` 校正 |
-| 422 | 参数缺失/类型错 | CLI 会直接列出缺哪个参数，补上再调 |
-| 429 | 限流 | 并发降到 ≤2；`--retry` 已自动退避 |
-| 502 | 上游失败 | 本次未计费，直接重试；持续失败换同类通道 |
-| 网络超时 | 本地网络/代理 | `doctor --net` 自检；调大 `--timeout`，`--retry 3` |
+| 问题 | 处理 |
+|---|---|
+| 401 | 账户 token 无效，运行 `recharge` 重新获取 |
+| 402 | 标准接口：CLI 自动唤起支付宝按次付款；高价值/批量：自动购买额度包后重试 |
+| 422 | 必填参数漏了，`show <path>` 看参数表 |
+| 429 | 限流，降低并发或等 30s |
+| 404 | 路径写错，用 `search`/`show` 重新确认 |
+| 502 | 上游失败，本次未计费，可直接重试 |
+| data 为 null | 有些接口内容在 `business_data` 等顶层字段，用 `--raw` 看完整响应 |
 
 ## 输出与合规
 
-- 先抓 1~2 条确认字段结构，再批量；批量串行或并发 ≤3，中间结果落盘。
-- 只采集公开数据用于分析/研究，不用于批量私信、骚扰、隐私挖掘。
-- 按次付费，批量前先估算调用次数；`search`/`show` 不产生费用，可以先想明白再调。
-- 结果默认写当前工作区（如 `报告/`、`data/`），文件名带日期+关键词。
+- `--out` 把 `data` 落盘；`--raw` 输出完整响应；`--preview N` 控制终端预览长度。
+- 数据来源：TikHub。只采集公开数据；不要高频轰炸上游，不要用于侵犯隐私或绕过平台风控。
+- 数据版权归原平台与内容作者，遵守目标平台的用户协议与当地法规（含个人信息保护要求）。
