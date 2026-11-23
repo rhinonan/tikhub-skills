@@ -5,6 +5,10 @@
     assets/icon-src/cn-social-data.png
 
 只是一个中性占位母版：深色渐变 + 七节点网络 + 「社媒数据」字样。
+
+⚠️ 正式母版走 AI 出图：生图模型 → tools/prep_ai_icon.py → tools/make_icons.py --product。
+   本脚本只在无网 / 无生图额度时兜底，直接运行会覆盖正式母版。
+
 后续有正式设计稿时，直接替换该文件并重跑：
 
     python tools/make_engine_icon.py

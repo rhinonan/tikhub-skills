@@ -63,13 +63,14 @@ skill-hub/
 │   │   ├── SKILL.free.template.md
 │   │   └── SKILL.pro.template.md
 │   ├── editions/{free,pro}.json   # 版本配置（base_url / gateway_url / pay_mode）
-│   ├── assets/_icon.png(_pro)     # 产品图标（tools/make_icons.py --product 生成）
+│   ├── assets/_icon.png(_pro)     # 产品图标（AI 出图 → prep_ai_icon.py → make_icons.py --product）
 │   └── platforms/<slug>/          # meta.json + skill.body.md + references/
 ├── tools/
 │   ├── collect_inventory.py       # 官方 OpenAPI → inventory.json + 分类文档
 │   ├── verify_endpoints.py        # 每平台 2–3 个核心接口真实抽检
 │   ├── patch_returns.py           # 实测结构注入 inventory 与分类 md
-│   ├── make_engine_icon.py        # 生成产品图标母版
+│   ├── prep_ai_icon.py            # AI 出图清理：去右下角水印、铺平圆角外底色、归一 1024
+│   ├── make_engine_icon.py        # 无网兜底：纯代码占位母版（会覆盖正式母版，慎跑）
 │   └── make_icons.py              # 母版 → 512 图标（含 PRO 角标）
 ├── gateway/                       # 付费版后端（402 收款 → 白名单 → 上游转发），独立部署
 ├── pricing/                       # 官方价格清单（逐接口上游单价，定价的权威来源）
