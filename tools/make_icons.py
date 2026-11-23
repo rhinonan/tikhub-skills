@@ -138,16 +138,18 @@ def add_pro_badge(im, text=PRO_TEXT):
 
 
 def export_product():
-    """合并产品图标：母版路径取 src/product.json 的 icon 字段。"""
+    """产品图标：母版路径取 src/product.json 的 icon 字段，缺失回落 assets/icon-src/。"""
+    default_master = os.path.join(SRC_DIR, "cn-social-data.png")
     product_path = os.path.join(ROOT, "src", "product.json")
     try:
         import json
         with open(product_path, encoding="utf-8") as f:
             product = json.load(f)
-        rel = product.get("icon") or "assets/icon-src/cn-social-data.png"
+        master_path = os.path.join(ROOT, product.get("icon") or "")
+        if not os.path.exists(master_path):
+            master_path = default_master
     except Exception:
-        rel = "assets/icon-src/cn-social-data.png"
-    master_path = os.path.join(ROOT, rel)
+        master_path = default_master
     if not os.path.exists(master_path):
         raise SystemExit(f"缺产品图标母版：{os.path.relpath(master_path, ROOT)}\n"
                          "先跑 tools/prep_ai_icon.py 把 AI 出图清理成母版")
