@@ -148,20 +148,25 @@ def description(product, loaded, edition, count):
 
 def skillhub_meta(product, loaded, edition, count):
     ed = "付费版" if edition == "pro" else "自备 API Key 版"
-    uses = "下载无水印视频、解析分享链接、批量导出评论、查账号与作品数据、追热搜热榜、找达人"
     if edition == "pro":
-        desc_zh = (f"{product['name_zh']}（付费版）：{uses}。"
-                   f"含 {count} 个接口与 CLI，覆盖抖音、微博、小红书、B站、知乎、微信、快手。"
-                   "标准 ¥0.10/次；高价值/批量走额度包（6/30 点每次，¥9.90/200 点）。")
+        desc_zh = (f"{product['name_zh']}（付费版）：装上就能用大白话取数——"
+                   "下载无水印视频、解析分享链接、批量导出评论、查博主/UP主/公众号的粉丝与作品数据、"
+                   "追微博热搜和抖音热榜、找小红书/B站达人、导出公众号文章。"
+                   f"{count} 个接口覆盖抖音、微博、小红书、B站、知乎、微信、快手，"
+                   "找接口、拼参数、调通、存 JSON 都由它完成；只读公开数据，不含登录发布。"
+                   "标准 ¥0.10/次；高价值/批量走额度包（6/30 点每次，¥9.90/200 点），无需注册上游。")
         desc_en = (f"{product.get('name_en', '')} (paid): download watermark-free videos, "
                    "parse share links, export comments, inspect accounts and trends, find creators. "
                    f"{count} endpoints and a CLI covering 7 Chinese social platforms. "
                    "Standard CNY 0.10 per call; premium/batch via credits "
                    "(6/30 credits per call, CNY 9.90 for 200 credits).")
     else:
-        desc_zh = (f"{product['name_zh']}（自备 API Key）：{uses}。"
-                   f"含 {count} 个接口与 CLI，覆盖抖音、微博、小红书、B站、知乎、微信、快手。"
-                   "需自备上游 TikHub Token（起充 5 美元）；不想充值可使用付费版。")
+        desc_zh = (f"{product['name_zh']}（自备 API Key）：装上就能用大白话取数——"
+                   "下载无水印视频、解析分享链接、批量导出评论、查博主/UP主/公众号的粉丝与作品数据、"
+                   "追微博热搜和抖音热榜、找小红书/B站达人、导出公众号文章。"
+                   f"{count} 个接口覆盖抖音、微博、小红书、B站、知乎、微信、快手，"
+                   "找接口、拼参数、调通、存 JSON 都由它完成；只读公开数据，不含登录发布。"
+                   "需自备上游 TikHub Token（起充 5 美元）；不想充值可改用付费版。")
         desc_en = (f"{product.get('name_en', '')} (bring your own API key): download "
                    "watermark-free videos, parse share links, export comments, inspect accounts "
                    f"and trends, find creators. {count} endpoints and a CLI covering 7 platforms. "

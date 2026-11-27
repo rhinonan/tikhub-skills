@@ -71,7 +71,8 @@ skill-hub/
 │   ├── patch_returns.py           # 实测结构注入 inventory 与分类 md
 │   ├── prep_ai_icon.py            # AI 出图清理：去右下角水印、铺平圆角外底色、归一 1024
 │   ├── make_engine_icon.py        # 无网兜底：纯代码占位母版（会覆盖正式母版，慎跑）
-│   └── make_icons.py              # 母版 → 512 图标（含 PRO 角标）
+│   ├── make_icons.py              # 母版 → 512 图标（含 PRO 角标）
+│   └── make_icon_preview.py       # 拼验收图 assets/icon-product-preview.png
 ├── gateway/                       # 付费版后端（402 收款 → 白名单 → 上游转发），独立部署
 ├── pricing/                       # 官方价格清单（逐接口上游单价，定价的权威来源）
 ├── docs/upstream.md               # 上游服务商背景（内部文档，不随包分发）
